@@ -1,0 +1,20 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 07-Jul-2020, 10:09:35
+    Author     : Geofrey Nyabuto
+*/
+
+.title{
+        /*font-family: Merienda One;*/
+        font-family: "Times New Roman", Times, serif;
+	font-size: 20px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 900;
+	line-height: 26.4px;
+        color: #316a2b;
+    } 
