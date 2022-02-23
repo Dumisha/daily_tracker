@@ -1,16 +1,15 @@
 <%-- 
-    Document   : raw_data
-    Created on : 15-Feb-2022, 08:58:08
+    Document   : summaries
+    Created on : 22-Feb-2022, 17:39:52
     Author     : Geofrey Nyabuto
 --%>
-
 <%@page import="java.util.Calendar"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Raw Data</title>
+  <title>Summaries</title>
    <link rel="shortcut icon" href="faces/faceslogo.PNG" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -47,13 +46,13 @@
             <script src="ui/jquery-ui.js"></script>
             <link href="ui/jquery-ui.css" rel="stylesheet">
             <link href="ui/jquery-ui.theme.css" rel="stylesheet">
-            
+         
             <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="plugins/select2/js/select2.full.min.js"></script>
              <!-- Select2 -->
              <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
              <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-         
+             
       <style>
    .flex-container {
     display: flex;
@@ -89,43 +88,11 @@
 <br>
             <div class="card">
               <div class="card-header">
-                  <h3 class="card-title" style="text-align: center;font-weight: 900;">Raw Data Generation Module</h3>
+                  <h3 class="card-title" style="text-align: center;font-weight: 900;">Summaries Generation Module</h3>
               </div>
                          <div class="card-body">        
-                             <form action="raw_data">
-<!--                             
-                    <div class="flex-container" id="county_label">
-                     <div class="flex-child">
-                    Counties:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child">
-                      <select class="form-control select2bs4" id="county" name="county"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>
-                             
-                             
-                    <div class="flex-container" id="sub_county_label">
-                     <div class="flex-child">
-                    Sub Counties:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child">
-                        <select class="form-control select2bs4" id="sub_county" name="sub_county"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>
-                             
-                             
-                    <div class="flex-container" id="facility_label">
-                     <div class="flex-child">
-                    Facilities:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                         <select class="form-control select2bs4" id="facility" name="facility"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>-->
- 
-                    
-                             
-                             
+                             <form action="summaries">
+
                     <div class="flex-container" id="indicator_label">
                      <div class="flex-child">
                     Indicators:
@@ -153,7 +120,7 @@
                     </div>                     
                        
                               <div class="flex-container" id="indicator_label">
-                       <button type="submit" id="submit" class="btn btn-primary btn-block">Generate Raw Data</button>      
+                       <button type="submit" id="submit" class="btn btn-primary btn-block">Generate Summaries</button>      
                          </div> 
           
 </form>
@@ -395,8 +362,7 @@ $("#indicator").html(indicator_label);
         
         });
         </script> 
-        
-        <script>
+ <script>
   $(function () {
     $('.select2').select2();
   });

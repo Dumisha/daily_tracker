@@ -42,7 +42,14 @@
         <script src="dataTables/Buttons-1.5.1/js/buttons.html5.min.js"></script>
         <script src="dataTables/Buttons-1.5.1/js/buttons.print.min.js"></script>
             <link href="tables/styles.css" rel="stylesheet">
+       
+              <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="plugins/select2/js/select2.full.min.js"></script>
+             <!-- Select2 -->
+             <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+             <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
          
+            
       <style>
    .flex-container {
     display: flex;
@@ -113,7 +120,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" autocomplete="off">
 
                 
                 <div class="flex-container">
@@ -129,7 +136,7 @@
                     User Level:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                       <select class="form-control select2bs4" id="user_level" name="user_level"  required="true"> </select>
+                       <select class="form-control select2" id="user_level" data-placeholder="Select user level" name="user_level"  required="true"> </select>
                     </div>
                     </div>
                     <div class="flex-container" id="county_label">
@@ -137,7 +144,7 @@
                     Counties:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                      <select class="form-control select2bs4" id="county" name="county"  required="true" multiple="true"> </select>
+                      <select class="form-control select2" id="county" name="county" data-placeholder="Select county" required="true" multiple="true"> </select>
                     </div>
                     </div>
                     <div class="flex-container" id="sub_county_label">
@@ -145,7 +152,7 @@
                     Sub Counties:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                        <select class="form-control select2bs4" id="sub_county" name="sub_county"  required="true" multiple="true"> </select>
+                        <select class="form-control select2" id="sub_county" name="sub_county" data-placeholder="Select sub counties"  required="true" multiple="true"> </select>
                     </div>
                     </div>
                     <div class="flex-container" id="facility_label">
@@ -153,7 +160,7 @@
                     Facilities:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                         <select class="form-control select2bs4" id="facility" name="facility"  required="true" multiple="true"> </select>
+                         <select class="form-control select2" id="facility" data-placeholder="Select facilities" name="facility"  required="true" multiple="true"> </select>
                     </div>
                     </div>
                     
@@ -162,7 +169,7 @@
                     Approved:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <select class="form-control select2bs4" id="approved" name="approved" data-placeholder="Select if approved" required="true"> </select>
+                        <select class="form-control select2" id="approved" name="approved" data-placeholder="Select if approved" required="true"> </select>
                     </div>
                     </div>
                     <div class="flex-container">
@@ -170,7 +177,7 @@
                     Active:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                       <select class="form-control select2bs4" id="status" name="status" data-placeholder="Select if active" required="true"> </select>
+                       <select class="form-control select2" id="status" name="status" data-placeholder="Select if active" required="true"> </select>
                     </div>
                     </div>
                 
@@ -469,6 +476,9 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
         $("#approved").html(approved_label);
         $("#status").html(status_label);
         
+        $('#county').val(null);
+        $('#sub_county').val(null);
+        $('#facility').val(null);
         $("#county").html(counties_label);
         $("#sub_county").html(sub_counties_label);
         $("#facility").html(facilities_label);
@@ -580,9 +590,9 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
              sub_counties_label+="<option value=\""+sub_counties[i].id+"\">"+sub_counties[i].name+"</option>";
       }
   }
-      
+      $('#sub_county').val(null);
       $("#sub_county").html(sub_counties_label);
-        
+       $('#sub_county').select2(); 
         });
         
      // change sub county   
@@ -598,8 +608,9 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
       }
   }
       
+      $('#facility').val(null);
       $("#facility").html(facilities_label);
-        
+       $('#facility').select2();  
         });
         </script>
    <script>
@@ -790,4 +801,11 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
         });   
            
            </script>
+           
+            <script>
+  $(function () {
+    $('.select2').select2();
+  });
+  
+  </script>
 </html>

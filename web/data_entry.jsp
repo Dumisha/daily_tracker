@@ -50,13 +50,20 @@ String indicator_id = request.getParameter("indicator");
             <link href="ui/jquery-ui.css" rel="stylesheet">
             <link href="ui/jquery-ui.theme.css" rel="stylesheet">
             
+            <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="plugins/select2/js/select2.full.min.js"></script>
+             <!-- Select2 -->
+             <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+             <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+             
+             
+         
   <style>
    .flex-container {
     display: flex;
     margin-top: 10px;
     /*border: 1px dotted gray;*/
 }
-
 .flex-child {
     flex: 1;
     border: 2px;
@@ -119,18 +126,7 @@ table {
 					<!-- /footer -->
 
 				</div>
-                                           
-                                        <%if(session.getAttribute("adduser")!=null){
-                                        String mess =session.getAttribute("adduser").toString();
-                                        %>
-                                        <script type="text/javascript">
-                                           $.jGrowl('<%=mess%>', {
-                                                position: 'center',
-                                                header: 'Register Information.',
-                                                theme: 'bg-info'
-                                            });  
-                                            </script>
-                                            <% session.removeAttribute("adduser");}%>
+                
 </body>
 
    
@@ -197,7 +193,7 @@ table {
             }
             
             else{
-            value_length = "";
+           value_length = "min=\"0\"";
             }
          
          if(questions[i].required===1){
@@ -226,14 +222,14 @@ table {
                 break;
              
             case 3:  
-               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" "+required+">";  
+               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control select2\" "+required+">";  
                output+=get_answers(questions[i].answers);  
                output+="</select></div></div>";  
                     
                 break;
                     
             case 4:
-              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control\" multiple "+required+">";  
+              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control select2\" multiple "+required+">";  
                output+=get_answers(questions[i].answers);  
                output+="</select></div></div>";    
                 
@@ -258,6 +254,9 @@ table {
     output+="</div>";
 //     alert(output);
     $("#questions").html(output);
+    
+    
+    $('.select2').select2();
     
     // load facilities
      var facilities = load_facilities();
@@ -352,6 +351,25 @@ for(var i=0;i<date_elems.length;i++){
 
 
 
+if(indicator_id===6){
+//    alert("here");
+       // load facilities
+     var facilities = load_all_facilities();
+           var facility_data="<option value=\"\"></option>";
+      
+           for(var i=0;i<facilities.length;i++){
+               if(facilities[i].pre_selected===1){
+              facility_data+="<option value=\""+facilities[i].id+"\" selected>"+facilities[i].name+"</option>";     
+            }
+            else{
+          facility_data+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
+           }
+       }
+//       alert(facilities.length);
+      $("#id_113").html(facility_data);
+      
+    }
+
 // validate PMTCT Flags       
        
        $("#id_60").keyup(function(){
@@ -415,6 +433,19 @@ function get_answers(answer_labels){
          async: false,
         success:function(info){
          data = info;
+  }   
+   }) ;
+   return data;
+   }
+   function load_all_facilities(){ 
+       var data=[];
+    $.ajax({
+        url:'load_facilities',
+        type:"get",
+        dataType:"json",
+         async: false,
+        success:function(info){
+         data = info.data;
   }   
    }) ;
    return data;
@@ -548,7 +579,10 @@ $(document).ready(function() {
         $("#label_107").hide();
         $("#label_111").hide();
         $("#label_112").hide();
+        $("#label_113").hide();
       }
+     
+     
      
    function hide_linkage(){
        
@@ -561,6 +595,7 @@ $(document).ready(function() {
           $("#label_106").show();
           $("#label_107").hide();
           $("#label_111").hide();
+          $("#label_113").hide();
           
           // make entries required
           $("#id_31").attr('required', 'required');
@@ -570,6 +605,7 @@ $(document).ready(function() {
           $("#id_107").removeAttr('required');
           $("#id_111").removeAttr('required');
           $("#id_112").removeAttr('required');
+          $("#id_113").removeAttr('required');
           
           $("#id_107").val('');
           $("#id_111").val('');  
@@ -582,6 +618,7 @@ $(document).ready(function() {
           $("#label_33").hide(); 
           $("#label_106").hide();
           $("#label_112").hide();
+          $("#label_113").hide();
           
           $("#id_31").val('');
           $("#id_32").val('');
@@ -596,6 +633,7 @@ $(document).ready(function() {
           $("#id_33").removeAttr('required');
           $("#id_106").removeAttr('required');
           $("#id_112").removeAttr('required');
+          $("#id_113").removeAttr('required');
           
           $("#label_107").show();
           $("#label_111").hide();
@@ -622,12 +660,17 @@ $(document).ready(function() {
      var non_linkage = $("#id_106").val(); 
      if(parseInt(non_linkage)===22){
          $("#label_112").show();
+         $("#label_113").hide();
          $("#id_112").attr('required', 'required');
+         $("#id_113").removeAttr('required'); 
+         $("#label_113").val('');
      }
      else{
       $("#label_112").hide();
+      $("#label_113").show();
       $("#label_112").val('');
       $("#id_112").removeAttr('required');   
+       $("#id_113").attr('required', 'required');
      }
    }
     
@@ -1012,8 +1055,7 @@ check_previous_entries(form_data,1);
    }
    
    output+="</table><br>";
-   
-   
+ 
      if(observations.length===0){ // clear 
       var quizes =  load_all_questions(data.indicator_id);
         clear_entries(quizes);
@@ -1026,7 +1068,6 @@ check_previous_entries(form_data,1);
            hide_linkage();
            hide_hts_tb();
         }
-        
         else{
           $("#prev_data").show();  
             
@@ -1036,12 +1077,9 @@ check_previous_entries(form_data,1);
              else{
                $("#entry_elements").hide();     
              }
-             
         }
-   
     }
   });
- 
   $("#prev_data").html(output);
    } 
   

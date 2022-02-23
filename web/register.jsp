@@ -115,8 +115,7 @@
                                                      <div class="form-group login-options">
                                                             
                                                             <b>Already have an Account?</b><span> <a href="index.jsp"><b>Login Here</b></a></span>
-                                                            <b>Manage Users Link?</b><span> <a href="manage_users.jsp"><b>Manage Users</b></a></span>
-                                                            <br style="margin-top:2px;">
+                                                          <br style="margin-top:2px;">
                                                         
 							</div>
 

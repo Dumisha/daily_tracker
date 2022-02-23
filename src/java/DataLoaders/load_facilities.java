@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,16 +24,8 @@ import org.json.simple.JSONObject;
  * @author Geofrey Nyabuto
  */
 public class load_facilities extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+String facility_id,user_id;
+    HttpSession session;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -41,6 +34,25 @@ public class load_facilities extends HttpServlet {
         dbConn conn = new dbConn();
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
+        session = request.getSession();
+        
+        facility_id = "0";
+        user_id="";
+        if(session.getAttribute("user_id")!=null){
+            user_id = session.getAttribute("user_id").toString();
+        }else{
+           
+        }
+        if(session.getAttribute("facility_id")!=null){
+            facility_id = session.getAttribute("facility_id").toString();
+        }
+        else{
+           
+        }
+        
+        
+        System.out.println("facility pre-selected : "+facility_id);
+        
         String get_facilities = "SELECT id,sub_county_id,name,mfl_code FROM facilities order by name";
         conn.rs = conn.st.executeQuery(get_facilities);
         
@@ -51,11 +63,17 @@ public class load_facilities extends HttpServlet {
           ob.put("name", conn.rs.getString(3));
           ob.put("mfl_code", conn.rs.getString(4));
           
+          if(conn.rs.getString(1).equals(facility_id)){
+                ob.put("pre_selected", 1);
+            }
+            else{
+              ob.put("pre_selected", 0);   
+            }
           jarray.add(ob);
         }
         
        obj.put("data", jarray);
-       
+        System.out.println("facility data"+jarray);
        out.println(obj);
       
     }

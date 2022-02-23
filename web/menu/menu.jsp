@@ -45,16 +45,9 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <%-- if(session.getAttribute("admin")!=null){
             if(session.getAttribute("admin").toString().equals("1")){ --%> 
-            <li class="nav-item has-treeview">
-            <a href="manage_users.jsp" class="nav-link">
-              <i class="nav-icon fas fa-users"></i>
-              <p>
-                Manage Users
-              </p>
-            </a>
-           
-          </li>
-          <li id="indicators"> </li>
+            
+            
+          <li class="nav-item has-treeview" id="indicators"></li>
     
          
           <li class="nav-item has-treeview">
@@ -63,7 +56,7 @@
               <p>
                 Reports
                 <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right">2</span>
+                <span class="badge badge-info right">3</span>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -74,14 +67,40 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="summaries.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Summaries (.xlsx)</p>
+                </a>
+              </li>
+             <li class="nav-item">
+                <a href="dashboards.jsp" class="nav-link">
+                  <i class="fas fa-industry nav-icon"></i>
+                  <p>Dashboards</p>
+                </a>
+              </li>
+<!--              <li class="nav-item">
                 <a href="questions.jsp" class="nav-link">
                   <i class="fas fa-percent nav-icon"></i>
                   <p>Performance Tracker</p>
                 </a>
-              </li>
+              </li>-->
               
             </ul>
           </li>
+          
+          
+          <li style="text-align: center; color: white;"><br></li>
+          
+                      <li class="nav-item has-treeview">
+            <a href="manage_users.jsp" class="nav-link">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Manage Users
+              </p>
+            </a>
+           
+          </li>
+          
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>

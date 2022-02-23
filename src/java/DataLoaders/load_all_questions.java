@@ -36,7 +36,7 @@ public class load_all_questions extends HttpServlet {
         
         JSONArray jarray = new JSONArray();
         
-         String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,value_unique,status  FROM questions ORDER by indicator_id,question";
+         String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,value_unique,status  FROM questions ORDER by indicator_id,ordering_num";
         conn.rs = conn.st.executeQuery(get_questions);
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();
