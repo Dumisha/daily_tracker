@@ -10,7 +10,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>User Profile</title>
+  <title>Raw Data</title>
    <link rel="shortcut icon" href="faces/faceslogo.PNG" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -47,6 +47,12 @@
             <script src="ui/jquery-ui.js"></script>
             <link href="ui/jquery-ui.css" rel="stylesheet">
             <link href="ui/jquery-ui.theme.css" rel="stylesheet">
+            
+            <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="plugins/select2/js/select2.full.min.js"></script>
+             <!-- Select2 -->
+             <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
+             <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
          
       <style>
    .flex-container {
@@ -83,10 +89,49 @@
 <br>
             <div class="card">
               <div class="card-header">
-                  <h3 class="card-title" style="text-align: center;font-weight: 900;">User Profile</h3>
+                  <h3 class="card-title" style="text-align: center;font-weight: 900;">Raw Data Generation Module</h3>
               </div>
                          <div class="card-body">        
-                     
+                             <form action="update_profile">
+
+                    <div class="flex-container" id="start_label">
+                     <div class="flex-child">
+                    Phone: 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="text" class="form-control" id="phone" name="phone"  required="true" placeholder="Phone" autocomplete="off">
+                    </div>
+                    </div>                     
+                    <div class="flex-container" id="end_label">
+                     <div class="flex-child">
+                   Email:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="text" class="form-control" id="email" name="email"  required="true" placeholder="Email Address" autocomplete="off">
+                    </div>
+                    </div>                     
+                    <div class="flex-container" id="end_label">
+                     <div class="flex-child">
+                   Password:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="text" class="form-control" id="password" name="password"  required="true" placeholder="Pass" autocomplete="off">
+                    </div>
+                    </div>                     
+                    <div class="flex-container" id="end_label">
+                     <div class="flex-child">
+                   Repeat-password:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="text" class="form-control" id="repeat_password" name="repeat_password"  required="true" placeholder="repeat password" autocomplete="off">
+                    </div>
+                    </div>                     
+                       
+                              <div class="flex-container" id="indicator_label">
+                       <button type="submit" id="submit" class="btn btn-primary btn-block">Update Profile</button>      
+                         </div> 
+          
+</form>
                          </div>    
                    
                 </div>
@@ -112,217 +157,4 @@
 </body>
 
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
-
-    <script>
-   $(document).ready(function() { 
-$("#start_date").datepicker({
-      changeYear: true,
-      changeMonth: true,
-      dateFormat: 'yy-mm-dd',
-      maxDate: 0
-  });
-  
-$("#end_date").datepicker({
-      changeYear: true,
-      changeMonth: true,
-      dateFormat: 'yy-mm-dd',
-//      minDate: -10y,
-      maxDate: 0
-  });
-       
-       
-//var counties = load_counties();
-//var sub_counties = load_sub_counties();
-//var facilities = load_facilities();
-//var program_areas = load_program_areas();
-var indicators = load_indicators();
-
-
-//var county_label="";
-//var sub_county_label = "";
-//var facility_label="";
-//var program_area_label = "";
-var indicator_label="";
-// populate counties
-
-//for(var i=0;i<counties.length;i++){
-//  county_label+="<option value=\""+counties[i].id+"\">"+counties[i].name+"</option>";  
-//}
-//for(var i=0;i<sub_counties.length;i++){
-//  sub_county_label+="<option value=\""+sub_counties[i].id+"\">"+sub_counties[i].name+"</option>" ; 
-//}
-//for(var i=0;i<facilities.length;i++){
-//  facility_label+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>"  ;
-//}
-//
-//for(var i=0;i<program_areas.length;i++){
-//  program_area_label+="<option value=\""+program_areas[i].id+"\">"+program_areas[i].name+"</option>"  ;
-//}
-for(var i=0;i<indicators.length;i++){
-    if(indicators[i].is_active===1){
-  indicator_label+="<option value=\""+indicators[i].id+"\">"+indicators[i].name+"</option>"  ;
-    }
-}
-
-//$("#county").html(county_label);
-//$("#sub_county").html(sub_county_label);
-//$("#facility").html(facility_label);
-//$("#program_area").html(program_area_label);
-$("#indicator").html(indicator_label);
-
-//for(var i=0;i<counties.length;i++){
-//  county_label+="<option value=\""++"\">"++"</option>"  
-//}
-
-
-}); 
-    </script>
-<script>
-
-    </script>
-    
-  <script>  
-   function load_user_levels(){ 
-       var user_levels=[];
-    $.ajax({
-        url:'load_user_levels',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         user_levels = info.data;
-  }
-        
-   }) ;
-   return user_levels;
-   }
-   
-      function load_status(){ 
-       var status=[];
-    $.ajax({
-        url:'load_status',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         status = info.data;
-  }
-        
-   }) ;
-   return status;
-   }
-   
-      function load_counties(){ 
-       var data=[];
-    $.ajax({
-        url:'load_counties',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   
-      function load_sub_counties(){ 
-       var data=[];
-    $.ajax({
-        url:'load_sub_counties',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   
-      function load_facilities(){ 
-       var data=[];
-    $.ajax({
-        url:'load_facilities',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   function load_program_areas(){
-           var data=[];
-    $.ajax({
-        url:'load_sections',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;   
-   }
-   function load_indicators(){
-           var data=[];
-    $.ajax({
-        url:'load_indicators',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info;
-  }
-        
-   }) ;
-   return data;   
-   }
-   
-   
-    </script>
-    
-    
-    <script>
-        $("#county").change(function(){
-         var county_id = ","+$("#county").val()+",";
-        var sub_counties = load_sub_counties();
-        var sub_counties_label = "";
-         
-        for(var i=0;i<sub_counties.length;i++){
-            if(county_id.includes(","+sub_counties[i].county_id+",")){
-             sub_counties_label+="<option value=\""+sub_counties[i].id+"\">"+sub_counties[i].name+"</option>";
-      }
-  }
-      
-      $("#sub_county").html(sub_counties_label);
-        
-        });
-        
-     // change sub county   
-        
-        $("#sub_county").change(function(){
-         var sub_county_id = ","+$("#sub_county").val()+",";
-        var facilities = load_facilities();
-        var facilities_label = "";
-         
-        for(var i=0;i<facilities.length;i++){
-            if(sub_county_id.includes(","+facilities[i].sub_county_id+",")){
-             facilities_label+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
-      }
-  }
-      
-      $("#facility").html(facilities_label);
-        
-        });
-        </script> 
 </html>

@@ -6,6 +6,7 @@
 package DDTA;
 
 import Database.dbConn;
+import com.mysql.jdbc.CallableStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -37,7 +38,11 @@ public class Manage {
         return   isint;
 }
     
-    public String get_timestamp(){
+       public String get_timestamp(){
+           return new Timestamp(System.currentTimeMillis()).toString();
+       }
+    
+    public String get_timestamp_string(){
            return new Timestamp(System.currentTimeMillis()).toString().replace(" ", "--").replace("-", "_").replace(":", "_");
        }
     
@@ -73,5 +78,65 @@ public class Manage {
          list.add(conn.rs.getString(1));
         }
         return list;
+    }
+    
+    
+           public void process_queue(dbConn conn,String status) throws SQLException{ // 1 for new entry, 2 for update
+           String updator;
+           String get_pending = " SELECT entry_key,sp_name,q.indicator_id FROM queue q INNER JOIN sp_processor spp ON q.indicator_id=spp.indicator_id group by entry_key";
+           conn.rs = conn.st.executeQuery(get_pending);
+           while(conn.rs.next()){
+             // call sp to populate ETL 
+             updator = ("{CALL "+conn.rs.getString(2)+"}").replace("?", "'"+conn.rs.getString(1)+"'");
+              //execute call
+              
+               CallableStatement cs = (CallableStatement) conn.conn.prepareCall(updator);
+                 int executed = cs.executeUpdate();
+                  
+                 System.out.println("called to etl"+updator);
+               // remove record 
+               if(executed>0){
+               String deleter = "DELETE FROM queue WHERE entry_key=?";
+               conn.pst1 = conn.conn.prepareStatement(deleter);
+               conn.pst1.setString(1, conn.rs.getString(1));
+               
+                conn.pst1.executeUpdate();
+               }
+               if(conn.rs.getInt(3)==6 || conn.rs.getInt(3)==8){ // FOR HTS POS or te new
+                populate_tx_new(conn,conn.rs.getString(1));
+                   System.out.println(" it is a tx new --------------------------------");
+               }
+           }
+        }
+           
+                  public void populate_tx_new(dbConn conn,String entry_key) throws SQLException{
+           CallableStatement cs = (CallableStatement) conn.conn.prepareCall("{CALL sp_update_etl_tx_new('"+entry_key+"')}");
+               cs.executeUpdate();
+       }
+                  
+                        
+       public String get_entry_key(){
+           Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+           String key = timestamp.toString().replaceAll("[- :.]", "") ;
+           
+           System.out.println(key);
+           return key;
+       }
+       
+       
+       
+       public void update_queue(dbConn conn,String entry_key,String status,String indicator_id) throws SQLException{ // 1 for new entry, 2 for update
+        String adder = "INSERT INTO queue (entry_key,status,indicator_id) VALUES(?,?,?)";
+        conn.pst = conn.conn.prepareStatement(adder);
+        conn.pst.setString(1, entry_key);
+        conn.pst.setString(2, status);
+        conn.pst.setString(3, indicator_id);
+        
+        conn.pst.executeUpdate();
+       }
+       
+       
+    public String check_OS(){
+        return System.getProperty("os.name");
     }
 }

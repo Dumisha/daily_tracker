@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
  */
 public class load_user_facilities extends HttpServlet {
     HttpSession session;
-    String user_id,message,facility_id;
+    String user_id,message,facility_id,user_level;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -48,12 +48,50 @@ public class load_user_facilities extends HttpServlet {
            
         }
         
+         if(session.getAttribute("user_level_id")!=null){
+           user_level=session.getAttribute("user_level_id").toString(); 
+       }
+        else{
+            user_level="";
+        }
+        
+        String sub_counties=request.getParameter("sub_county_ids");
+        if(sub_counties!=null){
+            if(sub_counties.equals("")){sub_counties=null;}
+        }
+        System.out.println("sub counties are : "+sub_counties);
+        
 //        user_id = "1";
         
-        String getfacilities = "SELECT f.id,f.name FROM facilities f INNER JOIN user_facilities uf ON f.id=uf.facility_id WHERE uf.user_id=?";
-        conn.pst = conn.conn.prepareStatement(getfacilities);
-        conn.pst.setString(1, user_id);
-        conn.rs = conn.pst.executeQuery();
+        String query;
+        if(sub_counties==null){
+         query = "SELECT f.id,f.name FROM facilities f INNER JOIN user_facilities uf ON f.id=uf.facility_id WHERE uf.user_id='"+user_id+"'";   
+        }
+        
+        else{
+        if(user_level.equals("1")){ // facility access 
+         query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
+                "INNER JOIN user_facilities uf ON f.id=uf.facility_id and uf.user_id='"+user_id+"' and f.sub_county_id in("+sub_counties+")  ";   
+        }
+        else if(user_level.equals("2")){ // sub county access 
+         query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
+                "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                "INNER JOIN user_sub_counties usc on sc.id=usc.sub_county_id and usc.user_id='"+user_id+"' and usc.sub_county_id in("+sub_counties+") ";   
+        }
+        else if(user_level.equals("3")){ // county access
+        query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
+                "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                "INNER JOIN counties c ON sc.county_id=c.id \n" +
+                "INNER JOIN user_counties uc on c.id=uc.county_id and uc.user_id='"+user_id+"' and sc.id in("+sub_counties+") ";   
+        }
+        else{
+     query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
+            "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id  and sc.id in("+sub_counties+") " ;   
+        }
+                
+        }        
+   
+        conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();
             obj.put("id", conn.rs.getInt(1));

@@ -29,6 +29,7 @@ public class save_data extends HttpServlet {
    String user_id,facility_id,message; 
    boolean has_aggregate,record_exist;
    int code;
+   Manage mg = new Manage();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -37,7 +38,6 @@ public class save_data extends HttpServlet {
         session = request.getSession();
         JSONObject fn_ob = new JSONObject();
         
-        
         String indicator_id,data_value,date,entry_status;
         has_aggregate = record_exist = false;
         message = "";
@@ -45,7 +45,7 @@ public class save_data extends HttpServlet {
                    int num = 0;
          String status = "";          
         
-      String entry_key = get_entry_key();
+      String entry_key = mg.get_entry_key();
         
        indicator_id = request.getParameter("indicator");
        facility_id = request.getParameter("facility_id");
@@ -148,7 +148,7 @@ public class save_data extends HttpServlet {
   num++;
         }
         
-        query_values = removeLast(query_values, 1); // remove trailling ,
+        query_values = mg.removeLast(query_values, 1); // remove trailling ,
         
        String query="INSERT INTO observations (indicator_id,question_id,numeric_value,text_value,date,facility_id,user_id,entry_key) VALUES "+query_values;
        
@@ -163,13 +163,13 @@ public class save_data extends HttpServlet {
        message="Indicator Data with "+num+" variables saved successfully";
         
        if(num>0){
-           update_queue(conn,entry_key,"1",indicator_id);
+           mg.update_queue(conn,entry_key,"1",indicator_id);
        }
        }
     }
        
        else if(entry_status.equals("1")){ // save edits 
-           String timestamp = get_timestamp();
+           String timestamp = mg.get_timestamp();
           String numeric_value,text_value; 
           status = "2";
           entry_key = request.getParameter("entry_key");
@@ -223,7 +223,7 @@ public class save_data extends HttpServlet {
        message=num+" variables updated successfully at "+timestamp;   
        
        if(num>0){
-           update_queue(conn,entry_key,"2",indicator_id);
+           mg.update_queue(conn,entry_key,"2",indicator_id);
        }
        }
 
@@ -232,7 +232,7 @@ public class save_data extends HttpServlet {
 
        
        // process queue
-       process_queue(conn,status);
+       mg.process_queue(conn,status);
        
        //
         System.out.println("final obj :"+fn_ob);
@@ -366,7 +366,7 @@ public class save_data extends HttpServlet {
          values_to_be_checked = values_to_be_checked.trim();
         System.out.println("to be checked ---:"+ values_to_be_checked+":--");
         if( values_to_be_checked.length()>0){
-            values_to_be_checked = removeLast(values_to_be_checked, 2); 
+            values_to_be_checked = mg.removeLast(values_to_be_checked, 2); 
             
             query = "SELECT id FROM observations where "+values_to_be_checked;
             
@@ -398,69 +398,6 @@ public class save_data extends HttpServlet {
         return conn.rs.next();
     }
     
-       public String removeLast(String str, int num) { 
-        
-    if (str != null && str.length() >= num) {
-        str = str.substring(0, str.length() - num);
-    }
-    return str;
-    }
-       
-       
-       private String get_entry_key(){
-           Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-           String key = timestamp.toString().replaceAll("[- :.]", "") ;
-           
-           System.out.println(key);
-           return key;
-       }
-       
-       private String get_timestamp(){
-           return new Timestamp(System.currentTimeMillis()).toString();
-       }
-       
-       
-       public void update_queue(dbConn conn,String entry_key,String status,String indicator_id) throws SQLException{ // 1 for new entry, 2 for update
-        String adder = "INSERT INTO queue (entry_key,status,indicator_id) VALUES(?,?,?)";
-        conn.pst = conn.conn.prepareStatement(adder);
-        conn.pst.setString(1, entry_key);
-        conn.pst.setString(2, status);
-        conn.pst.setString(3, indicator_id);
-        
-        conn.pst.executeUpdate();
-       }
-       public void process_queue(dbConn conn,String status) throws SQLException{ // 1 for new entry, 2 for update
-           String updator;
-           String get_pending = " SELECT entry_key,sp_name,q.indicator_id FROM queue q INNER JOIN sp_processor spp ON q.indicator_id=spp.indicator_id group by entry_key";
-           conn.rs = conn.st.executeQuery(get_pending);
-           while(conn.rs.next()){
-             // call sp to populate ETL 
-             updator = ("{CALL "+conn.rs.getString(2)+"}").replace("?", "'"+conn.rs.getString(1)+"'");
-              //execute call
-              
-               CallableStatement cs = (CallableStatement) conn.conn.prepareCall(updator);
-                 int executed = cs.executeUpdate();
-                  
-                 System.out.println("called to etl"+updator);
-               // remove record 
-               if(executed>0){
-               String deleter = "DELETE FROM queue WHERE entry_key=?";
-               conn.pst1 = conn.conn.prepareStatement(deleter);
-               conn.pst1.setString(1, conn.rs.getString(1));
-               
-                conn.pst1.executeUpdate();
-               }
-               if(conn.rs.getInt(3)==6 || conn.rs.getInt(3)==8){ // FOR HTS POS or te new
-                populate_tx_new(conn,conn.rs.getString(1));
-                   System.out.println(" it is a tx new --------------------------------");
-               }
-           }
-        }
-       
-       
-       public void populate_tx_new(dbConn conn,String entry_key) throws SQLException{
-           CallableStatement cs = (CallableStatement) conn.conn.prepareCall("{CALL sp_update_etl_tx_new('"+entry_key+"')}");
-               cs.executeUpdate();
-       }
-       
+  
+          
 }

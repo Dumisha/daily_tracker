@@ -48,8 +48,78 @@
             
             
           <li class="nav-item has-treeview" id="indicators"></li>
-    
-         
+              
+          <li class="nav-item has-treeview">
+            <a href="unlinked.jsp" class="nav-link">
+              <i class="nav-icon fa fa-clone"  aria-hidden="true"></i>
+              <p>
+                Un-linked clients
+              </p>
+            </a>
+           
+          </li>
+          
+           <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user-md"></i>
+              <p>
+                STF
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">3</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="stf_uploads.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Upload Template</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="stf_data_entry.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Data Entry</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="stf_updates.jsp" class="nav-link">
+                  <i class="fa fa-user-md nav-icon"></i>
+                  <p>Report</p>
+                </a>
+              </li>
+             
+            </ul>
+          </li> 
+          
+          
+           <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-tasks"></i>
+              <p>
+                PPMT
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="ppmt.jsp" class="nav-link">
+                  <i class="fas fa-tasks nav-icon"></i>
+                  <p>Data Entry</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="ppmt_report.jsp" class="nav-link">
+                  <i class="fa fa-file-excel nav-icon"></i>
+                  <p>Report (.xlsx)</p>
+                </a>
+              </li>
+             
+            </ul>
+          </li> 
+          
+          <!--<li style="text-align: center; color: white;"><br></li>-->
+          
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-signal"></i>
@@ -72,7 +142,7 @@
                   <p>Summaries (.xlsx)</p>
                 </a>
               </li>
-             <li class="nav-item">
+              <li class="nav-item">
                 <a href="dashboards.jsp" class="nav-link">
                   <i class="fas fa-industry nav-icon"></i>
                   <p>Dashboards</p>

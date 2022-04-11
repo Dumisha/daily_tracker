@@ -55,9 +55,7 @@ String indicator_id = request.getParameter("indicator");
              <!-- Select2 -->
              <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
              <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-             
-             
-         
+      
   <style>
    .flex-container {
     display: flex;
@@ -128,10 +126,7 @@ table {
 				</div>
                 
 </body>
-
-   
-            <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
-
+ <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
     <script>
    $(document).ready(function() {
         load_data();
@@ -152,12 +147,8 @@ table {
         success:function(response){ 
         
         // for facilities
-        if(indicator_id===6){ // hts pos
-             $("#indicator_name").html("Indicator Name : "+response.indicator_name+" (<div class=\"btn btn-warning\" style=\"font-size:12px;\" id=\"view_unlinked\" onclick=\"check_unlinked();\">View Unlinked Clients</div>)");
-        }
-        else{
-          $("#indicator_name").html("Indicator Name : "+response.indicator_name);   
-        }
+        $("#indicator_name").html("Indicator Name : "+response.indicator_name);   
+        
        
         $("#description").html(response.description);
         
@@ -204,39 +195,39 @@ table {
           required_label ="";  
           required="";
             }
-            
+         
          switch(input_type){
             case 1:  // text
                 if(answer_data_type===2){
 //                    if(){}
-                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\" ><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"number\" "+value_length+" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
+                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\" ><div class=\"flex-child\" id=\"title_"+question_id+"\"> "+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"number\" "+value_length+" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
                 
                     }
                 else{
-                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\"  "+value_length+"  name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
+                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\"  "+value_length+"  name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
                }
                  break;
             case 2: 
-               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+" ></div></div>";      
+               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+" ></div></div>";      
                 date_elems.push(question_id);
                 break;
              
             case 3:  
-               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control select2\" "+required+">";  
+               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control select2\" "+required+">";  
                output+=get_answers(questions[i].answers);  
                output+="</select></div></div>";  
                     
                 break;
                     
             case 4:
-              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control select2\" multiple "+required+">";  
+              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><select name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control select2\" multiple "+required+">";  
                output+=get_answers(questions[i].answers);  
                output+="</select></div></div>";    
                 
                break;
                 
             case 5: 
-              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\">"+label+" "+required_label+": </div><div class=\"flex-child\"><textarea name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></textarea></div></div>";      
+              output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><textarea name=\"name_"+question_id+"\" value=\"\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></textarea></div></div>";      
                 
                break;   
                  
@@ -372,9 +363,18 @@ if(indicator_id===6){
 
 // validate PMTCT Flags       
        
+       $("#id_49").keyup(function(){
+      validate_ca_screening_flags();
+        });
+       $("#id_50").keyup(function(){
+      validate_ca_screening_flags();
+        });
+        
+        
        $("#id_60").keyup(function(){
       validate_pmtct_flags();
         });
+        
        $("#id_61").keyup(function(){
       validate_pmtct_flags();
         });
@@ -471,7 +471,7 @@ $("form").submit(function(e){
  if(indicator_id===1){ errors+= validate_gend_gbv();}
  if(indicator_id===5){ errors+= validate_hts_tst(); }
   if(indicator_id===7){ errors+= validate_pns();}
-  if(indicator_id===9){ errors+= validate_ca_screening();} 
+//  if(indicator_id===9){ errors+= validate_ca_screening();} 
   if(indicator_id===10){ errors+= validate_pmtct();}
   if(indicator_id===12){ errors+= validate_retention();}
   if(indicator_id===13){ errors+= validate_suppression();}
@@ -580,6 +580,7 @@ $(document).ready(function() {
         $("#label_111").hide();
         $("#label_112").hide();
         $("#label_113").hide();
+        $("#label_118").hide();
       }
      
      
@@ -694,11 +695,22 @@ $(document).ready(function() {
        if(pmtct_sdp==="9"){ // patient screened
          $("#label_56").show(); 
          $("#id_56").attr('required', 'required');
+         
+         $("#label_118").show(); 
+         $("#id_118").attr('required', 'required');
+         
+         $("#title_57").html("Initial Test (ANC1) <b style=\"color:red\"> *</b>");
        }
        else{
          $("#label_56").hide();  
          $("#id_56").val(''); 
          $("#id_56").removeAttr('required');
+         
+         $("#label_118").hide();  
+         $("#id_118").val(''); 
+         $("#id_118").removeAttr('required');
+         
+         $("#title_57").html("Number tested (Initial test) <b style=\"color:red\"> *</b>");
        }   
    }
   </script> 
@@ -797,7 +809,7 @@ $(document).ready(function() {
     
     
     
-   function validate_ca_screening(){
+   function validate_ca_screening_flags(){
        var visits = "0"+$("#id_49").val();
        var screened = "0"+$("#id_50").val();
        
@@ -808,18 +820,18 @@ $(document).ready(function() {
       
        if(parseInt(screened)>parseInt(visits)){
            errors++;
-           error_message+= errors+". Number screened cannot be more than tested<br>";
+           error_message+= errors+". Number screened should'nt be more than tested<br>";
        }
        
        
-        if(errors>0){
-           $.jGrowl(error_message, {
-                header: '<b>Error</b>',
-                theme: 'bg-danger'
-            });  
-        }
-     
-        return errors;
+//        if(errors>0){
+//           $.jGrowl(error_message, {
+//                header: '<b>Error</b>',
+//                theme: 'bg-danger'
+//            });  
+//        }
+     $("#flags").html("<div style=\"font-weight:bold;\">Warnings:</div>"+error_message);
+//        return errors;
    }
     
     
@@ -844,7 +856,6 @@ $(document).ready(function() {
                 theme: 'bg-danger'
             }); 
         }
-     
         return errors;
    }
     
