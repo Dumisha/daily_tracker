@@ -113,7 +113,7 @@ public class save_question extends HttpServlet {
         obj.put("code", code);
         obj.put("message", message);
         
-        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
         System.out.println("response : "+obj);
     }

@@ -6,6 +6,7 @@
 package DataLoaders;
 
 import Database.dbConn;
+import UserManagement.User_Locations;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -62,34 +63,12 @@ public class load_user_facilities extends HttpServlet {
         System.out.println("sub counties are : "+sub_counties);
         
 //        user_id = "1";
+       
+                User_Locations ul = new User_Locations();
         
-        String query;
-        if(sub_counties==null){
-         query = "SELECT f.id,f.name FROM facilities f INNER JOIN user_facilities uf ON f.id=uf.facility_id WHERE uf.user_id='"+user_id+"'";   
-        }
-        
-        else{
-        if(user_level.equals("1")){ // facility access 
-         query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
-                "INNER JOIN user_facilities uf ON f.id=uf.facility_id and uf.user_id='"+user_id+"' and f.sub_county_id in("+sub_counties+")  ";   
-        }
-        else if(user_level.equals("2")){ // sub county access 
-         query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
-                "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
-                "INNER JOIN user_sub_counties usc on sc.id=usc.sub_county_id and usc.user_id='"+user_id+"' and usc.sub_county_id in("+sub_counties+") ";   
-        }
-        else if(user_level.equals("3")){ // county access
-        query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
-                "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
-                "INNER JOIN counties c ON sc.county_id=c.id \n" +
-                "INNER JOIN user_counties uc on c.id=uc.county_id and uc.user_id='"+user_id+"' and sc.id in("+sub_counties+") ";   
-        }
-        else{
-     query="SELECT distinct(f.id) as id,f.name FROM facilities f  \n" +
-            "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id  and sc.id in("+sub_counties+") " ;   
-        }
-                
-        }        
+               String selected_facilities = ul.load_user_selected_facilities("","","",user_level,user_id,conn);
+               
+        String query = "SELECT id,name FROM facilities f WHERE f.id in("+selected_facilities+")";       
    
         conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
@@ -106,6 +85,9 @@ public class load_user_facilities extends HttpServlet {
         }
 
         System.out.println(" array of facilities for user : "+jarray);
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

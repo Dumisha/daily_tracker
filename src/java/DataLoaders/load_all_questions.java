@@ -52,6 +52,8 @@ public class load_all_questions extends HttpServlet {
             jarray.add(obj);
         }
         
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

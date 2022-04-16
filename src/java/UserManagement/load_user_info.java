@@ -64,6 +64,8 @@ public class load_user_info extends HttpServlet {
         }
         
     
+        if( conn.conn!=null){conn.conn.close();}
+        
         out.println(obj);
     }
 

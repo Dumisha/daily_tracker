@@ -299,6 +299,10 @@ public class ppmt extends HttpServlet {
      }
       
      
+     
+     if( conn.conn!=null){conn.conn.close();}
+     
+     
     String filename="PPMT_report_generated_on_"+mg.get_timestamp_string()+".xlsx";
       
      ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();

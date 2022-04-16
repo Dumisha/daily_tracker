@@ -62,7 +62,7 @@ public class save_question_value_labels extends HttpServlet {
         obj.put("code", 1);
         obj.put("message", "Update successful");
         
-        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
     }
 

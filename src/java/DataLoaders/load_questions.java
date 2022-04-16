@@ -95,6 +95,8 @@ public class load_questions extends HttpServlet {
      
      
         System.out.println("questions : "+obj_final);
+        
+        if( conn.conn!=null){conn.conn.close();}
      out.print(obj_final);
     }
 

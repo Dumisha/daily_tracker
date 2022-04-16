@@ -73,7 +73,10 @@ public class update_linkage extends HttpServlet {
               conn.pst.setString(6, variable_id);
               conn.pst.executeUpdate();
             count++;
+                        System.out.println("numeric value : "+numeric_value+" text value :"+text_value+" user id : "+user_id+" entry key : "+entry_key+" variable id : "+variable_id);
                     }
+           
+          
         }
      
         if(count>0){
@@ -93,6 +96,8 @@ public class update_linkage extends HttpServlet {
        
        //
         System.out.println("final obj :"+ob);
+        
+        if( conn.conn!=null){conn.conn.close();}
        out.println(ob);
     }
 

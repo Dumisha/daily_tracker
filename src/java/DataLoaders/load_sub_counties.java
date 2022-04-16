@@ -55,6 +55,8 @@ public class load_sub_counties extends HttpServlet {
         
        obj.put("data", jarray);
        
+       
+       if( conn.conn!=null){conn.conn.close();}
        out.println(obj);
       
     }

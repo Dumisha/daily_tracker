@@ -5,6 +5,7 @@
  */
 package UserManagement;
 
+import DDTA.Manage;
 import Database.dbConn;
 import java.sql.SQLException;
 import org.json.simple.JSONArray;
@@ -219,4 +220,139 @@ public class User_Locations {
  return obj;   
  }
     
+ 
+  public String load_user_selected_facilities(String c,String sc,String s_f,String ul,String uid, dbConn conn) throws SQLException{
+        String facils="";
+     
+             String  query = "";
+           
+         if(ul.equals("1")){    
+          if(!s_f.equals("")){
+             query =  "SELECT f.id \n" +
+            "FROM facilities f and f.id in("+s_f+")\n" +
+            "INNER JOIN user_facilities uf ON uf.facility_id=f.id and uf.user_id='"+uid+"' ";
+          }
+          
+         else if(s_f.equals("") && !sc.equals("")){
+             query =  "SELECT f.id  \n" +
+                        "FROM facilities f \n" +
+                        "INNER JOIN user_facilities uf ON uf.facility_id=f.id  and uf.user_id='"+uid+"' \n" +
+                        "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id  and sc.id in("+sc+")";
+          }
+         else if(sc.equals("") && !c.equals("")){
+             query =  "SELECT f.id  \n" +
+                        "FROM facilities f \n" +
+                        "INNER JOIN user_facilities uf ON uf.facility_id=f.id  and uf.user_id='"+uid+"' \n" +
+                        "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id  "
+                     + "INNER JOIN counties c ON sc.county_id=c.id and c.id in("+c+")";
+          }
+         else if(sc.equals("") && c.equals("")){
+             query =  "SELECT f.id \n" +
+                    " FROM facilities f \n" +
+                    " INNER JOIN user_facilities uf ON uf.facility_id=f.id and uf.user_id='"+uid+"' ";
+          }
+    }
+         
+         
+         else if(ul.equals("2")){    
+          if(!s_f.equals("")){
+             query =  "SELECT f.id \n" +
+                        " FROM facilities f \n" +
+                        " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and f.id in("+s_f+")\n" +
+                        " INNER JOIN user_sub_counties usc ON sc.id=usc.sub_county_id \n" +
+                        " and usc.user_id='"+uid+"'";
+          }
+          
+         else if(s_f.equals("") && !sc.equals("")){
+             query =  "SELECT f.id \n" +
+                        " FROM facilities f \n" +
+                        " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.id in("+sc+")\n" +
+                        " INNER JOIN user_sub_counties usc ON sc.id=usc.sub_county_id \n" +
+                        " and usc.user_id='"+uid+"'";
+          }
+         else if(sc.equals("") && !c.equals("")){
+             query =  "SELECT f.id \n" +
+                    " FROM facilities f \n" +
+                    " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.county_id in("+c+")\n" +
+                    " INNER JOIN user_counties uc ON sc.county_id=uc.county_id \n" +
+                    "  and usc.user_id='"+uid+"'";
+          }
+         else if(sc.equals("") && c.equals("")){
+             query =  "SELECT f.id \n" +
+                    " FROM facilities f \n" +
+                    " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                    " INNER JOIN user_counties uc ON sc.county_id=uc.county_id \n" +
+                    "  and usc.user_id='"+uid+"' ";
+          }
+    }
+         
+         else if(ul.equals("3")){    
+          if(!s_f.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and f.id in("+s_f+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id \n" +
+                " INNER JOIN user_counties uc ON c.id=uc.county_id and uc.user_id='"+uid+"' ";
+          }
+          
+         else if(s_f.equals("") && !sc.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.id in("+sc+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id \n" +
+                " INNER JOIN user_counties uc ON c.id=uc.county_id and uc.user_id='"+uid+"' ";
+          }
+         else if(sc.equals("") && !c.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.county_id in("+c+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id \n" +
+                " INNER JOIN user_counties uc ON c.id=uc.county_id and uc.user_id='"+uid+"' ";
+          }
+         else if(sc.equals("") && c.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id \n" +
+                " INNER JOIN user_counties uc ON c.id=uc.county_id and uc.user_id='"+uid+"' ";
+          }
+    }
+        else if(ul.equals("4")){  // program user  
+          if(!s_f.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and f.id in("+s_f+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id ";
+          }
+          
+         else if(s_f.equals("") && !sc.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.id in("+sc+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id ";
+          }
+         else if(sc.equals("") && !c.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.county_id in("+c+") \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id ";
+          }
+         else if(sc.equals("") && c.equals("")){
+             query =  "SELECT f.id FROM facilities f \n" +
+                " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                " INNER JOIN counties c ON sc.county_id=c.id ";
+          }
+    }
+         
+         else{query=" select 0 as id ";}
+         
+         System.out.println("query--- : "+query);
+         
+     conn.rs = conn.st.executeQuery(query);
+     while(conn.rs.next()){
+       facils+=conn.rs.getInt(1)+",";  
+     }
+       
+     if(facils.length()>0){
+         Manage mg = new Manage();
+         facils = mg.removeLast(facils, 1);
+     }
+            
+      return facils;  
+    }
+ 
+ 
 }

@@ -14,7 +14,7 @@ String indicator_id = request.getParameter("indicator");
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Data Entry</title>
-   <link rel="shortcut icon" href="faces/faceslogo.PNG" style="height: 20px;padding: 0px; margin: 0px;"/>
+   <link rel="shortcut icon" href="dumisha/dumisha.png" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -262,6 +262,8 @@ table {
            }
        }
       $("#facility_id").html(facility_data);
+      $("#facility_id").select2();
+      
     // end of loading facilities
       
       
@@ -358,6 +360,7 @@ if(indicator_id===6){
        }
 //       alert(facilities.length);
       $("#id_113").html(facility_data);
+      $("#id_113").select2();
       
     }
 

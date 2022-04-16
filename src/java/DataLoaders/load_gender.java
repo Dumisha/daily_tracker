@@ -45,6 +45,8 @@ public class load_gender extends HttpServlet {
         
        obj.put("data", jarray);
        
+       
+       if( conn.conn!=null){conn.conn.close();}
        out.println(obj);
       
     }

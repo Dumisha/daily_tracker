@@ -68,6 +68,8 @@ public class load_edit_data extends HttpServlet {
      obj_final.put("date", date);
 
         System.out.println("questions : "+obj_final);
+        
+        if( conn.conn!=null){conn.conn.close();}
      out.print(obj_final);    
         
     }

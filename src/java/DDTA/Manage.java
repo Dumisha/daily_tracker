@@ -66,17 +66,19 @@ public class Manage {
         }
         
         else if(user_level.equals("4")){ // program user
-          q = "SELECT f.id FROM facilities";  
+          q = "SELECT f.id FROM facilities f";  
         } 
         
         else{
-            q="SELECT 0 as id";
+            q="SELECT 0 as f.id";
         }
         
+        System.out.println("q is : "+q);
        conn.rs = conn.st.executeQuery(q);
         while(conn.rs.next()){
          list.add(conn.rs.getString(1));
         }
+        
         return list;
     }
     

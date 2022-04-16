@@ -68,6 +68,9 @@ String query = "SELECT entry_key,\n" +
        }
        
         System.out.println("Entries: "+jarray);
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
        out.println(jarray);
       
       

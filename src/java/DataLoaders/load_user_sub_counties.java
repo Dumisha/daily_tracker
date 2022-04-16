@@ -82,6 +82,9 @@ public class load_user_sub_counties extends HttpServlet {
         }
         
         System.out.println("sub counties : "+jarray);
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

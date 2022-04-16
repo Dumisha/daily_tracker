@@ -66,7 +66,7 @@ public class save_value_label extends HttpServlet {
       obj.put("code", code);
       obj.put("message", message);
         
-        
+      if( conn.conn!=null){conn.conn.close();}  
      out.println(obj);
     }
 

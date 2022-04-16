@@ -6,6 +6,7 @@
 package Dashboards;
 
 import Database.dbConn;
+import UserManagement.User_Locations;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ import org.json.simple.JSONObject;
 public class dashboards extends HttpServlet {
     HttpSession session;
     String user_id,user_level;
-  String start_date,end_date,facilities,sub_counties,counties,selected_facilities; 
+  String start_date,end_date,facilities,sub_counties,counties; 
   int tested,positive,linked;
   int tx_new,ltfu_returned,transfer_in,transferred_out,died,stopped,iit_today;
   int pns_tested,pns_positive,pns_linked;
@@ -62,13 +63,14 @@ female_total,female_less_10,female_10_14,female_15_19,female_20_24,female_25_49,
         else{
             user_level="";
         }
-        
+     
+        User_Locations ul = new User_Locations();
+
+        System.out.println("counties :"+counties+" sub counties :"+sub_counties+" facilities : "+facilities+" user level : "+user_level+" user_id :"+user_id);
+               String selected_facilities = ul.load_user_selected_facilities(counties,sub_counties,facilities,user_level,user_id,conn);
+               System.out.println("selected facilities : "+selected_facilities);
         
         System.out.println("County :"+counties+" sub counties : "+sub_counties+" facilities "+facilities+" start date : "+start_date+" end date :"+end_date);
-       
-       
-//       start_date = "2022-01-01";
-//       end_date = "2022-04-01";
        
        
        // tested, positive, linked 
@@ -87,11 +89,12 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                     "FROM\n" +
                     "((SELECT 1 as num,0 as tested, \n" +
                     "COUNT(DISTINCT pos.entry_key) as positive,SUM(if(pos.linked=1,1,0)) AS linked \n" +
-                    "FROM etl_hts_pos pos where pos.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') ) \n" +
+                    "FROM etl_hts_pos pos where pos.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and pos.facility_id in("+selected_facilities+") ) \n" +
                     "UNION ALL \n" +
                     "(SELECT 1 as num,SUM(tst.tested) as tested, 0 as positive,0 AS linked \n" +
-                    "FROM etl_hts_tst tst where tst.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') )) AS hts GROUP BY num \n" +
+                    "FROM etl_hts_tst tst where tst.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tst.facility_id in("+selected_facilities+") )) AS hts GROUP BY num \n" +
                     "\n";
+        System.out.println("\n\n hts query: "+get_hts+"\n\n-----------------");
    conn.rs = conn.st.executeQuery(get_hts);
    if(conn.rs.next()){
     tested = conn.rs.getInt(1);
@@ -113,9 +116,9 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                                 "FROM etl_retention r \n" +
                                 "INNER JOIN(\n" +
                                 "SELECT 0 as num, COUNT(tx.entry_key) as tx_new\n" +
-                                " FROM etl_tx_new tx where tx.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') \n" +
+                                " FROM etl_tx_new tx where tx.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tx.facility_id in("+selected_facilities+") \n" +
                                 ") as tx_new on num=tx_new.num "
-                                + " where r.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') ";
+                                + " where r.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')  and r.facility_id in("+selected_facilities+") ";
    
    conn.rs = conn.st.executeQuery(inflow_outflow);
    if(conn.rs.next()){
@@ -133,7 +136,7 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                 "IFNULL(SUM(pns.tested),0) AS tested,\n" +
                 "IFNULL(SUM(pns.positive),0) AS positive,\n" +
                 "IFNULL(SUM(pns.linked),0) AS linked\n" +
-                " FROM ddta.etl_hts_pns as pns where pns.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')";
+                " FROM ddta.etl_hts_pns as pns where pns.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')  and pns.facility_id in("+selected_facilities+")";
    
    conn.rs = conn.st.executeQuery(get_pns);
    if(conn.rs.next()){
@@ -163,8 +166,9 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                 "SUM(CASE WHEN (gender=6 and (TIMESTAMPDIFF(YEAR, dob, encounter_date)>=50)) THEN 1 ELSE 0 END) as female_above_50 \n" +
                 "\n" +
                 "FROM \n" +
-                "etl_tx_new tx_new where tx_new.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')";
+                "etl_tx_new tx_new where tx_new.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')  and tx_new.facility_id in("+selected_facilities+")";
    conn.rs = conn.st.executeQuery(get_tx_new);
+        System.out.println("get tx new : "+get_tx_new);
    if(conn.rs.next()){
               male_total= conn.rs.getInt(1);
               male_less_10= conn.rs.getInt(2);
@@ -233,6 +237,9 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
    obj.put("pns", obj_pns);
    obj.put("tx_new", obj_tx_new);
    
+   
+   
+   if( conn.conn!=null){conn.conn.close();}
    out.println(obj);
         System.out.println(obj);
     }
@@ -284,4 +291,7 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
         return "Short description";
     }// </editor-fold>
 
+    
+    
+   
 }

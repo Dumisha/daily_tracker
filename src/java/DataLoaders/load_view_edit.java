@@ -69,6 +69,9 @@ public class load_view_edit extends HttpServlet {
        }
        
         System.out.println("Entries: "+jarray);
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
        out.println(jarray);
     }
 

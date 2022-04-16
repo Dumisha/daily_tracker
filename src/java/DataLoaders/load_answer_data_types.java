@@ -44,7 +44,7 @@ public class load_answer_data_types extends HttpServlet {
            jarray.add(obj);
         }
       
-        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

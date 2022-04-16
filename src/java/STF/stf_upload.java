@@ -278,6 +278,10 @@ public class stf_upload extends HttpServlet {
                 + ""+skipped+" Records skippped. They already exist in the system.";
         
         session.setAttribute("message", message);
+      
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
         
       response.sendRedirect("stf_uploads.jsp");
     }

@@ -16,69 +16,68 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Geofrey Nyabuto
  */
-public class load_facilities extends HttpServlet {
-String facility_id,user_id;
+public class load_user_modules extends HttpServlet {
     HttpSession session;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
-        dbConn conn = new dbConn();
-        JSONObject obj = new JSONObject();
-        JSONArray jarray = new JSONArray();
         session = request.getSession();
+        dbConn conn = new dbConn();
         
-        facility_id = "0";
-        user_id="";
-        if(session.getAttribute("user_id")!=null){
-            user_id = session.getAttribute("user_id").toString();
-        }else{
-           
-        }
-        if(session.getAttribute("facility_id")!=null){
-            facility_id = session.getAttribute("facility_id").toString();
+        String id;
+        id= request.getParameter("id");
+//        id="1";
+        
+        JSONObject obj = new JSONObject();
+        obj.clear();
+        
+        String query = "SELECT u.id as user_id,IFNULL(settings,0) AS settings,IFNULL(admin,0) AS admin,IFNULL(users,0) as users,IFNULL(reports,0) as reports,\n" +
+                        "IFNULL(ppmt,0) as ppmt,IFNULL(stf,0) as stf,IFNULL(hts,0) as hts,IFNULL(prevention,0) as prevention,IFNULL(treatment,0) as treatment,\n" +
+                        "IFNULL(vl,0) as vl,IFNULL(tb,0) as tb,IFNULL(user_profile,0) as user_profile,IFNULL(updated_by,0) as updated_by,IFNULL(updated_at,\"\") as updated_at  \n" +
+                        "from users u LEFT OUTER JOIN module_management mg on u.id=mg.user_id where u.id=?";
+        conn.pst = conn.conn.prepareStatement(query);
+        conn.pst.setString(1, id);
+        conn.rs = conn.pst.executeQuery();
+        
+        System.out.println("pst : "+conn.pst);
+        
+        
+        if(conn.rs.next()){
+         obj.put("user_id", conn.rs.getInt(1));
+         obj.put("settings", conn.rs.getInt(2));
+         obj.put("admin", conn.rs.getInt(3));
+         obj.put("users", conn.rs.getInt(4));
+         obj.put("reports", conn.rs.getInt(5));
+         obj.put("ppmt", conn.rs.getInt(6));
+         obj.put("stf", conn.rs.getInt(7));
+         obj.put("hts", conn.rs.getInt(8));
+         obj.put("prevention", conn.rs.getInt(9));
+         obj.put("treatment", conn.rs.getInt(10));
+         obj.put("vl", conn.rs.getInt(11));
+         obj.put("tb", conn.rs.getInt(12));
+         obj.put("user_profile", conn.rs.getInt(13));
+         obj.put("updated_by", conn.rs.getInt(14));
+         obj.put("updated_at", conn.rs.getInt(15));
+         obj.put("code", 1);
+         obj.put("message", "User access information loaded successfully");
         }
         else{
-           
+         obj.put("code", 0);
+         obj.put("message", "User does not exist");    
         }
         
-        
-        System.out.println("facility pre-selected : "+facility_id);
-        
-        String get_facilities = "SELECT id,sub_county_id,name,mfl_code FROM facilities order by name";
-        conn.rs = conn.st.executeQuery(get_facilities);
-        
-        while(conn.rs.next()){
-          JSONObject ob = new JSONObject();
-          ob.put("id", conn.rs.getInt(1));
-          ob.put("sub_county_id", conn.rs.getString(2));
-          ob.put("name", conn.rs.getString(3));
-          ob.put("mfl_code", conn.rs.getString(4));
-          
-          if(conn.rs.getString(1).equals(facility_id)){
-                ob.put("pre_selected", 1);
-            }
-            else{
-              ob.put("pre_selected", 0);   
-            }
-          jarray.add(ob);
-        }
-        
-       obj.put("data", jarray);
-        System.out.println("facility data"+jarray);
-        
+        System.out.println("obj :"+obj);
         
         if( conn.conn!=null){conn.conn.close();}
-       out.println(obj);
-      
+        out.println(obj);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -96,7 +95,7 @@ String facility_id,user_id;
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_facilities.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_user_modules.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -114,7 +113,7 @@ String facility_id,user_id;
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_facilities.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_user_modules.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

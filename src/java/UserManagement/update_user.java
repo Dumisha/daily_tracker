@@ -63,15 +63,9 @@ public class update_user extends HttpServlet {
                int cases = conn.pst.executeUpdate();
                
                if(cases==1){
+                delete_prev_records(conn); 
                    if(user_level.equals("1")){ // Update facility level users details
-                       
-                   // remove all user association in user facility table
-                       String deleter = "DELETE FROM user_facilities WHERE user_id=?";
-                       conn.pst = conn.conn.prepareStatement(deleter);
-                       conn.pst.setString(1, id);
-                       conn.pst.executeUpdate();
-                       
-                       
+                    
                        for(String f_id:facilities){
                         String adder = "INSERT INTO user_facilities (user_id,facility_id) VALUES(?,?)";
                         conn.pst = conn.conn.prepareStatement(adder);
@@ -83,7 +77,7 @@ public class update_user extends HttpServlet {
                    
                   if(nums>0){
                       code=1;
-                      message= "User successfully associated with "+nums+" facilities successfully";
+                      message= "User successfully associated with "+nums+" facilities";
                   }
                   else{
                       code=0;
@@ -93,13 +87,6 @@ public class update_user extends HttpServlet {
                    }
                    
                    else if(user_level.equals("2")){ // sub county user
-                       
-                    // remove all user association in user sub counties table
-                       String deleter = "DELETE FROM user_sub_counties WHERE user_id=?";
-                       conn.pst = conn.conn.prepareStatement(deleter);
-                       conn.pst.setString(1, id);
-                       conn.pst.executeUpdate();
-                       
                        
                        for(String sc_id:sub_counties){
                         String adder = "INSERT INTO user_sub_counties (user_id,sub_county_id) VALUES(?,?)";
@@ -112,7 +99,7 @@ public class update_user extends HttpServlet {
                    
                   if(nums>0){
                       code=1;
-                      message= "User successfully associated with "+nums+" sub counties successfully";
+                      message= "User successfully associated with "+nums+" sub counties";
                   }
                   else{
                       code=0;
@@ -122,14 +109,7 @@ public class update_user extends HttpServlet {
                    }
                    
                    else if(user_level.equals("3")){ // county level user
-                      
-                    // remove all user association in user sub counties table
-                       String deleter = "DELETE FROM user_counties WHERE user_id=?";
-                       conn.pst = conn.conn.prepareStatement(deleter);
-                       conn.pst.setString(1, id);
-                       conn.pst.executeUpdate();
-                       
-                       
+                     
                        for(String c_id:counties){
                         String adder = "INSERT INTO user_counties (user_id,county_id) VALUES(?,?)";
                         conn.pst = conn.conn.prepareStatement(adder);
@@ -141,7 +121,7 @@ public class update_user extends HttpServlet {
                    
                   if(nums>0){
                       code=1;
-                      message= "User successfully associated with "+nums+" counties successfully";
+                      message= "User successfully associated with "+nums+" counties";
                   }
                   else{
                       code=0;
@@ -151,7 +131,8 @@ public class update_user extends HttpServlet {
                    }
                    
                    else if(user_level.equals("4")){ // program user
-                       
+                     code=1;
+                      message= "User successfully updated to have program access";
                    }
                    
                    else{ // unknown user level
@@ -169,6 +150,9 @@ public class update_user extends HttpServlet {
                
                
              System.out.println("User update response : "+obj);
+             
+             
+             if( conn.conn!=null){conn.conn.close();}
              out.println(obj);
                
     }
@@ -220,4 +204,10 @@ public class update_user extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    
+    public void delete_prev_records(dbConn conn) throws SQLException{
+        conn.st.executeUpdate("DELETE FROM user_facilities WHERE user_id='"+id+"'");   
+        conn.st.executeUpdate("DELETE FROM user_sub_counties WHERE user_id='"+id+"'");   
+        conn.st.executeUpdate("DELETE FROM user_counties WHERE user_id='"+id+"'");  
+    }
 }

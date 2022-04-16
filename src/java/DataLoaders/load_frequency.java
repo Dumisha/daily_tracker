@@ -46,7 +46,7 @@ public class load_frequency extends HttpServlet {
             jarray.add(obj);
         }
         
-        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

@@ -64,10 +64,12 @@ public class load_users extends HttpServlet {
         
         
         System.out.println(obj);
+        
+        
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.print(obj);
-        
-        
-        
         
     }
 

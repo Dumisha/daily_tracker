@@ -3253,3 +3253,6 @@ build/web/highcharts/code/css/highcharts.scss
 build/web/highcharts/code/css/highcharts.css
 build/web/highcharts/code/css/annotations/popup.scss
 build/web/highcharts/code/css/annotations/popup.css
+build/web/WEB-INF/classes/DataLoaders/load_user_modules.class
+build/web/WEB-INF/classes/UserManagement/update_user_access.class
+build/web/WEB-INF/classes/UserManagement/update_user_access.class

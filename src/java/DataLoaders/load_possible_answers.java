@@ -46,6 +46,7 @@ public class load_possible_answers extends HttpServlet {
             jarray.add(obj);
         }
         
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

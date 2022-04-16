@@ -11,7 +11,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Manage Users</title>
-   <link rel="shortcut icon" href="faces/faceslogo.PNG" style="height: 20px;padding: 0px; margin: 0px;"/>
+   <link rel="shortcut icon" href="dumisha/dumisha.png" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -51,9 +51,13 @@
          
             
       <style>
+        input[type=checkbox] {
+        transform: scale(0.5);
+        }
+       
    .flex-container {
     display: flex;
-    margin-top: 10px;
+    margin-top: -8px;
     /*border: 1px dotted gray;*/
 }
 
@@ -139,14 +143,18 @@
                        <select class="form-control select2" id="user_level" data-placeholder="Select user level" name="user_level"  required="true"> </select>
                     </div>
                     </div>
+                
+                
                     <div class="flex-container" id="county_label">
                      <div class="flex-child">
                     Counties:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                      <select class="form-control select2" id="county" name="county" data-placeholder="Select county" required="true" multiple="true"> </select>
+                      <select class="form-control select2" id="county" name="county" data-placeholder="Select county" required="true" autocomplete="off"> </select>
                     </div>
                     </div>
+                
+                
                     <div class="flex-container" id="sub_county_label">
                      <div class="flex-child">
                     Sub Counties:
@@ -155,6 +163,12 @@
                         <select class="form-control select2" id="sub_county" name="sub_county" data-placeholder="Select sub counties"  required="true" multiple="true"> </select>
                     </div>
                     </div>
+                
+                
+                
+                
+                
+                
                     <div class="flex-container" id="facility_label">
                      <div class="flex-child">
                     Facilities:
@@ -215,6 +229,115 @@
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" id="update">Update Info</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+                
+                
+                
+                
+                
+                <div class="modal fade" id="modal-access">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title"><b>Manage Access Permissions</b></h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" autocomplete="off" id="user_access">
+              <form id="user_access_settings">  
+                <div class="flex-container">
+                     <div class="flex-child">
+                    Settings:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="settings" name="settings"  required="true">
+                    </div>
+                    </div>
+                
+                <div class="flex-container">
+                     <div class="flex-child">
+                    Administration: 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="admin" name="admin"  required="true">
+                    </div>
+                    </div>
+                
+                
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    User Management:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="users" name="users"  required="true">
+                    </div>
+                    </div>
+                
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    Prevention Module:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="checkbox" class="form-control" id="prevention" name="prevention"  required="true">
+                    </div>
+                    </div>
+                    
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    HTS Module:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="checkbox" class="form-control" id="hts" name="hts"  required="true">
+                    </div>
+                    </div>
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    Treatment Module:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                       <input type="checkbox" class="form-control" id="treatment" name="treatment"  required="true">
+                    </div>
+                    </div>
+                
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    Viral Suppression Module:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="checkbox" class="form-control" id="vl" name="vl"  required="true">
+                    </div>
+                    </div>
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    TB Module:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                       <input type="checkbox" class="form-control" id="tb" name="tb"  required="true">
+                    </div>
+                    </div>
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    User Profile:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="checkbox" class="form-control" id="user_profile" name="user_profile"  required="true">
+                    </div>
+                    </div>
+                    
+                
+                <input type="hidden" id="user_access_id" name="user_access_id">
+                
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="update_access">Update Access Info</button>
             </div>
           </div>
           <!-- /.modal-content -->
@@ -324,6 +447,7 @@
 var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'+
 		'<i class="icon-menu9"></i></a><ul class="dropdown-menu dropdown-menu-right">\n\
                 <li data-toggle="modal" data-target="#modal-default"><a onclick="manage_user('+id+');"><i class="fas fa-user-cog"></i>Manage</a></li>\n\
+                <li data-toggle="modal" data-target="#modal-access"><a onclick="manage_access('+id+');"><i class="fas fa-user-secret"></i>Access Levels</a></li>\n\
                 <li><a onclick="delete_user('+id+');"><i class="fas fa-user-alt-slash"></i>Delete</a></li>';
 
       
@@ -409,6 +533,33 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                                
                                  });
   }
+      function manage_access(pos){    
+  var form_data = {"id":pos};
+                var theme="";
+                var url = "load_user_modules";
+                   $.post(url,form_data , function(output) {
+                                    var code = JSON.parse(output).code;
+                                    var message = JSON.parse(output).message;
+                                    var header="";
+                                    if(code===1){
+                                        theme = "bg-success";
+                                        header="<b>Success</b>";
+                                        edit_user_access(output); 
+                                    }
+                                    else{
+                                       theme = "bg-danger"; 
+                                       header="<b>Error</b>";
+                                    }
+                              
+                              $.jGrowl('close');
+                                  $.jGrowl(message, {
+                                        position: 'top-center',
+                                        header: header,
+                                        theme: theme
+                                   }); 
+                               
+                                 });
+  }
   
     </script>
     
@@ -479,6 +630,7 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
         $('#county').val(null);
         $('#sub_county').val(null);
         $('#facility').val(null);
+        
         $("#county").html(counties_label);
         $("#sub_county").html(sub_counties_label);
         $("#facility").html(facilities_label);
@@ -495,6 +647,30 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
         
       
           
+       } 
+       function edit_user_access(user){ 
+           user = JSON.parse(user);
+           
+           console.log(user);
+           console.log(user.settings);
+//alert("user.settings"+user.settings);
+         if(user.settings){$("#settings").attr('checked','checked');} else{$("#settings").removeAttr('checked');}
+         if(user.admin){$("#admin").attr('checked','checked');} else{$("#admin").removeAttr('checked');}
+         if(user.users){$("#users").attr('checked','checked');} else{$("#users").removeAttr('checked');}
+         if(user.reports){$("#reports").attr('checked','checked');} else{$("#reports").removeAttr('checked');}
+         if(user.ppmt){$("#ppmt").attr('checked','checked');} else{$("#ppmt").removeAttr('checked');}
+         if(user.stf){$("#stf").attr('checked','checked');} else{$("#stf").removeAttr('checked');}
+         if(user.hts){$("#hts").attr('checked','checked');} else{$("#hts").removeAttr('checked');}
+         if(user.prevention){$("#prevention").attr('checked','checked');} else{$("#prevention").removeAttr('checked');}
+         if(user.treatment){$("#treatment").attr('checked','checked');} else{$("#treatment").removeAttr('checked');}
+         if(user.vl){$("#vl").attr('checked','checked');} else{$("#vl").removeAttr('checked');}
+         if(user.tb){$("#tb").attr('checked','checked');} else{$("#tb").removeAttr('checked');}
+         if(user.user_profile){$("#user_profile").attr('checked','checked');} else{$("#user_profile").removeAttr('checked');}
+         
+//         if(user.settings)
+//         if(user.settings)
+         
+         $("#user_access_id").val(user.user_id);
        } 
         
         
@@ -696,7 +872,14 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                          theme: theme
                     }); 
                   });
-                   } 
+                   }
+                   
+                   
+                   $("#update_access").click(function(){
+                       var data = $("#user_access_settings").serialize();
+                       
+                       alert("called "+data);
+                   });
        </script> 
        
        <script>
@@ -719,7 +902,7 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
             }
             else{
            $("#sub_county_label").hide();   
-           $("#sub_county").aremoveAttr('required'); 
+           $("#sub_county").removeAttr('required'); 
             }
             
           });
@@ -732,7 +915,7 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
             }
             else{
            $("#facility_label").hide();   
-           $("#facility").aremoveAttr('required'); 
+           $("#facility").removeAttr('required'); 
             }
           });
           
@@ -766,14 +949,15 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
           $("#facility").removeAttr('required');
          }
          else if(parseInt(user_level)===3){ // for county users
+          $("#county_label").show();          
           $("#facility_label").hide();   
           $("#sub_county_label").hide();   
-          $("#county_label").show(); 
           
            // make required
           $("#county").attr('required', 'required');
           $("#sub_county").removeAttr('required');
           $("#facility").removeAttr('required');
+          $("#county").select2();
          }
          else if(parseInt(user_level)===4){ // for program users
           $("#facility_label").hide();   

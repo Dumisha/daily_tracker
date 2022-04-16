@@ -54,6 +54,8 @@ public class load_sections extends HttpServlet {
         obj.put("data", jarray);
         
         System.out.println("obj sections :"+obj);
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
     }
 

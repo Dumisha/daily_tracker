@@ -84,6 +84,8 @@ int code;
         obj.put("message", message);
         
         System.out.println("obj :"+obj);
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
         
     }

@@ -264,7 +264,12 @@ public class summaries extends HttpServlet {
 
 sheet.setAutoFilter(new CellRangeAddress(1, 1, 0, total_cols));
 sheet.createFreezePane(4, 2);
-        
+  
+
+
+if( conn.conn!=null){conn.conn.close();}
+
+
        String filename="Summaries_report_generated_on_"+mg.get_timestamp_string()+".xlsx";
       
      ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();

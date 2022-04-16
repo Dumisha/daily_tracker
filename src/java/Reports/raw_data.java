@@ -214,6 +214,12 @@ public class raw_data extends HttpServlet {
   
       }
       
+      
+      
+      if( conn.conn!=null){conn.conn.close();}
+      
+      
+      
        String filename="Daily_data_tracking_report_generated_on_"+mg.get_timestamp_string()+".xlsx";
       
      ByteArrayOutputStream outByteStream = new ByteArrayOutputStream();

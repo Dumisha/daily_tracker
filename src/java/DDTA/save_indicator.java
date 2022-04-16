@@ -111,6 +111,8 @@ public class save_indicator extends HttpServlet {
         
        
         System.out.println(obj);
+        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
     }
 

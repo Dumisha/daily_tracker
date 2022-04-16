@@ -45,7 +45,7 @@ public class load_indicator_type extends HttpServlet {
             jarray.add(obj);
         }
         
-        
+        if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }
 

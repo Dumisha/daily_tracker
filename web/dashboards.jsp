@@ -11,7 +11,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboards</title>
-   <link rel="shortcut icon" href="faces/faceslogo.PNG" style="height: 20px;padding: 0px; margin: 0px;"/>
+   <link rel="shortcut icon" href="dumisha/dumisha.png" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -357,7 +357,7 @@
             
     <script>  
    $(document).ready(function() {  
-       
+    default_dates();   
     load_dashboard();   
         
 $("#start_date").datepicker({
@@ -375,6 +375,36 @@ $("#end_date").datepicker({
       maxDate: 0
   });
 }); 
+    </script>
+    
+    
+   <script> 
+    function default_dates(){
+        var date = new Date();
+        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        
+        // first day 
+        var day,month,year,formatted_date;
+        
+        // first date
+        day = String(firstDay.getDate()).padStart(2, '0');
+        month = String(firstDay.getMonth() + 1).padStart(2, '0'); 
+        year = firstDay.getFullYear();
+        
+        formatted_date = year+"-"+month+"-"+day;
+        $("#start_date").val(formatted_date);
+        
+        
+        // today date
+        day = String(date.getDate()).padStart(2, '0');
+        month = String(date.getMonth() + 1).padStart(2, '0'); 
+        year = date.getFullYear();
+        
+        formatted_date = year+"-"+month+"-"+day;
+   
+        $("#end_date").val(formatted_date);
+    }
+    
     </script>
     <script>
 function load_dashboard(){ 
@@ -405,8 +435,11 @@ function manage_hts(tested,positive,linked){
          $("#positive").html(positive);
          $("#linked").html(linked);
          
-         var positivity = ((positive*100)/tested).toFixed(1);
-         var linkage = ((linked*100)/positive).toFixed(1);
+         var positivity = 0;
+         var linkage=0;
+         
+        if(tested>0){positivity = ((positive*100)/tested).toFixed(1);}
+        if(positive>0){linkage = ((linked*100)/positive).toFixed(1);}
          
          
          $("#positivity").html(positivity);
