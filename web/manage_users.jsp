@@ -251,31 +251,22 @@
             </div>
             <div class="modal-body" autocomplete="off" id="user_access">
               <form id="user_access_settings">  
-                <div class="flex-container">
+             
+                  <div class="flex-container">
                      <div class="flex-child">
-                    Settings:
+                    PPMT Tables:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                        <input type="checkbox" class="form-control" id="settings" name="settings"  required="true">
+                        <input type="checkbox" class="form-control" id="ppmt" name="ppmt"  required="true">
                     </div>
                     </div>
-                
-                <div class="flex-container">
-                     <div class="flex-child">
-                    Administration: 
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child">
-                        <input type="checkbox" class="form-control" id="admin" name="admin"  required="true">
-                    </div>
-                    </div>
-                
                 
                     <div class="flex-container">
                      <div class="flex-child">
-                    User Management:
+                    Suspected Treatment Failures (STFs):
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
-                        <input type="checkbox" class="form-control" id="users" name="users"  required="true">
+                        <input type="checkbox" class="form-control" id="stf" name="stf"  required="true">
                     </div>
                     </div>
                 
@@ -321,7 +312,48 @@
                        <input type="checkbox" class="form-control" id="tb" name="tb"  required="true">
                     </div>
                     </div>
+                   <hr>
+                    
+                   
                     <div class="flex-container">
+                     <div class="flex-child">
+                    Reports:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="reports" name="reports"  required="true">
+                    </div>
+                    </div>
+                   
+                     <div class="flex-container">
+                     <div class="flex-child">
+                    Settings:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="settings" name="settings"  required="true">
+                    </div>
+                    </div>
+                
+                <div class="flex-container">
+                     <div class="flex-child">
+                    Administration: 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="admin" name="admin"  required="true">
+                    </div>
+                    </div>
+                
+                
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    User Management:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="users" name="users"  required="true">
+                    </div>
+                    </div>
+                
+                
+                     <div class="flex-container">
                      <div class="flex-child">
                     User Profile:
                     </div>
@@ -329,8 +361,7 @@
                         <input type="checkbox" class="form-control" id="user_profile" name="user_profile"  required="true">
                     </div>
                     </div>
-                    
-                
+                   
                 <input type="hidden" id="user_access_id" name="user_access_id">
                 
               </form>
@@ -829,7 +860,8 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
       if(errors===0){
        var form_data = {"user":user,"user_level":user_level,"approved":approved,"status":status,"county":county,"sub_county":sub_county,"facility":facility,"fname":fname,"mname":mname,"lname":lname,"email":email,"phone":phone};
       console.log(form_data);
-            save_data(form_data);
+      
+            save_data(form_data,"update_user");
           
       } 
       
@@ -847,9 +879,8 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
        
        
        
-            function save_data(data){
+            function save_data(data,url){
         var theme="";
-        var url = "update_user";
     $.post(url,data,function(output) {
                      var code = JSON.parse(output).code;
                      var message = JSON.parse(output).message;
@@ -876,9 +907,11 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                    
                    
                    $("#update_access").click(function(){
-                       var data = $("#user_access_settings").serialize();
-                       
-                       alert("called "+data);
+                       var data = ""+$("#user_access_settings").serialize().replace('on', '1');;
+                     
+//                        alert("called "+data);
+                      save_data(data,"update_user_access");
+
                    });
        </script> 
        

@@ -38,7 +38,7 @@ public class update_user_access extends HttpServlet {
         
         Manage mg = new Manage();
         
-        
+        id=user_id=settings=users=admin=reports=ppmt=stf=hts=prevention=treatment=vl=tb=user_profile="0";
         message="";
         code=0;
         
@@ -47,19 +47,21 @@ public class update_user_access extends HttpServlet {
         if(session.getAttribute("user_id")!=null){
            user_id=session.getAttribute("user_id").toString(); 
        }
-       id = request.getParameter("id");
-       settings = request.getParameter("settings");
-       users = request.getParameter("users");
-       admin = request.getParameter("admin");
-       reports = request.getParameter("reports");
-       ppmt = request.getParameter("ppmt");
-       stf = request.getParameter("stf");
-       hts = request.getParameter("hts");
-       prevention = request.getParameter("prevention");
-       treatment = request.getParameter("treatment");
-       vl = request.getParameter("vl");
-       tb = request.getParameter("tb");
-       user_profile = request.getParameter("user_profile");
+        
+        
+       if(request.getParameter("user_access_id")!=null){id = request.getParameter("user_access_id");}
+       if(request.getParameter("settings")!=null){settings = "1";}
+       if(request.getParameter("users")!=null){users = "1";}
+       if(request.getParameter("admin")!=null){admin = "1";}
+       if(request.getParameter("reports")!=null){reports = "1";}
+       if(request.getParameter("ppmt")!=null){ppmt = "1";}
+       if(request.getParameter("stf")!=null){stf = "1";}
+       if(request.getParameter("hts")!=null){hts = "1";}
+       if(request.getParameter("prevention")!=null){prevention = "1";}
+       if(request.getParameter("treatment")!=null){treatment = "1";}
+       if(request.getParameter("vl")!=null){vl = "1";}
+       if(request.getParameter("tb")!=null){tb = "1";}
+       if(request.getParameter("user_profile")!=null){user_profile = "1";}
        
        if(user_id!=null){ // user exist in the session
            
@@ -69,7 +71,7 @@ public class update_user_access extends HttpServlet {
       String timestamp = mg.get_timestamp();
       
          String updator = "REPLACE INTO module_management SET settings=?,users=?,admin=?,reports=?,ppmt=?,stf=?,hts=?,prevention=?,treatment=?,vl=?,"
-                 + "tb=?,user_profile=?,updated_by=?,updated_at=? where user_id=?";
+                 + "tb=?,user_profile=?,updated_by=?,updated_at=?, user_id=?";
          conn.pst = conn.conn.prepareStatement(updator);
          conn.pst.setString(1, settings);
          conn.pst.setString(2, users);
@@ -86,7 +88,8 @@ public class update_user_access extends HttpServlet {
          conn.pst.setString(13, user_id);
          conn.pst.setString(14, timestamp);
          conn.pst.setString(15, id);
-            
+         
+            System.out.println("update access : "+conn.pst);
         int num =  conn.pst.executeUpdate();
         
         if(num>0){
