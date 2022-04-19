@@ -37,7 +37,7 @@ public class load_unlinked_clients extends HttpServlet {
         
         String facility_id = request.getParameter("facility_id");
         
-        
+       if(session.getAttribute("user_id")!=null){      
 String query = "SELECT entry_key,\n" +
 "        GROUP_CONCAT(\" \",CONCAT(q.question,\": \",coalesce(IF(q.input_type_id in(3,4),vl.name,numeric_value),text_value))) as q_a,\n" +
 "        o.date AS Encounter_Date, i.multiple_entries,\n" +
@@ -67,8 +67,7 @@ String query = "SELECT entry_key,\n" +
            jarray.add(obj);
        }
        
-        System.out.println("Entries: "+jarray);
-        
+       }
         
         if( conn.conn!=null){conn.conn.close();}
        out.println(jarray);

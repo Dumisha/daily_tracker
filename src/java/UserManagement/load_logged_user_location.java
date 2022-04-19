@@ -41,12 +41,7 @@ public class load_logged_user_location extends HttpServlet {
         if(session.getAttribute("user_level_id")!=null){
            user_level=session.getAttribute("user_level_id").toString(); 
        }
-     
-        System.out.println("user level :"+user_level+" user_id :"+user_id);
-        
         JSONObject obj = ul.get_locations(user_id, user_level);
-      
-        System.out.println("obj locations : "+obj);
         
         out.println(obj);
         

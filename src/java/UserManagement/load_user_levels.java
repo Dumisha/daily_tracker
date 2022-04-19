@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -24,6 +25,8 @@ import org.json.simple.JSONObject;
  */
 public class load_user_levels extends HttpServlet {
 String id,name;
+HttpSession session;
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -32,6 +35,9 @@ String id,name;
         dbConn conn = new dbConn();
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
+        session = request.getSession();
+        
+           if(session.getAttribute("user_id")!=null){
         String get_user_levels = "SELECT id,name FROM user_levels order by order_num";
         conn.rs = conn.st.executeQuery(get_user_levels);
         
@@ -43,9 +49,8 @@ String id,name;
           jarray.add(ob);
         }
         
-       obj.put("data", jarray);
-       
-       
+       obj.put("data", jarray);  
+    }
        
        if( conn.conn!=null){conn.conn.close();}
        

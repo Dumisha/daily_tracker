@@ -54,6 +54,16 @@ public class raw_data extends HttpServlet {
       start_date = request.getParameter("start_date");
       end_date = request.getParameter("end_date");
       
+       if(session.getAttribute("user_id")!=null){
+         
+           String reports="";
+           if(session.getAttribute("reports")!=null ){
+               reports=session.getAttribute("reports").toString();
+           }
+            
+           if(reports.equals("1")){
+             
+           
       String[] indicators = request.getParameterValues("indicator");
      
       user_id=user_level="0";
@@ -66,10 +76,7 @@ public class raw_data extends HttpServlet {
      if(session.getAttribute("user_level_id")!=null){
            user_level=session.getAttribute("user_level_id").toString(); 
        }
-      
-        System.out.println("user id : "+user_id+" user_level :"+user_level+" start date :"+start_date+" end date : "+end_date);
-      
-      
+    
        ArrayList<String>  facilities = mg.get_locations(user_id,user_level,conn);
 
       
@@ -163,13 +170,11 @@ public class raw_data extends HttpServlet {
 //    stborder.setWrapText(true);
     
       String get_queries = "SELECT i.name,r.query,r.report_name FROM raw_data_reports r INNER JOIN indicators i ON r.indicator_id=i.id and r.status=1 and r.indicator_id in("+indicator_ids+")";
-        System.out.println("all query is :"+get_queries);
       conn.rs = conn.st.executeQuery(get_queries);
       while(conn.rs.next()){
           indicator_name = conn.rs.getString(3);
           query = conn.rs.getString(2).replace("start_date", "DATE('"+start_date+"')").replace("end_date", "DATE('"+end_date+"')").replace("facility_ids", facility_ids);
-          
-          System.out.println(indicator_name+"=====>"+query);  
+
          
 //          create sheet
           XSSFSheet sheet= wb.createSheet(indicator_name);
@@ -178,7 +183,6 @@ public class raw_data extends HttpServlet {
       
          ResultSetMetaData metaData = conn.rs1.getMetaData();
             int col_count = metaData.getColumnCount(); //number of column
-             System.out.println("no of columns:"+col_count);
             String  value;
           row=0;
           XSSFRow RowHeader = sheet.createRow(row);
@@ -208,17 +212,9 @@ public class raw_data extends HttpServlet {
          row++; 
       }
       sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, col_count));
-//      sheet.createFreezePane(4, 2);
-      
-          // 
-  
       }
       
-      
-      
       if( conn.conn!=null){conn.conn.close();}
-      
-      
       
        String filename="Daily_data_tracking_report_generated_on_"+mg.get_timestamp_string()+".xlsx";
       
@@ -233,7 +229,16 @@ public class raw_data extends HttpServlet {
     OutputStream outStream = response.getOutputStream();
     outStream.write(outArray);
     outStream.flush();
-       
+       }
+        else{
+          session.setAttribute("message", "<b color=\"red\">Error: User not allowed to use this module.</b>");
+          response.sendRedirect("summaries.jsp");       
+           }    
+       }
+       else{
+           session.setAttribute("message", "Unknow user. Login to try again");
+           response.sendRedirect("raw_data.jsp");
+       }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

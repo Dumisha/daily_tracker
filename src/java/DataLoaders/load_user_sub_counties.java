@@ -36,7 +36,6 @@ public class load_user_sub_counties extends HttpServlet {
         
         String county_ids = request.getParameter("county_ids");
         
-        System.out.println("county ids : "+county_ids);
         
         if(session.getAttribute("user_id")!=null){
             user_id = session.getAttribute("user_id").toString();
@@ -55,6 +54,7 @@ public class load_user_sub_counties extends HttpServlet {
         
         
         JSONArray jarray = new JSONArray();
+             if(session.getAttribute("user_id")!=null){
         String query;
         if(user_level.equals("1")){
          query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc \n" +
@@ -80,8 +80,7 @@ public class load_user_sub_counties extends HttpServlet {
             
             jarray.add(obj);
         }
-        
-        System.out.println("sub counties : "+jarray);
+             }
         
         
         if( conn.conn!=null){conn.conn.close();}

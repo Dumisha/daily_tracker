@@ -65,6 +65,15 @@ public class ppmt extends HttpServlet {
 //        end_date = "2022-03-30";
         
         
+    if(session.getAttribute("user_id")!=null){
+        
+           String reports="";
+           if(session.getAttribute("reports")!=null ){
+               reports=session.getAttribute("reports").toString();
+           }
+            
+           if(reports.equals("1")){
+           
         
         XSSFWorkbook wb = new XSSFWorkbook();
       
@@ -188,14 +197,12 @@ public class ppmt extends HttpServlet {
         conn.pst.setString(1, start_date);
         conn.pst.setString(2, end_date);
         
-        System.out.println("query is : "+conn.pst);
         conn.rs = conn.pst.executeQuery();
         
         prev_County=prev_Indicator="";
         row=1;
         
         ct = get_supported_counties(conn);
-        System.out.println("------------------------------------------------------------------------------"+get_supported_counties(conn).size());
         
         while(conn.rs.next()){
             indicator = conn.rs.getString(1);
@@ -208,8 +215,6 @@ public class ppmt extends HttpServlet {
             activity_date = conn.rs.getString(8);
             row++;             
            excel_county = county;
-//            System.out.println(" prev county : "+prev_County+" current county : "+county);
-//          if(prev_County.equals(county)){ excel_county=""; cell_merge++;}
             
           if(!prev_Indicator.equals(indicator))  { // new indicator, start
            
@@ -264,30 +269,10 @@ public class ppmt extends HttpServlet {
            }
           
           else{
-              System.out.println("Nothing expected here");
           }   
-         
-          
-//               if(!(prev_County.equals(county) || prev_Indicator.equals(indicator)) && cell_merge>0){
-//                   System.out.println(" current row :"+row+" cells to merge : "+cell_merge);
-//                   try{
-//                sheet.addMergedRegion(new CellRangeAddress((row-cell_merge-1),(row-1),0,0));   
-//                   }
-//                   catch(Exception e){
-//                       System.out.println("error "+e);
-//                   }
-//                   cell_merge=0;
-//                }
-                      
          prev_Indicator = indicator;
           prev_County=county;
-          
-//                System.out.println("Indicator : "+indicator+"["+indicator_number+"] County : "+county+" activity : "+activity+" total : "+total);  
-                
-                
-                // merge counties
         }
-     System.out.println("------------------------------------------------------------------------------");   
       
      
      if(!ct.isEmpty()){
@@ -316,7 +301,16 @@ public class ppmt extends HttpServlet {
     OutputStream outStream = response.getOutputStream();
     outStream.write(outArray);
     outStream.flush(); 
-     
+          }
+     else{
+          session.setAttribute("message", "<b color=\"red\">Error: User not allowed to use this module.</b>");
+          response.sendRedirect("summaries.jsp");       
+           }    
+       }
+          else{
+              session.setAttribute("message", "Unknow user. Login and try again");
+              response.sendRedirect("ppmt_report.jsp");
+          }
      
      
     }

@@ -42,6 +42,7 @@ public class save_question_value_labels extends HttpServlet {
        
         // loop through and save
         
+          if(session.getAttribute("user_id")!=null){
         String remove_all = "DELETE FROM question_value_labels WHERE question_id=?";
         conn.pst = conn.conn.prepareStatement(remove_all);
         conn.pst.setString(1, question_id);
@@ -58,9 +59,16 @@ public class save_question_value_labels extends HttpServlet {
             conn.pst.setInt(3, 1);
             
             conn.pst.executeUpdate();
+            code=1;
+            message="Updated successfully";
         }
-        obj.put("code", 1);
-        obj.put("message", "Update successful");
+          }
+          else{
+              code=0;
+              message="Unknown user. Login to try again";
+          }
+        obj.put("code", code);
+        obj.put("message", message);
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);

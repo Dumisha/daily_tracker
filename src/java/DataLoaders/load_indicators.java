@@ -35,7 +35,7 @@ public class load_indicators extends HttpServlet {
         
         JSONArray jarray = new JSONArray();
         
-        
+             if(session.getAttribute("user_id")!=null){
         String load_indicators = "SELECT id,name,ifnull(description,''),section_id,indicator_type,frequency,status FROM indicators";
         conn.rs = conn.st.executeQuery(load_indicators);
         while(conn.rs.next()){
@@ -50,7 +50,7 @@ public class load_indicators extends HttpServlet {
             
             jarray.add(obj);
         }
-        
+             }
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }

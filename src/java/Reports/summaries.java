@@ -53,6 +53,17 @@ public class summaries extends HttpServlet {
       start_date = request.getParameter("start_date");
       end_date = request.getParameter("end_date");
       
+       if(session.getAttribute("user_id")!=null){
+           
+           
+           String reports="";
+           if(session.getAttribute("reports")!=null ){
+               reports=session.getAttribute("reports").toString();
+           }
+            
+           if(reports.equals("1")){
+           
+            
       String[] indicators = request.getParameterValues("indicator"); 
         
         user_id=user_level="0";
@@ -65,8 +76,6 @@ public class summaries extends HttpServlet {
      if(session.getAttribute("user_level_id")!=null){
            user_level=session.getAttribute("user_level_id").toString(); 
        }
-      
-        System.out.println("user id : "+user_id+" user_level :"+user_level+" start date :"+start_date+" end date : "+end_date);
       
       
        ArrayList<String>  facilities = mg.get_locations(user_id,user_level,conn);
@@ -173,15 +182,12 @@ public class summaries extends HttpServlet {
 //              RowHeader.setHeightInPoints(20);
     
           String get_queries = "SELECT i.name,s.query,s.id FROM summaries_reports s INNER JOIN indicators i ON s.indicator_id=i.id and s.status=1 and s.indicator_id in("+indicator_ids+")";
-        System.out.println("all query is :"+get_queries);
       conn.rs = conn.st.executeQuery(get_queries);
       while(conn.rs.next()){
 //          column_data_counter=0;
           indicator_name = conn.rs.getString(1);
           query = conn.rs.getString(2).replace("start_date", "DATE('"+start_date+"')").replace("end_date", "DATE('"+end_date+"')").replace("facility_ids", facility_ids);
          
-          
-//          System.out.println("query : "+query);
          // run query to get_data
       conn.rs1 = conn.st1.executeQuery(query);
       
@@ -227,7 +233,6 @@ public class summaries extends HttpServlet {
           cellIndic.setCellValue(indicator_name);
           
           int end_merge = (headerpos+col_count-5);
-          System.out.println("col count "+col_count+" header pos : "+headerpos+" end of merging : "+end_merge);
           if((end_merge-headerpos)>0){
           sheet.addMergedRegion(new CellRangeAddress(0,0,headerpos,end_merge));
           }
@@ -283,7 +288,16 @@ if( conn.conn!=null){conn.conn.close();}
     OutputStream outStream = response.getOutputStream();
     outStream.write(outArray);
     outStream.flush();   
-        
+       }
+           else{
+          session.setAttribute("message", "<b color=\"red\">Error: User not allowed to use this module.</b>");
+          response.sendRedirect("summaries.jsp");       
+           }    
+       }
+       else{
+           session.setAttribute("message", "<b color=\"red\">Unknow user. Login to try again</b>");
+           response.sendRedirect("summaries.jsp");
+       }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

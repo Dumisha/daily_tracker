@@ -64,7 +64,12 @@ public class stf_upload extends HttpServlet {
         System.out.println(" os is : "+mg.check_OS());
         
         
-        
+        String stf="", message="";
+           if(session.getAttribute("stf")!=null ){
+               stf=session.getAttribute("stf").toString();
+           }
+            
+           if(stf.equals("1")){
         added=skipped=0;
        
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -273,9 +278,13 @@ public class stf_upload extends HttpServlet {
         }
         
        
-        String message="Summary : <br>"
+        message="Summary : <br>"
                 + " "+added+" Records added successfully. <br>"
                 + ""+skipped+" Records skippped. They already exist in the system.";
+           }
+           else{
+              message = "<b color=\"red\">Error: User not allowed to use this module</b>";
+           }
         
         session.setAttribute("message", message);
       

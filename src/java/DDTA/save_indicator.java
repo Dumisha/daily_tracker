@@ -51,7 +51,7 @@ public class save_indicator extends HttpServlet {
         // check variables to ensure values are passed
         
         //end
-        
+          if(session.getAttribute("user_id")!=null){
         if(indicator_id.equals("")){ // add new indicator
           String checker="SELECT id FROM indicators where name=?";
           conn.pst = conn.conn.prepareStatement(checker);
@@ -105,13 +105,15 @@ public class save_indicator extends HttpServlet {
               
             
         }
-        
+          }
+          else{
+           code=0;
+           message ="Unknown user. Login and try again";
+          }
        obj.put("code", code);
        obj.put("message", message);
         
        
-        System.out.println(obj);
-        
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
     }

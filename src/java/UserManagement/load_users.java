@@ -33,8 +33,18 @@ public class load_users extends HttpServlet {
         dbConn conn = new dbConn();
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
+        session = request.getSession();
         
         
+           if(session.getAttribute("user_id")!=null){
+                String user="";
+           if(session.getAttribute("users")!=null ){
+               user=session.getAttribute("users").toString();
+           }
+            
+           if(user.equals("1")){
+               
+           
         String get_pending_users = "SELECT id, concat_ws(\" \",first_name,middle_name,sur_name) as fullname, phone,email, user_level_id,approved,is_active from users";
         conn.rs = conn.st.executeQuery(get_pending_users);
         while(conn.rs.next()){
@@ -50,24 +60,23 @@ public class load_users extends HttpServlet {
             ob.put("is_active", conn.rs.getInt(7));
 
               user_coverage = getUserLocation(conn.rs.getInt(1),conn,conn.rs.getInt(5)); 
-            
-            
-            
-            
-            
+             
             ob.put("coverage", user_coverage);
            jarray.add(ob);
             
         }
         
         obj.put("users", jarray);
+           }
+           else{ // operation not allowed
+//               code=0;
+//               message="Error. You do not have enough permissions to use this module";
+           }
+           }
+           else{
         
         
-        System.out.println(obj);
-        
-        
-        
-        
+           }
         if( conn.conn!=null){conn.conn.close();}
         out.print(obj);
         
@@ -123,7 +132,6 @@ public class load_users extends HttpServlet {
     
     private String getUserLocation(int user_id,dbConn conn,int user_level) throws SQLException{
         String locations="";
-        System.out.println("user id is : "+user_id+" and level is : "+user_level);
         int num = 1;
         switch(user_level){
             

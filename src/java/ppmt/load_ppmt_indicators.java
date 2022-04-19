@@ -33,6 +33,13 @@ public class load_ppmt_indicators extends HttpServlet {
         dbConn conn = new dbConn();
         JSONArray jarray = new JSONArray();
         
+           if(session.getAttribute("user_id")!=null){
+               String ppmt="";
+           if(session.getAttribute("ppmt")!=null ){
+               ppmt=session.getAttribute("ppmt").toString();
+           }
+            
+           if(ppmt.equals("1")){
         String load_indicators = "SELECT id,name,number,status FROM ppmt_indicators";
         conn.rs = conn.st.executeQuery(load_indicators);
         while(conn.rs.next()){
@@ -44,7 +51,14 @@ public class load_ppmt_indicators extends HttpServlet {
             
           jarray.add(obj);
         }
-       
+           }
+           else{ // do not have enough permissions to view this page
+               
+           }
+           }
+           else{
+               
+           }
         out.println(jarray);
         
     }

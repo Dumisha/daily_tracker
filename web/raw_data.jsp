@@ -77,7 +77,9 @@
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-          
+           
+         <%if(session.getAttribute("reports")!=null){
+      if(session.getAttribute("reports").toString().equals("1")){%>      
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -92,40 +94,7 @@
                   <h3 class="card-title" style="text-align: center;font-weight: 900;">Raw Data Generation Module</h3>
               </div>
                          <div class="card-body">        
-                             <form action="raw_data">
-<!--                             
-                    <div class="flex-container" id="county_label">
-                     <div class="flex-child">
-                    Counties:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child">
-                      <select class="form-control select2bs4" id="county" name="county"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>
-                             
-                             
-                    <div class="flex-container" id="sub_county_label">
-                     <div class="flex-child">
-                    Sub Counties:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child">
-                        <select class="form-control select2bs4" id="sub_county" name="sub_county"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>
-                             
-                             
-                    <div class="flex-container" id="facility_label">
-                     <div class="flex-child">
-                    Facilities:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                         <select class="form-control select2bs4" id="facility" name="facility"  required="true" multiple="true"> </select>
-                    </div>
-                    </div>-->
- 
-                    
-                             
-                             
+                             <form action="raw_data">        
                     <div class="flex-container" id="indicator_label">
                      <div class="flex-child">
                     Indicators:
@@ -170,7 +139,20 @@
     </section>
     <!-- /.content -->
     </div>
-                              
+           <%}
+      else{%>
+     
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      User not allowed to access this module    
+          </div>
+      
+     <% }} else {%>
+  
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      Unknown User trying to access Module. Login and try again  
+          </div>
+     
+     <%}%>                      
 					<!-- Footer -->
                                         <div class="footer text-muted">
                                           <%@include file="menu/footer.jsp"%>
@@ -178,7 +160,19 @@
 					<!-- /footer -->
 
 				</div>
-                                    
+           
+    <%if(session.getAttribute("message")!=null){
+    String mess =session.getAttribute("message").toString();
+    %>
+    <script type="text/javascript">
+       $.jGrowl('<%=mess%>', {
+            position: 'center',
+            header: 'Mail Verification Status',
+            theme: 'bg-success'
+
+        });  
+        </script>
+        <% session.removeAttribute("message");}%>                             
 </body>
 
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
@@ -199,51 +193,18 @@ $("#end_date").datepicker({
 //      minDate: -10y,
       maxDate: 0
   });
-       
-       
-//var counties = load_counties();
-//var sub_counties = load_sub_counties();
-//var facilities = load_facilities();
-//var program_areas = load_program_areas();
+
 var indicators = load_indicators();
 
-
-//var county_label="";
-//var sub_county_label = "";
-//var facility_label="";
-//var program_area_label = "";
 var indicator_label="";
-// populate counties
 
-//for(var i=0;i<counties.length;i++){
-//  county_label+="<option value=\""+counties[i].id+"\">"+counties[i].name+"</option>";  
-//}
-//for(var i=0;i<sub_counties.length;i++){
-//  sub_county_label+="<option value=\""+sub_counties[i].id+"\">"+sub_counties[i].name+"</option>" ; 
-//}
-//for(var i=0;i<facilities.length;i++){
-//  facility_label+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>"  ;
-//}
-//
-//for(var i=0;i<program_areas.length;i++){
-//  program_area_label+="<option value=\""+program_areas[i].id+"\">"+program_areas[i].name+"</option>"  ;
-//}
 for(var i=0;i<indicators.length;i++){
     if(indicators[i].is_active===1){
   indicator_label+="<option value=\""+indicators[i].id+"\">"+indicators[i].name+"</option>"  ;
     }
 }
 
-//$("#county").html(county_label);
-//$("#sub_county").html(sub_county_label);
-//$("#facility").html(facility_label);
-//$("#program_area").html(program_area_label);
 $("#indicator").html(indicator_label);
-
-//for(var i=0;i<counties.length;i++){
-//  county_label+="<option value=\""++"\">"++"</option>"  
-//}
-
 
 }); 
     </script>

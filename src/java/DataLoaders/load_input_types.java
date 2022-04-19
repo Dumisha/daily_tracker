@@ -34,6 +34,7 @@ public class load_input_types extends HttpServlet {
         
         JSONArray jarray = new JSONArray();
         
+             if(session.getAttribute("user_id")!=null){
         String query = "SELECT id,name FROM input_types";
         conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
@@ -43,7 +44,7 @@ public class load_input_types extends HttpServlet {
            
            jarray.add(obj);
         }
-      
+             }
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }

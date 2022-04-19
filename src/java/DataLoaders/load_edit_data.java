@@ -38,6 +38,7 @@ public class load_edit_data extends HttpServlet {
         JSONObject obj_final = new JSONObject();
         String date="";
         
+             if(session.getAttribute("user_id")!=null){
             String query = "SELECT o.id,o.question_id,o.numeric_value,ifnull(o.text_value,\"\") as text_value,q.input_type_id,q.answer_data_type_id,o.date " +
           "FROM questions q " +
           "INNER JOIN " +
@@ -46,7 +47,6 @@ public class load_edit_data extends HttpServlet {
     conn.pst = conn.conn.prepareStatement(query);
     conn.pst.setString(1, entry_key);   
        
-        System.out.println(conn.pst);
     conn.rs = conn.pst.executeQuery();
     
     while(conn.rs.next()){
@@ -63,11 +63,10 @@ public class load_edit_data extends HttpServlet {
         jarray.add(ob);
           
     }
-        
+    }
+    
      obj_final.put("obs", jarray);
      obj_final.put("date", date);
-
-        System.out.println("questions : "+obj_final);
         
         if( conn.conn!=null){conn.conn.close();}
      out.print(obj_final);    

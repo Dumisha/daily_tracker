@@ -77,7 +77,9 @@
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-          
+     
+         <%if(session.getAttribute("ppmt")!=null && session.getAttribute("reports")!=null){
+      if(session.getAttribute("ppmt").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>                
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -129,7 +131,20 @@
     </section>
     <!-- /.content -->
     </div>
-                              
+          <%}
+      else{%>
+     
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      User not allowed to access this module    
+          </div>
+      
+     <% }} else {%>
+  
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      Unknown User trying to access Module. Login and try again  
+          </div>
+     
+     <%}%>                       
 					<!-- Footer -->
                                         <div class="footer text-muted">
                                           <%@include file="menu/footer.jsp"%>
@@ -137,7 +152,19 @@
 					<!-- /footer -->
 
 				</div>
-                                    
+                         
+                                        <%if(session.getAttribute("message")!=null){
+                                        String mess =session.getAttribute("message").toString();
+                                        %>
+                                        <script type="text/javascript">
+                                           $.jGrowl('<%=mess%>', {
+                                                position: 'center',
+                                                header: 'Mail Verification Status',
+                                                theme: 'bg-success'
+                                                
+                                            });  
+                                            </script>
+                                            <% session.removeAttribute("message");}%>               
 </body>
 
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>

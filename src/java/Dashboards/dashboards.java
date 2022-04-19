@@ -63,15 +63,19 @@ female_total,female_less_10,female_10_14,female_15_19,female_20_24,female_25_49,
         else{
             user_level="";
         }
-     
+       if(session.getAttribute("user_id")!=null){
+           
+            String dashboard="";
+           if(session.getAttribute("dashboard")!=null ){
+               dashboard=session.getAttribute("dashboard").toString();
+           }
+            
+           if(dashboard.equals("1")){
+            
+           
         User_Locations ul = new User_Locations();
 
-        System.out.println("counties :"+counties+" sub counties :"+sub_counties+" facilities : "+facilities+" user level : "+user_level+" user_id :"+user_id);
                String selected_facilities = ul.load_user_selected_facilities(counties,sub_counties,facilities,user_level,user_id,conn);
-               System.out.println("selected facilities : "+selected_facilities);
-        
-        System.out.println("County :"+counties+" sub counties : "+sub_counties+" facilities "+facilities+" start date : "+start_date+" end date :"+end_date);
-       
        
        // tested, positive, linked 
        
@@ -94,7 +98,6 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                     "(SELECT 1 as num,SUM(tst.tested) as tested, 0 as positive,0 AS linked \n" +
                     "FROM etl_hts_tst tst where tst.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tst.facility_id in("+selected_facilities+") )) AS hts GROUP BY num \n" +
                     "\n";
-        System.out.println("\n\n hts query: "+get_hts+"\n\n-----------------");
    conn.rs = conn.st.executeQuery(get_hts);
    if(conn.rs.next()){
     tested = conn.rs.getInt(1);
@@ -168,7 +171,6 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                 "FROM \n" +
                 "etl_tx_new tx_new where tx_new.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')  and tx_new.facility_id in("+selected_facilities+")";
    conn.rs = conn.st.executeQuery(get_tx_new);
-        System.out.println("get tx new : "+get_tx_new);
    if(conn.rs.next()){
               male_total= conn.rs.getInt(1);
               male_less_10= conn.rs.getInt(2);
@@ -236,12 +238,24 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
    obj.put("gain_losses", gain_losses);
    obj.put("pns", obj_pns);
    obj.put("tx_new", obj_tx_new);
+   obj.put("code",1);
+   obj.put("message", "Data Loaded successfully");
    
+       }
+        else{ // not allowed to use dashboards
+             obj.put("code",0);
+             obj.put("message", "User not allowed to access this module"); 
+           }    
+       }
+       else{ // unknown user
+          obj.put("code",0);
+          obj.put("message", "Unknown user. Login to try again");  
+           
+       }
    
    
    if( conn.conn!=null){conn.conn.close();}
    out.println(obj);
-        System.out.println(obj);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -24,8 +24,8 @@ import org.json.simple.JSONObject;
  */
 public class load_user_info extends HttpServlet {
     HttpSession session;
-    int user_level_id;
-    String user_coverage;
+    int user_level_id,code;
+    String user_coverage,message;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
@@ -37,16 +37,16 @@ public class load_user_info extends HttpServlet {
         
         JSONObject obj = new JSONObject();
         
+        code=0;
+        message="";
         
         //check user existence 
-        
+         if(session.getAttribute("user_id")!=null){
         String get_user = "SELECT id,user_level_id,first_name,IFNULL(middle_name,\"\") middle_name,sur_name,phone,email,approved,is_active FROM users WHERE id=?";
         conn.pst = conn.conn.prepareStatement(get_user);
         conn.pst.setString(1, id);
         conn.rs = conn.pst.executeQuery();
         if(conn.rs.next()){
-          obj.put("code", 1);
-          obj.put("message", "User Loaded");
           obj.put("user", conn.rs.getInt(1));
           obj.put("level",  conn.rs.getInt(2));
           obj.put("first_name", conn.rs.getString(3));
@@ -57,13 +57,19 @@ public class load_user_info extends HttpServlet {
           obj.put("approved", conn.rs.getString(8));
           obj.put("status", conn.rs.getString(9));
         }
+        else{
+            code=0;
+            message="No such user in the system";
+        }
+         }
         
         else{
-        obj.put("code", 0);
-          obj.put("message", "User does not exist in the system. contact support");    
-        }
+             code=0;
+             message="Unknow user. lOgin to try again";
+         }
+        obj.put("code", code);
+        obj.put("message", message);    
         
-    
         if( conn.conn!=null){conn.conn.close();}
         
         out.println(obj);

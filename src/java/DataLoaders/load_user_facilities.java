@@ -55,16 +55,14 @@ public class load_user_facilities extends HttpServlet {
         else{
             user_level="";
         }
-        
+         
+         
+             if(session.getAttribute("user_id")!=null){
         String sub_counties=request.getParameter("sub_county_ids");
         if(sub_counties!=null){
             if(sub_counties.equals("")){sub_counties=null;}
         }
-        System.out.println("sub counties are : "+sub_counties);
-        
-//        user_id = "1";
-       
-                User_Locations ul = new User_Locations();
+          User_Locations ul = new User_Locations();
         
                String selected_facilities = ul.load_user_selected_facilities("","","",user_level,user_id,conn);
                
@@ -83,9 +81,7 @@ public class load_user_facilities extends HttpServlet {
             }
             jarray.add(obj);
         }
-
-        System.out.println(" array of facilities for user : "+jarray);
-        
+       }
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);

@@ -37,7 +37,6 @@ public class save_question extends HttpServlet {
         code = 0;
         message="";
         
-        System.out.println("called here");
         // receive parameters
         
              String   id = request.getParameter("id");
@@ -49,8 +48,7 @@ public class save_question extends HttpServlet {
              String   value_unique = request.getParameter("value_unique");
              String   status = request.getParameter("status");
                 
-            System.out.println("id : "+id+" indicator id : "+indicator_id);
-             
+               if(session.getAttribute("user_id")!=null){
              if(id.equals("")){ // check if it is a new entry
              String checker = "SELECT id FROM questions WHERE question=? and indicator_id=?";
              conn.pst = conn.conn.prepareStatement(checker);
@@ -110,12 +108,17 @@ public class save_question extends HttpServlet {
              } 
                  
              }
+               }
+               else{
+                   code=0;
+                   message="Unknown user. Login to try again";
+               }
+             
         obj.put("code", code);
         obj.put("message", message);
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
-        System.out.println("response : "+obj);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

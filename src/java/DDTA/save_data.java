@@ -40,9 +40,10 @@ public class save_data extends HttpServlet {
         has_aggregate = record_exist = false;
         message = "";
         code=0;
-                   int num = 0;
+         int num = 0;
          String status = "";          
-        
+       
+           if(session.getAttribute("user_id")!=null){
       String entry_key = mg.get_entry_key();
         
        indicator_id = request.getParameter("indicator");
@@ -50,7 +51,6 @@ public class save_data extends HttpServlet {
        date = request.getParameter("date");
        entry_status = request.getParameter("entry_status");
 
-        System.out.println(" date is : "+date+" entry status "+entry_status);
        
        if(session.getAttribute("user_id")!=null){
            user_id=session.getAttribute("user_id").toString(); 
@@ -62,7 +62,6 @@ public class save_data extends HttpServlet {
      JSONObject indicator_obj =  get_indicator(conn,indicator_id);
        if((Integer)indicator_obj.get("indicator_type")==2){ // aggregate Indicators
          // check data existence
-           System.out.println("has aggregate");
            
            has_aggregate = check_existence(conn,indicator_id,date,facility_id);
            
@@ -89,7 +88,6 @@ public class save_data extends HttpServlet {
        
        else{
          // check for record existence
-           System.out.println("patient level data ");
            record_exist = check_uniqueness(conn,indicator_id,request);
            
        if(record_exist){
@@ -98,7 +96,6 @@ public class save_data extends HttpServlet {
        }  
        }
        
-        System.out.println(" has aggregate : "+has_aggregate+" is patient level :"+record_exist);
        
        if(entry_status.equals("")){
            status="1";
@@ -116,13 +113,10 @@ public class save_data extends HttpServlet {
          int answer_data_type = (Integer) obj.get("answer_data_type");
          data_value = null;
          
-            System.out.println("answer data type : "+answer_data_type);
          if(request.getParameter("name_"+question_id)!=null){
          data_value =  request.getParameter("name_"+question_id);
          if(answer_data_type==2 && data_value.equals("")){data_value=null;}
          }
-         
-            System.out.println("question id : "+obj.get("name").toString()+" value : "+data_value);
          
          query_values+=indicator_id+",";
          query_values+=question_id+",";
@@ -150,12 +144,8 @@ public class save_data extends HttpServlet {
         
        String query="INSERT INTO observations (indicator_id,question_id,numeric_value,text_value,date,facility_id,user_id,entry_key) VALUES "+query_values;
        
-        System.out.println(" inserter : "+query);
         conn.st.executeUpdate(query);
-        
-        System.out.println(" array inserter :"+query_values);
-        
-        
+
         // code output
        code=1;
        message="Indicator Data with "+num+" variables saved successfully";
@@ -194,7 +184,6 @@ public class save_data extends HttpServlet {
             else{text_value = data_value;}
          }
       String obs_id = request.getParameter("o_id_"+question_id);
-     System.out.println("obs id is "+obs_id+" question id : "+obj.get("name").toString()+" numeric value : "+numeric_value+" text value : "+text_value); 
         
      
      String updator = "UPDATE observations SET numeric_value=?,text_value=?,updated_at=?,updated_by=? WHERE id=?";
@@ -205,7 +194,6 @@ public class save_data extends HttpServlet {
      conn.pst.setString(4, user_id);
      conn.pst.setString(5, obs_id);
      
-             System.out.println(conn.pst);
    num+= conn.pst.executeUpdate(); 
      
      
@@ -233,8 +221,12 @@ public class save_data extends HttpServlet {
        mg.process_queue(conn,status);
        
        //
-        System.out.println("final obj :"+fn_ob);
-        
+           }
+           else{
+           code=0;
+           message="Unknown User. Login and try again";
+               
+           }
         
       if( conn.conn!=null){conn.conn.close();}
        out.println(fn_ob);
@@ -345,12 +337,10 @@ public class save_data extends HttpServlet {
         conn.pst = conn.conn.prepareStatement(get_unique_questions);
         conn.pst.setString(1, indicator_id);
         conn.pst.setInt(2, 1);
-        System.out.println(conn.pst);
         conn.rs = conn.pst.executeQuery();
         
         while(conn.rs.next()){
             String value = request.getParameter("name_"+conn.rs.getInt(1));
-         System.out.println("Unique ids here are ? "+conn.rs.getString(2)+" with id "+conn.rs.getString(1)+" and value :"+value); 
          
          if(conn.rs.getInt(3)==2){
              if(!value.equals("")){
@@ -365,7 +355,6 @@ public class save_data extends HttpServlet {
         }
        
          values_to_be_checked = values_to_be_checked.trim();
-        System.out.println("to be checked ---:"+ values_to_be_checked+":--");
         if( values_to_be_checked.length()>0){
             values_to_be_checked = mg.removeLast(values_to_be_checked, 2); 
             
@@ -373,9 +362,6 @@ public class save_data extends HttpServlet {
             
         }
         
-        System.out.println("-----:"+query+":-----");
-        
-        System.out.println("query :"+query+":");
         if(values_to_be_checked.length()>0){
         conn.rs = conn.st.executeQuery(query);
         return conn.rs.next();}
@@ -393,7 +379,6 @@ public class save_data extends HttpServlet {
         conn.pst.setString(3, question_id);
         conn.pst.setString(4, value);
         
-        System.out.println("pmtct : "+conn.pst);
         conn.rs = conn.pst.executeQuery();
         
         return conn.rs.next();

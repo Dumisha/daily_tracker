@@ -39,7 +39,7 @@ public class load_questions extends HttpServlet {
        indicator_id = request.getParameter("indicator_id");
         dbConn conn = new dbConn();
         
-        
+             if(session.getAttribute("user_id")!=null){
         String get_name = "SELECT name,indicator_type,frequency,description FROM indicators WHERE id=?";
         conn.pst = conn.conn.prepareStatement(get_name);
         conn.pst.setString(1, indicator_id);
@@ -90,11 +90,10 @@ public class load_questions extends HttpServlet {
         
       jarray.add(ob);
      }
-     
+    }
+             
      obj_final.put("questions", jarray);
      
-     
-        System.out.println("questions : "+obj_final);
         
         if( conn.conn!=null){conn.conn.close();}
      out.print(obj_final);

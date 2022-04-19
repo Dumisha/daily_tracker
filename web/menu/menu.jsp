@@ -48,7 +48,9 @@
             
             
           <li class="nav-item has-treeview" id="indicators"></li>
-              
+           
+     <%if(session.getAttribute("hts")!=null){
+      if(session.getAttribute("hts").toString().equals("1")){%> 
           <li class="nav-item has-treeview">
             <a href="unlinked.jsp" class="nav-link">
               <i class="nav-icon fa fa-clone"  aria-hidden="true"></i>
@@ -58,7 +60,10 @@
             </a>
            
           </li>
+         <%}}%> 
           
+    <%if(session.getAttribute("stf")!=null && session.getAttribute("reports")!=null ){
+      if(session.getAttribute("stf").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>   
            <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-user-md"></i>
@@ -69,29 +74,41 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+                
+                
+     <%if(session.getAttribute("admin")!=null){
+      if(session.getAttribute("admin").toString().equals("1")){%>   
               <li class="nav-item">
                 <a href="stf_uploads.jsp" class="nav-link">
                   <i class="fas fa-file-excel nav-icon"></i>
                   <p>Upload Template</p>
                 </a>
               </li>
+               <%}}%>
+               
+              <%if(session.getAttribute("stf")!=null){
+      if(session.getAttribute("stf").toString().equals("1")){%>   
               <li class="nav-item">
                 <a href="stf_data_entry.jsp" class="nav-link">
                   <i class="fas fa-file-excel nav-icon"></i>
                   <p>Data Entry</p>
                 </a>
               </li>
+               <%}}%>
+              
               <li class="nav-item">
-                <a href="stf_updates.jsp" class="nav-link">
+                <a href="stf_reports.jsp" class="nav-link">
                   <i class="fa fa-user-md nav-icon"></i>
                   <p>Report</p>
                 </a>
               </li>
-             
+        
             </ul>
           </li> 
+         <%}}%> 
           
-          
+      <%if(session.getAttribute("ppmt")!=null && session.getAttribute("reports")!=null ){
+      if(session.getAttribute("ppmt").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>   
            <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tasks"></i>
@@ -102,12 +119,17 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+                
+      <%if(session.getAttribute("ppmt")!=null){
+      if(session.getAttribute("ppmt").toString().equals("1")){%>    
               <li class="nav-item">
                 <a href="ppmt.jsp" class="nav-link">
                   <i class="fas fa-tasks nav-icon"></i>
                   <p>Data Entry</p>
                 </a>
               </li>
+            <%}}%>  
+              
               <li class="nav-item">
                 <a href="ppmt_report.jsp" class="nav-link">
                   <i class="fa fa-file-excel nav-icon"></i>
@@ -117,9 +139,11 @@
              
             </ul>
           </li> 
-          
+          <%}}%>
           <!--<li style="text-align: center; color: white;"><br></li>-->
-          
+         
+     <%if(session.getAttribute("dashboard")!=null && session.getAttribute("reports")!=null ){
+      if(session.getAttribute("dashboard").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>  
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-signal"></i>
@@ -130,38 +154,45 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+                
+      <%if(session.getAttribute("reports")!=null){
+      if(session.getAttribute("reports").toString().equals("1")){%>     
               <li class="nav-item">
                 <a href="raw_data.jsp" class="nav-link">
                   <i class="fas fa-file-excel nav-icon"></i>
                   <p>Raw Data (.xlsx)</p>
                 </a>
               </li>
+               <%}}%>
+      <%if(session.getAttribute("reports")!=null){
+      if(session.getAttribute("reports").toString().equals("1")){%>  
               <li class="nav-item">
                 <a href="summaries.jsp" class="nav-link">
                   <i class="fas fa-file-excel nav-icon"></i>
                   <p>Summaries (.xlsx)</p>
                 </a>
               </li>
+               <%}}%>
+              
+       <%if(session.getAttribute("dashboard")!=null){
+      if(session.getAttribute("dashboard").toString().equals("1")){%>  
               <li class="nav-item">
                 <a href="dashboards.jsp" class="nav-link">
                   <i class="fas fa-industry nav-icon"></i>
                   <p>Dashboards</p>
                 </a>
               </li>
-<!--              <li class="nav-item">
-                <a href="questions.jsp" class="nav-link">
-                  <i class="fas fa-percent nav-icon"></i>
-                  <p>Performance Tracker</p>
-                </a>
-              </li>-->
+              <%}}%>
               
             </ul>
           </li>
+          <%}}%>
           
-          
+      <%if(session.getAttribute("users")!=null && session.getAttribute("admin")!=null ){
+      if(session.getAttribute("users").toString().equals("1") || session.getAttribute("admin").toString().equals("1")){%>  
           <li style="text-align: center; color: white;"><br></li>
           
-                      <li class="nav-item has-treeview">
+            <li class="nav-item has-treeview">
             <a href="manage_users.jsp" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -170,7 +201,10 @@
             </a>
            
           </li>
+          <%}}%>
           
+     <%if(session.getAttribute("settings")!=null){
+      if(session.getAttribute("settings").toString().equals("1")){%>  
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
@@ -181,12 +215,6 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-<!--              <li class="nav-item">
-                <a href="program_areas.jsp" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Program Area</p>
-                </a>
-              </li>-->
               <li class="nav-item">
                 <a href="indicators.jsp" class="nav-link">
                   <i class="fas fa-binoculars nav-icon"></i>
@@ -202,8 +230,10 @@
               
             </ul>
           </li>
+       <%}}%>
        
-          <%-- if(session.getAttribute("id")!=null){ --%> 
+      <%if(session.getAttribute("user_profile")!=null){
+      if(session.getAttribute("user_profile").toString().equals("1")){%>
           <li class="nav-item has-treeview">
             <a href="user_profile.jsp" class="nav-link">
               <i class="nav-icon fas fa-user-plus"></i>
@@ -212,7 +242,7 @@
               </p>
             </a>
          </li>
-         <%-- } --%>
+        <%}}%>
        
           <li class="nav-item has-treeview">
             <a href="logout" class="nav-link">
@@ -277,7 +307,7 @@
                        frequency  = indicators[j]. frequency;   
                    
                   output+= "<li class=\"nav-item\">"+
-                        " <a href=\"data_entry.jsp?indicator="+indicator_id+"\" class=\"nav-link\">"+
+                        " <a href=\"data_entry.jsp?indicator="+indicator_id+"&&sec="+id+"\" class=\"nav-link\">"+
                         "  <i class=\"far fa-circle nav-icon\"></i>"+
                         " <p>"+indicator_name+"</p>"+
                         "</a>"+

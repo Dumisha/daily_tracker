@@ -7,6 +7,7 @@
 <%@page import="java.util.Calendar"%>
 <%
 String indicator_id = request.getParameter("indicator");
+String sec = request.getParameter("sec");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -83,7 +84,17 @@ table {
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-          
+      
+         <%if(session.getAttribute("hts")!=null && session.getAttribute("prevention")!=null && session.getAttribute("treatment")!=null && session.getAttribute("vl")!=null && session.getAttribute("tb")!=null){
+      String hts,prevention,treatment,vl,tb;
+       hts = session.getAttribute("hts").toString();
+       prevention = session.getAttribute("prevention").toString();
+       treatment = session.getAttribute("treatment").toString();
+       vl = session.getAttribute("vl").toString();
+       tb = session.getAttribute("tb").toString();
+       
+if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals("1")) || (sec.equals("3") && treatment.equals("1")) || (sec.equals("4") && vl.equals("1")) || (sec.equals("5") && tb.equals("1"))){%>  
+      
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -117,7 +128,23 @@ table {
     </section>
     <!-- /.content -->
     </div>
-                                  	<!-- Footer -->
+        
+     <%}
+      else{%>
+     
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      User not allowed to access this module    
+          </div>
+      
+     <% }} else {%>
+  
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      Unknown User trying to access Module. Login and try again  
+          </div>
+     
+     <%}%>
+  
+  <!-- Footer -->
                                         <div class="footer text-muted">
                                         <%@include file="menu/footer.jsp"%>
 					</div>
@@ -159,7 +186,7 @@ table {
         output+="<div class=\"flex-container\" id=\"facility_id_label\"><div class=\"flex-child\">Health Facility <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><select name=\"facility_id\" id=\"facility_id\" class=\"form-control\" required ></select></div></div>";  
         //end of facilities
       
-        
+    var passed_validation=0;    
    var date_label="";
    if(indicator_id===6){date_label = "Date Tested";}
    else if(indicator_id===8){date_label = "Date Started ART";}

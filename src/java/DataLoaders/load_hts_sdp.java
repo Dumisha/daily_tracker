@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,15 +24,19 @@ import org.json.simple.JSONObject;
  * @author Geofrey Nyabuto
  */
 public class load_hts_sdp extends HttpServlet {
-
+    HttpSession session;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
       
+        session = request.getSession();
         dbConn conn = new dbConn();
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
+        
+             if(session.getAttribute("user_id")!=null){
         String get_sdp = "SELECT id,name FROM hts_service_points order by order_num";
         conn.rs = conn.st.executeQuery(get_sdp);
         
@@ -42,7 +47,8 @@ public class load_hts_sdp extends HttpServlet {
           
           jarray.add(ob);
         }
-        
+             }
+             
        obj.put("data", jarray);
        
        

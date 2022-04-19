@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -23,24 +24,17 @@ import org.json.simple.JSONObject;
  * @author Geofrey Nyabuto
  */
 public class load_sub_counties extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    HttpSession session;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
        
+        session = request.getSession();
         dbConn conn = new dbConn();
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
+             if(session.getAttribute("user_id")!=null){
         String get_sub_counties = "SELECT id,county_id,name FROM sub_counties order by name";
         conn.rs = conn.st.executeQuery(get_sub_counties);
         
@@ -52,7 +46,7 @@ public class load_sub_counties extends HttpServlet {
           
           jarray.add(ob);
         }
-        
+             }
        obj.put("data", jarray);
        
        

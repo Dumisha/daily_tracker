@@ -26,20 +26,20 @@ String username,password;
 String db_pass,db_salt;
 String fullname,phone,email,login_message;
 int login_code,user_level_id,is_active,user_id,approved;
-int settings,users,reports,ppmt,stf,hts,prevention,treatment,vl,tb,user_profile,admin;
+int settings,users,reports,ppmt,stf,hts,prevention,treatment,vl,tb,user_profile,admin,dashboard;
 String NextPage="";       
             HttpSession session;   
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+//        PrintWriter out = response.getWriter();
         
            dbConn conn = new dbConn();
            
            session = request.getSession(); 
            
            
-             password = "myPassword123";
+//             password = "myPassword123";
              
              password = request.getParameter("password");
              username = request.getParameter("username");
@@ -53,7 +53,7 @@ String NextPage="";
                     "phone,email,is_active,user_level_id,u.id,approved,\n" +
                     "IFNULL(mg.settings,0) AS settings,IFNULL(mg.users,0) AS users,IFNULL(mg.reports,0) AS reports,IFNULL(mg.ppmt,0) AS ppmt,IFNULL(mg.stf,0) AS stf,\n" +
                     "IFNULL(mg.hts,0) AS hts,IFNULL(mg.prevention,0) AS prevention,IFNULL(mg.treatment,0) AS treatment,"
-                    + "IFNULL(mg.vl,0) AS vl,IFNULL(mg.tb,0) AS tb,IFNULL(mg.user_profile,0) AS user_profile,IFNULL(mg.admin,0) AS admin  \n" +
+                    + "IFNULL(mg.vl,0) AS vl,IFNULL(mg.tb,0) AS tb,IFNULL(mg.user_profile,0) AS user_profile,IFNULL(mg.admin,0) AS admin,IFNULL(mg.dashboard,0) AS dashboard  \n" +
                     "FROM users u\n" +
                     "LEFT OUTER JOIN module_management mg on u.id=mg.user_id "
                                          + " where (phone=? || email=?) AND (email IS NOT NULL OR email!='')";
@@ -77,7 +77,7 @@ String NextPage="";
         
         if(passwordMatch) 
         {
-            System.out.println("Provided user password " + password + " is correct.");
+
    
           // get and return user information
                     is_active = conn.rs.getInt(6);
@@ -95,9 +95,8 @@ String NextPage="";
                     tb = conn.rs.getInt(19);
                     user_profile = conn.rs.getInt(20);
                     admin = conn.rs.getInt(21);
+                    dashboard = conn.rs.getInt(22);
                     
-            
-                System.out.println(" is active :"+is_active+" approved :"+approved);    
                     
             if(is_active==1 && approved==1){
                     fullname = conn.rs.getString(3);
@@ -125,9 +124,8 @@ String NextPage="";
                   session.setAttribute("vl", vl);
                   session.setAttribute("tb", tb);
                   session.setAttribute("user_profile", user_profile);
+                  session.setAttribute("dashboard", dashboard);
                   
-                    
-                    System.out.println("user id login : "+user_id);
                     
                 login_code=1;
                 login_message="User Logged in Successfully";
@@ -149,7 +147,6 @@ String NextPage="";
           login_code=0;
           login_message="Wrong Password Provided. Try Again";    
             
-            System.out.println("Provided password is incorrect");
         } 
                  
                  

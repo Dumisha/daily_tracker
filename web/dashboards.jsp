@@ -106,7 +106,10 @@
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-          
+         
+         <%if(session.getAttribute("dashboard")!=null){
+      if(session.getAttribute("dashboard").toString().equals("1")){%>       
+      
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -232,7 +235,23 @@
     </section>
     <!-- /.content -->
     </div>
-                              
+       
+  
+     <%}
+      else{%>
+     
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      User not allowed to access this module    
+          </div>
+      
+     <% }} else {%>
+  
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      Unknown User trying to access Module. Login and try again  
+          </div>
+     
+     <%}%>
+     
 					<!-- Footer -->
                                         <div class="footer text-muted">
                                           <%@include file="menu/footer.jsp"%>
@@ -421,11 +440,22 @@ function load_dashboard(){
         type:"get",
         dataType:"json",
         success:function(data){
-         var hts = data.hts;
+        if(data.code>0){
+        var hts = data.hts;
         manage_hts(hts.tested,hts.positive,hts.linked);
         net_gain_losses(data.gain_losses);
         pns(data.pns);
         tx_new(data.tx_new);
+            }
+            else{
+            var theme="bg-danger";
+            var header="<b>Error</b>";
+            $.jGrowl(data.message, {
+                header: header,
+                theme: theme
+                }); 
+                    
+            }
         }  
 });
 }

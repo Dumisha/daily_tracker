@@ -38,6 +38,7 @@ public class load_selected_possible_answers extends HttpServlet {
         
         String question_id = request.getParameter("id"); 
         
+             if(session.getAttribute("user_id")!=null){
         String get_answer_ids = "SELECT id,value_label_id FROM question_value_labels WHERE question_id=?";
         conn.pst = conn.conn.prepareStatement(get_answer_ids);
         conn.pst.setString(1, question_id);
@@ -49,7 +50,7 @@ public class load_selected_possible_answers extends HttpServlet {
             
             jarray.add(obj);
         }
-        
+             }
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);

@@ -62,7 +62,6 @@ int code;
               
             int cases = conn.pst.executeUpdate();
              
-                System.out.println("number of records added :"+cases);
                 
                 code=1;
                 message="User registered successfully.";
@@ -82,8 +81,6 @@ int code;
         JSONObject obj = new JSONObject();
         obj.put("code", code);
         obj.put("message", message);
-        
-        System.out.println("obj :"+obj);
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);

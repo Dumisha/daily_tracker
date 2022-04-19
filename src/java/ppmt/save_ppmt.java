@@ -42,7 +42,15 @@ public class save_ppmt extends HttpServlet {
         if(session.getAttribute("user_id")!=null){
            user_id=session.getAttribute("user_id").toString(); 
        }
-        
+           if(session.getAttribute("user_id")!=null){
+               String ppmt="";
+           if(session.getAttribute("ppmt")!=null ){
+               ppmt=session.getAttribute("ppmt").toString();
+           }
+            
+           if(ppmt.equals("1")){
+               
+           
         date = request.getParameter("date");
         activity = request.getParameter("activity");
         activity_other = request.getParameter("activity_other");
@@ -116,11 +124,22 @@ public class save_ppmt extends HttpServlet {
             code=0;
             message="Activity already exist in the selected region on the stated date";
         }
+           }
+           
+           else{ // do not have enough permissions
+           code=0;
+           message = "You do not have enough permissions to execute save ppmt data";
+               
+           }
+           
+           } 
+           else{
+               code=0;
+               message="Unknown User. Login and try again.";
+           }
         JSONObject obj = new JSONObject();
         obj.put("code", code);
         obj.put("message", message);
-        
-        
         
         out.println(obj);
         

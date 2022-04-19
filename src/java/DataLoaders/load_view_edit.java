@@ -39,19 +39,20 @@ public class load_view_edit extends HttpServlet {
         String date = request.getParameter("date");
         String indicator_id = request.getParameter("indicator_id"); 
         
+             if(session.getAttribute("user_id")!=null){
        String query = "SELECT \n" +
-"entry_key," +
-"GROUP_CONCAT(\" \"," +
-"CONCAT(q.question,\": \",coalesce(" +
-"IF(q.input_type_id in(3,4),vl.name,numeric_value),text_value" +
-"))) as q_a," +
-"o.date AS Encounter_Date, "
-+ "i.multiple_entries " +
-" FROM observations o " +
-" INNER JOIN questions q ON o.question_id=q.id and o.facility_id=? and o.date=? and q.indicator_id=?"
- + " INNER JOIN indicators i ON q.indicator_id=i.id " +
-" LEFT OUTER JOIN value_labels vl ON o.numeric_value=vl.id" +
-" group by entry_key ";
+                        "entry_key," +
+                        "GROUP_CONCAT(\" \"," +
+                        "CONCAT(q.question,\": \",coalesce(" +
+                        "IF(q.input_type_id in(3,4),vl.name,numeric_value),text_value" +
+                        "))) as q_a," +
+                        "o.date AS Encounter_Date, "
+                        + "i.multiple_entries " +
+                        " FROM observations o " +
+                        " INNER JOIN questions q ON o.question_id=q.id and o.facility_id=? and o.date=? and q.indicator_id=?"
+                         + " INNER JOIN indicators i ON q.indicator_id=i.id " +
+                        " LEFT OUTER JOIN value_labels vl ON o.numeric_value=vl.id" +
+                        " group by entry_key ";
        conn.pst = conn.conn.prepareStatement(query);
        conn.pst.setString(1, facility_id);
        conn.pst.setString(2, date);
@@ -67,8 +68,7 @@ public class load_view_edit extends HttpServlet {
            
            jarray.add(obj);
        }
-       
-        System.out.println("Entries: "+jarray);
+             }
         
         
         if( conn.conn!=null){conn.conn.close();}

@@ -50,9 +50,7 @@ String facility_id,user_id;
            
         }
         
-        
-        System.out.println("facility pre-selected : "+facility_id);
-        
+             if(session.getAttribute("user_id")!=null){
         String get_facilities = "SELECT id,sub_county_id,name,mfl_code FROM facilities order by name";
         conn.rs = conn.st.executeQuery(get_facilities);
         
@@ -71,9 +69,9 @@ String facility_id,user_id;
             }
           jarray.add(ob);
         }
-        
+             }
+             
        obj.put("data", jarray);
-        System.out.println("facility data"+jarray);
         
         
         if( conn.conn!=null){conn.conn.close();}

@@ -33,7 +33,7 @@ public class load_answer_data_types extends HttpServlet {
         dbConn conn = new dbConn();
         session = request.getSession();
         JSONArray jarray = new JSONArray();
-        
+             if(session.getAttribute("user_id")!=null){
         String get_answer_data_type = "SELECT id,name FROM answer_data_types";
         conn.rs = conn.st.executeQuery(get_answer_data_type);
         while(conn.rs.next()){
@@ -43,7 +43,7 @@ public class load_answer_data_types extends HttpServlet {
            
            jarray.add(obj);
         }
-      
+             }
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }

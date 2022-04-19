@@ -34,20 +34,18 @@ public class load_user_modules extends HttpServlet {
         
         String id;
         id= request.getParameter("id");
-//        id="1";
         
         JSONObject obj = new JSONObject();
         obj.clear();
-        
+             if(session.getAttribute("user_id")!=null){
         String query = "SELECT u.id as user_id,IFNULL(settings,0) AS settings,IFNULL(admin,0) AS admin,IFNULL(users,0) as users,IFNULL(reports,0) as reports,\n" +
                         "IFNULL(ppmt,0) as ppmt,IFNULL(stf,0) as stf,IFNULL(hts,0) as hts,IFNULL(prevention,0) as prevention,IFNULL(treatment,0) as treatment,\n" +
-                        "IFNULL(vl,0) as vl,IFNULL(tb,0) as tb,IFNULL(user_profile,0) as user_profile,IFNULL(updated_by,0) as updated_by,IFNULL(updated_at,\"\") as updated_at  \n" +
+                        "IFNULL(vl,0) as vl,IFNULL(tb,0) as tb,IFNULL(user_profile,0) as user_profile,IFNULL(updated_by,0) as updated_by,IFNULL(updated_at,\"\") as updated_at,IFNULL(dashboard,0) as dashboard  \n" +
                         "from users u LEFT OUTER JOIN module_management mg on u.id=mg.user_id where u.id=?";
         conn.pst = conn.conn.prepareStatement(query);
         conn.pst.setString(1, id);
         conn.rs = conn.pst.executeQuery();
         
-        System.out.println("pst : "+conn.pst);
         
         
         if(conn.rs.next()){
@@ -65,7 +63,8 @@ public class load_user_modules extends HttpServlet {
          obj.put("tb", conn.rs.getInt(12));
          obj.put("user_profile", conn.rs.getInt(13));
          obj.put("updated_by", conn.rs.getInt(14));
-         obj.put("updated_at", conn.rs.getInt(15));
+         obj.put("updated_at", conn.rs.getString(15));
+         obj.put("dashboard", conn.rs.getString(16));
          obj.put("code", 1);
          obj.put("message", "User access information loaded successfully");
         }
@@ -73,8 +72,7 @@ public class load_user_modules extends HttpServlet {
          obj.put("code", 0);
          obj.put("message", "User does not exist");    
         }
-        
-        System.out.println("obj :"+obj);
+             }
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);

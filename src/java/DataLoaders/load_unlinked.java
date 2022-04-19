@@ -32,8 +32,9 @@ HttpSession session;
         PrintWriter out = response.getWriter();
         dbConn conn = new dbConn();
         JSONArray jarray = new JSONArray();
+        session = request.getSession();
         
-        
+             if(session.getAttribute("user_id")!=null){
         String load_unlinked = "SELECT \n" +
                                 "entry_key,\n" +
                                 "c.name as county,\n" +
@@ -80,7 +81,7 @@ HttpSession session;
            
         jarray.add(obj);
        }
-       
+             }
        
        if( conn.conn!=null){conn.conn.close();}
       out.println(jarray);

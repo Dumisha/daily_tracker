@@ -36,24 +36,41 @@ public class load_sections extends HttpServlet {
         
         JSONObject obj = new JSONObject();
         JSONArray jarray = new JSONArray();
-                
+            
+        
+        
+        
+             if(session.getAttribute("user_id")!=null){
+                 
+         String hts,prevention,treatment,vl,tb;
+       hts = session.getAttribute("hts").toString();
+       prevention = session.getAttribute("prevention").toString();
+       treatment = session.getAttribute("treatment").toString();
+       vl = session.getAttribute("vl").toString();
+       tb = session.getAttribute("tb").toString();        
+                 
+                 
+                 
+                 
+          int sec;       
         String get_sections = "SELECT id,name FROM sections ";
         conn.rs = conn.st.executeQuery(get_sections);
         
         while(conn.rs.next()){
-           JSONObject ob = new JSONObject();
-           
+            sec=conn.rs.getInt(1);
+         if((sec==1 && prevention.equals("1")) || (sec==2 && hts.equals("1")) || (sec==3 && treatment.equals("1")) || (sec==4 && vl.equals("1")) || (sec==5 && tb.equals("1"))){
+            JSONObject ob = new JSONObject();
            ob.put("section_id", conn.rs.getInt(1));
            ob.put("name", conn.rs.getString(2));
            ob.put("indicators", load_indicators(conn, conn.rs.getInt(1)));
            jarray.add(ob);
-           
+         }
            
         }
-        
+             }
+             
         obj.put("data", jarray);
         
-        System.out.println("obj sections :"+obj);
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);

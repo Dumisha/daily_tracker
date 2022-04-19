@@ -38,8 +38,7 @@ public class save_value_label extends HttpServlet {
         
         String label_name = request.getParameter("label_name");
         
-//        System.out.println("label name : "+label_name);
-        
+          if(session.getAttribute("user_id")!=null){
         String checker = "select id FROM value_labels WHERE name=?";
         conn.pst = conn.conn.prepareStatement(checker);
         conn.pst.setString(1, label_name);
@@ -62,6 +61,11 @@ public class save_value_label extends HttpServlet {
               message="Error occured while saving the value";
           }
         }
+          }
+          else{
+              code=0;
+              message="Unknown User. Login to try again";
+          }
         
       obj.put("code", code);
       obj.put("message", message);

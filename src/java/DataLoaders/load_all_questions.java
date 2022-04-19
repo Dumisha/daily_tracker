@@ -36,6 +36,7 @@ public class load_all_questions extends HttpServlet {
         
         JSONArray jarray = new JSONArray();
         
+        if(session.getAttribute("user_id")!=null){
          String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,value_unique,status  FROM questions ORDER by indicator_id,ordering_num";
         conn.rs = conn.st.executeQuery(get_questions);
         while(conn.rs.next()){
@@ -51,7 +52,7 @@ public class load_all_questions extends HttpServlet {
             
             jarray.add(obj);
         }
-        
+        }
         
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);

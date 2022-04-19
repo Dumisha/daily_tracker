@@ -39,6 +39,7 @@ public class update_user extends HttpServlet {
         
         String message="";
         
+           if(session.getAttribute("user_id")!=null){
                 approved = request.getParameter("approved");
                 id = request.getParameter("user");
                 is_active = request.getParameter("status");
@@ -47,12 +48,15 @@ public class update_user extends HttpServlet {
               String  facilities [] = request.getParameter("facility").split(",");
               String counties[] = request.getParameter("county").split(",");
               String sub_counties [] = request.getParameter("sub_county").split(",");
-                
-                
-//                if(session.getAttribute("user_id")!=null){
-//                user_id = session.getAttribute("user_id").toString();
-//                }
-                
+    
+              String user="";
+           if(session.getAttribute("users")!=null ){
+               user=session.getAttribute("users").toString();
+           }
+            
+           if(user.equals("1")){
+               
+            
                 String update = "UPDATE users SET approved=?,is_active=?, user_level_id=? WHERE id=?";
                 conn.pst = conn.conn.prepareStatement(update);
                 conn.pst.setString(1, approved);
@@ -143,14 +147,20 @@ public class update_user extends HttpServlet {
                    code=0;
                    message="Failed to update user details.";
                }
-        
+           }
+           else{
+             code=0;
+             message="Error. You do not have enough permissions to use this module";
+           }
+           }
+           else{
+               code=0;
+               message="Unknown user. Login and try again";
+           }
                JSONObject obj = new JSONObject();
                obj.put("code", code);
                obj.put("message", message);
                
-               
-             System.out.println("User update response : "+obj);
-             
              
              if( conn.conn!=null){conn.conn.close();}
              out.println(obj);

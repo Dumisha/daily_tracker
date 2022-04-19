@@ -35,7 +35,7 @@ public class load_possible_answers extends HttpServlet {
         
         JSONArray jarray = new JSONArray();
         
-        
+             if(session.getAttribute("user_id")!=null){
         String query = "SELECT id,name FROM value_labels";
         conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
@@ -45,7 +45,8 @@ public class load_possible_answers extends HttpServlet {
             
             jarray.add(obj);
         }
-        
+             }
+             
         if( conn.conn!=null){conn.conn.close();}
         out.println(jarray);
     }

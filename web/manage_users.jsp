@@ -77,7 +77,9 @@
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-          
+    
+         <%if(session.getAttribute("users")!=null && session.getAttribute("admin")!=null){
+      if(session.getAttribute("users").toString().equals("1") || session.getAttribute("admin").toString().equals("1")){%>        
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -324,6 +326,15 @@
                     </div>
                     </div>
                    
+                    <div class="flex-container">
+                     <div class="flex-child">
+                    Dashboards:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="checkbox" class="form-control" id="dashboard" name="dashboard"  required="true">
+                    </div>
+                    </div>
+                   
                      <div class="flex-container">
                      <div class="flex-child">
                     Settings:
@@ -393,13 +404,30 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
+       
       </div>
-      <!-- /.container-fluid -->
+      <!-- /.container-fluid -->        
+ 
     </section>
     <!-- /.content -->
+
+    
     </div>
-                              
-					<!-- Footer -->
+   <%}
+      else{%>
+     
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      User not allowed to access this module    
+          </div>
+      
+     <% }} else {%>
+  
+      <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
+      Unknown User trying to access Module. Login and try again  
+          </div>
+     
+     <%}%>
+     <!-- Footer -->
                                         <div class="footer text-muted">
                                           <%@include file="menu/footer.jsp"%>
 					</div>
@@ -476,10 +504,16 @@
 
 
 var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">'+
-		'<i class="icon-menu9"></i></a><ul class="dropdown-menu dropdown-menu-right">\n\
-                <li data-toggle="modal" data-target="#modal-default"><a onclick="manage_user('+id+');"><i class="fas fa-user-cog"></i>Manage</a></li>\n\
-                <li data-toggle="modal" data-target="#modal-access"><a onclick="manage_access('+id+');"><i class="fas fa-user-secret"></i>Access Levels</a></li>\n\
-                <li><a onclick="delete_user('+id+');"><i class="fas fa-user-alt-slash"></i>Delete</a></li>';
+		'<i class="icon-menu9"></i></a><ul class="dropdown-menu dropdown-menu-right">\n';
+       <%if(session.getAttribute("users")!=null){
+      if(session.getAttribute("users").toString().equals("1")){%>  
+      action+='<li data-toggle="modal" data-target="#modal-default"><a onclick="manage_user('+id+');"><i class="fas fa-user-cog"></i>Manage</a></li>\n';
+             <%}}%>
+      <%if(session.getAttribute("admin")!=null){
+      if(session.getAttribute("admin").toString().equals("1")){%>
+               action+='<li data-toggle="modal" data-target="#modal-access"><a onclick="manage_access('+id+');"><i class="fas fa-user-secret"></i>Access Levels</a></li>\n';
+               <%}}%>
+//                action+='<li><a onclick="delete_user('+id+');"><i class="fas fa-user-alt-slash"></i>Delete</a></li>';
 
       
         action+='</ul>'+
@@ -684,19 +718,20 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
            
            console.log(user);
            console.log(user.settings);
-//alert("user.settings"+user.settings);
-         if(user.settings){$("#settings").attr('checked','checked');} else{$("#settings").removeAttr('checked');}
-         if(user.admin){$("#admin").attr('checked','checked');} else{$("#admin").removeAttr('checked');}
-         if(user.users){$("#users").attr('checked','checked');} else{$("#users").removeAttr('checked');}
-         if(user.reports){$("#reports").attr('checked','checked');} else{$("#reports").removeAttr('checked');}
-         if(user.ppmt){$("#ppmt").attr('checked','checked');} else{$("#ppmt").removeAttr('checked');}
-         if(user.stf){$("#stf").attr('checked','checked');} else{$("#stf").removeAttr('checked');}
-         if(user.hts){$("#hts").attr('checked','checked');} else{$("#hts").removeAttr('checked');}
-         if(user.prevention){$("#prevention").attr('checked','checked');} else{$("#prevention").removeAttr('checked');}
-         if(user.treatment){$("#treatment").attr('checked','checked');} else{$("#treatment").removeAttr('checked');}
-         if(user.vl){$("#vl").attr('checked','checked');} else{$("#vl").removeAttr('checked');}
-         if(user.tb){$("#tb").attr('checked','checked');} else{$("#tb").removeAttr('checked');}
-         if(user.user_profile){$("#user_profile").attr('checked','checked');} else{$("#user_profile").removeAttr('checked');}
+//alert("user.dashboard"+user.dashboard);
+         if(user.settings>0){$("#settings").attr('checked','checked');} else{$("#settings").removeAttr('checked');}
+         if(user.admin>0){$("#admin").attr('checked','checked');} else{$("#admin").removeAttr('checked');}
+         if(user.users>0){$("#users").attr('checked','checked');} else{$("#users").removeAttr('checked');}
+         if(user.reports>0){$("#reports").attr('checked','checked');} else{$("#reports").removeAttr('checked');}
+         if(user.ppmt>0){$("#ppmt").attr('checked','checked');} else{$("#ppmt").removeAttr('checked');}
+         if(user.stf>0){$("#stf").attr('checked','checked');} else{$("#stf").removeAttr('checked');}
+         if(user.hts>0){$("#hts").attr('checked','checked');} else{$("#hts").removeAttr('checked');}
+         if(user.prevention>0){$("#prevention").attr('checked','checked');} else{$("#prevention").removeAttr('checked');}
+         if(user.treatment>0){$("#treatment").attr('checked','checked');} else{$("#treatment").removeAttr('checked');}
+         if(user.vl>0){$("#vl").attr('checked','checked');} else{$("#vl").removeAttr('checked');}
+         if(user.tb>0){$("#tb").attr('checked','checked');} else{$("#tb").removeAttr('checked');}
+         if(user.user_profile>0){$("#user_profile").attr('checked','checked');} else{$("#user_profile").removeAttr('checked');}
+         if(user.dashboard>0){$("#dashboard").attr('checked','checked');} else{$("#dashboard").removeAttr('checked');}
          
 //         if(user.settings)
 //         if(user.settings)

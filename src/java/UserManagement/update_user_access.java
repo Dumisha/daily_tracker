@@ -25,7 +25,7 @@ import org.json.simple.JSONObject;
  */
 public class update_user_access extends HttpServlet {
     HttpSession session;
-   String id,user_id,settings,users,admin,reports,ppmt,stf,hts,prevention,treatment,vl,tb,user_profile; 
+   String id,user_id,settings,users,admin,reports,ppmt,stf,hts,prevention,treatment,vl,tb,user_profile,dashboard; 
    int code;
    String message;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -38,7 +38,7 @@ public class update_user_access extends HttpServlet {
         
         Manage mg = new Manage();
         
-        id=user_id=settings=users=admin=reports=ppmt=stf=hts=prevention=treatment=vl=tb=user_profile="0";
+        id=user_id=settings=users=admin=reports=ppmt=stf=hts=prevention=treatment=vl=tb=user_profile=dashboard="0";
         message="";
         code=0;
         
@@ -62,6 +62,7 @@ public class update_user_access extends HttpServlet {
        if(request.getParameter("vl")!=null){vl = "1";}
        if(request.getParameter("tb")!=null){tb = "1";}
        if(request.getParameter("user_profile")!=null){user_profile = "1";}
+       if(request.getParameter("dashboard")!=null){dashboard = "1";}
        
        if(user_id!=null){ // user exist in the session
            
@@ -71,7 +72,7 @@ public class update_user_access extends HttpServlet {
       String timestamp = mg.get_timestamp();
       
          String updator = "REPLACE INTO module_management SET settings=?,users=?,admin=?,reports=?,ppmt=?,stf=?,hts=?,prevention=?,treatment=?,vl=?,"
-                 + "tb=?,user_profile=?,updated_by=?,updated_at=?, user_id=?";
+                 + "tb=?,user_profile=?,updated_by=?,updated_at=?,dashboard=?, user_id=?";
          conn.pst = conn.conn.prepareStatement(updator);
          conn.pst.setString(1, settings);
          conn.pst.setString(2, users);
@@ -87,9 +88,9 @@ public class update_user_access extends HttpServlet {
          conn.pst.setString(12, user_profile);
          conn.pst.setString(13, user_id);
          conn.pst.setString(14, timestamp);
-         conn.pst.setString(15, id);
+         conn.pst.setString(15, dashboard);
+         conn.pst.setString(16, id);
          
-            System.out.println("update access : "+conn.pst);
         int num =  conn.pst.executeUpdate();
         
         if(num>0){
