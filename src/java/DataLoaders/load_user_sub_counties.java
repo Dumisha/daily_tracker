@@ -56,6 +56,9 @@ public class load_user_sub_counties extends HttpServlet {
         JSONArray jarray = new JSONArray();
              if(session.getAttribute("user_id")!=null){
         String query;
+        
+        
+        if(!county_ids.equals("")){
         if(user_level.equals("1")){
          query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc \n" +
                 "inner join facilities f on sc.id=f.sub_county_id  and sc.county_id in("+county_ids+") \n" +
@@ -72,6 +75,29 @@ public class load_user_sub_counties extends HttpServlet {
         else{
      query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc where sc.county_id in("+county_ids+") " ;   
         }
+        } 
+        
+        else{
+        if(user_level.equals("1")){
+         query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc \n" +
+                "inner join facilities f on sc.id=f.sub_county_id \n" +
+                "inner join user_facilities uf on f.id=uf.facility_id and uf.user_id='"+user_id+"' ";   
+        }
+        else if(user_level.equals("2")){
+         query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc \n" +
+               "inner join user_sub_counties usc on sc.id=usc.sub_county_id and usc.user_id='"+user_id+"'";   
+        }
+        else if(user_level.equals("3")){
+        query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc \n" +
+"inner join user_counties uc on sc.county_id=uc.county_id and uc.user_id='"+user_id+"'";   
+        }
+        else{
+     query="SELECT distinct(sc.id) as id,sc.name FROM sub_counties sc  " ;   
+        }   
+        }
+        
+//         System.out.println("query is : "+query);
+         
         conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();

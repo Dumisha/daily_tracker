@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DataLoaders;
+package Facility_Management;
 
 import Database.dbConn;
 import java.io.IOException;
@@ -16,61 +16,61 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
  *
  * @author Geofrey Nyabuto
  */
-public class load_sections extends HttpServlet {
-    HttpSession session;
-    String id,name;
+public class load_facility_modules extends HttpServlet {
+    HttpSession  session;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        session = request.getSession();
         
+        session = request.getSession();
         dbConn conn = new dbConn();
         
         JSONObject obj = new JSONObject();
-        JSONArray jarray = new JSONArray();
-            
         
+        String facility_id=request.getParameter("f_id");
+//        String facility_id="1";
         
-        
-        if(session.getAttribute("user_id")!=null){
-                 
-       String hts,prevention,treatment,vl,tb;
-       hts = session.getAttribute("hts").toString();
-       prevention = session.getAttribute("prevention").toString();
-       treatment = session.getAttribute("treatment").toString();
-       vl = session.getAttribute("vl").toString();
-       tb = session.getAttribute("tb").toString();        
-              
-          int sec;       
-        String get_sections = "SELECT id,name FROM sections ";
-        conn.rs = conn.st.executeQuery(get_sections);
-        
-        while(conn.rs.next()){
-            sec=conn.rs.getInt(1);
-         if((sec==1 && prevention.equals("1")) || (sec==2 && hts.equals("1")) || (sec==3 && treatment.equals("1")) || (sec==4 && vl.equals("1")) || (sec==5 && tb.equals("1"))){
-            JSONObject ob = new JSONObject();
-           ob.put("section_id", conn.rs.getInt(1));
-           ob.put("name", conn.rs.getString(2));
-           ob.put("indicators", load_indicators(conn, conn.rs.getInt(1)));
-           jarray.add(ob);
+         if(session.getAttribute("user_id")!=null){
+        String query = "SELECT id,facility_id,gend_gbv,prep,kp,hts_self,hts_tst,hts_pos,index_testing,hts_recency,tx_new,ca_screening,pmtct,eid,retention,vl,tb,tpt,stf,status,timestamp FROM reports_tracker where facility_id=?";
+        conn.pst = conn.conn.prepareStatement(query);
+        conn.pst.setString(1, facility_id);
+        conn.rs = conn.pst.executeQuery();
+        if(conn.rs.next()){
+         obj.put("id", conn.rs.getInt(1));
+         obj.put("facility_id", conn.rs.getInt(2));
+         obj.put("gend_gbv", conn.rs.getInt(3));
+         obj.put("prep", conn.rs.getInt(4));
+         obj.put("kp", conn.rs.getInt(5));
+         obj.put("hts_self", conn.rs.getInt(6));
+         obj.put("hts_tst", conn.rs.getInt(7));
+         obj.put("hts_pos", conn.rs.getInt(8));
+         obj.put("index_testing", conn.rs.getInt(9));
+         obj.put("hts_recency", conn.rs.getInt(10));
+         obj.put("tx_new", conn.rs.getInt(11));
+         obj.put("ca_screening", conn.rs.getInt(12));
+         obj.put("pmtct", conn.rs.getInt(13));
+         obj.put("eid", conn.rs.getInt(14));
+         obj.put("retention", conn.rs.getInt(15));
+         obj.put("vl", conn.rs.getInt(16));
+         obj.put("tb", conn.rs.getInt(17));
+         obj.put("tpt", conn.rs.getInt(18));
+         obj.put("stf", conn.rs.getInt(19));
+         obj.put("status", conn.rs.getInt(20));
+         obj.put("timestamp", conn.rs.getString(21));
+         
+        }
          }
-           
-        }
-        }
-             
-        obj.put("data", jarray);
-        
-        
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
+    
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -88,7 +88,7 @@ public class load_sections extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_sections.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_facility_modules.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -106,7 +106,7 @@ public class load_sections extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_sections.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_facility_modules.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -120,23 +120,4 @@ public class load_sections extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
-    private JSONArray load_indicators(dbConn conn, int section_id) throws SQLException{
-        JSONArray jarray = new JSONArray();
-     
-        String get_indicators = "SELECT id,name,description,indicator_type,frequency FROM indicators WHERE status=1 AND section_id='"+section_id+"'"; // active indicators
-        conn.rs1 = conn.st1.executeQuery(get_indicators);
-        while(conn.rs1.next()){
-        JSONObject ob = new JSONObject();
-        ob.put("indicator_id", conn.rs1.getInt(1));
-        ob.put("indicator_name", conn.rs1.getString(2));
-        ob.put("description", conn.rs1.getString(3));
-        ob.put("indicator_type", conn.rs1.getInt(4));
-        ob.put("frequency", conn.rs1.getInt(5));
-        
-        jarray.add(ob);
-    }
-        
-      return jarray;  
-    }
 }

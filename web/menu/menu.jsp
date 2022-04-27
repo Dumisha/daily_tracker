@@ -43,9 +43,7 @@
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-            <%-- if(session.getAttribute("admin")!=null){
-            if(session.getAttribute("admin").toString().equals("1")){ --%> 
-            
+
             
           <li class="nav-item has-treeview" id="indicators"></li>
            
@@ -187,16 +185,26 @@
             </ul>
           </li>
           <%}}%>
-          
+                    <li style="text-align: center; color: white;"><br></li>
       <%if(session.getAttribute("users")!=null && session.getAttribute("admin")!=null ){
-      if(session.getAttribute("users").toString().equals("1") || session.getAttribute("admin").toString().equals("1")){%>  
-          <li style="text-align: center; color: white;"><br></li>
-          
+      if(session.getAttribute("users").toString().equals("1") || session.getAttribute("admin").toString().equals("1")){%>            
             <li class="nav-item has-treeview">
             <a href="manage_users.jsp" class="nav-link">
               <i class="nav-icon fas fa-users"></i>
               <p>
                 Manage Users
+              </p>
+            </a>
+           
+          </li>
+          <%}}%>
+      <%if(session.getAttribute("admin")!=null ){
+      if(session.getAttribute("admin").toString().equals("1")){%>  
+            <li class="nav-item has-treeview">
+            <a href="facility_manager.jsp" class="nav-link">
+              <i class="nav-icon fa fa-h-square"></i>
+              <p>
+                Manage Facility
               </p>
             </a>
            
@@ -261,7 +269,6 @@
   </aside>
     </body>
     
-    
     <script>
     $(document).ready(function(){
         load_menu();
@@ -307,8 +314,8 @@
                        frequency  = indicators[j]. frequency;   
                    
                   output+= "<li class=\"nav-item\">"+
-                        " <a href=\"data_entry.jsp?indicator="+indicator_id+"&&sec="+id+"\" class=\"nav-link\">"+
-                        "  <i class=\"far fa-circle nav-icon\"></i>"+
+                        " <a href=\"data_entry.jsp?indicator="+indicator_id+"&&sec="+id+"&&__&&test=1&&pass=3\" class=\"nav-link\">"+
+                        " <i class=\"far fa-circle nav-icon\"></i>"+
                         " <p>"+indicator_name+"</p>"+
                         "</a>"+
                         "</li>";

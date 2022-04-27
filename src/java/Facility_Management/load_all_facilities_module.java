@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package DataLoaders;
+package Facility_Management;
 
 import Database.dbConn;
 import java.io.IOException;
@@ -23,54 +23,59 @@ import org.json.simple.JSONObject;
  *
  * @author Geofrey Nyabuto
  */
-public class load_sections extends HttpServlet {
+public class load_all_facilities_module extends HttpServlet {
     HttpSession session;
-    String id,name;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        session = request.getSession();
         
         dbConn conn = new dbConn();
-        
-        JSONObject obj = new JSONObject();
+        session = request.getSession();
         JSONArray jarray = new JSONArray();
-            
         
         
+         if(session.getAttribute("user_id")!=null){
+        String query="SELECT \n" +
+                "f.id as id,\n"+
+                "c.name as County,\n" +
+                "sc.name as Sub_County,\n" +
+                "f.name as Health_Facility,\n" +
+                "f.mfl_code as MFL_Code,\n" +
+                "IF(SUM(t.gend_gbv+t.prep+t.kp+t.hts_self)>0,1,0) AS prevention,\n" +
+                "IF(SUM(t.hts_tst+t.hts_pos+t.index_testing+t.hts_recency)>0,1,0) AS hts,\n" +
+                "IF(SUM(t.tx_new+t.ca_screening+t.pmtct+t.eid+t.retention)>0,1,0) AS treatment,\n" +
+                "IF(SUM(t.vl+t.stf)>0,1,0) AS vl,\n" +
+                "IF(SUM(t.tb+t.tpt)>0,1,0) AS tb \n" +
+                "FROM facilities f \n" +
+                "INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
+                "INNER JOIN reports_tracker t on f.id=t.facility_id \n" +
+                "INNER JOIN counties c ON sc.county_id=c.id \n" +
+                "GROUP BY f.id \n" +
+                "ORDER BY County ASC,Sub_County ASC, Health_Facility ASC";
         
-        if(session.getAttribute("user_id")!=null){
-                 
-       String hts,prevention,treatment,vl,tb;
-       hts = session.getAttribute("hts").toString();
-       prevention = session.getAttribute("prevention").toString();
-       treatment = session.getAttribute("treatment").toString();
-       vl = session.getAttribute("vl").toString();
-       tb = session.getAttribute("tb").toString();        
-              
-          int sec;       
-        String get_sections = "SELECT id,name FROM sections ";
-        conn.rs = conn.st.executeQuery(get_sections);
-        
+        conn.rs = conn.st.executeQuery(query);
         while(conn.rs.next()){
-            sec=conn.rs.getInt(1);
-         if((sec==1 && prevention.equals("1")) || (sec==2 && hts.equals("1")) || (sec==3 && treatment.equals("1")) || (sec==4 && vl.equals("1")) || (sec==5 && tb.equals("1"))){
-            JSONObject ob = new JSONObject();
-           ob.put("section_id", conn.rs.getInt(1));
-           ob.put("name", conn.rs.getString(2));
-           ob.put("indicators", load_indicators(conn, conn.rs.getInt(1)));
-           jarray.add(ob);
-         }
-           
-        }
-        }
-             
-        obj.put("data", jarray);
+            JSONObject obj = new JSONObject();
+            obj.put("id", conn.rs.getInt("id"));   
+            obj.put("county", conn.rs.getString("County"));   
+            obj.put("sub_county", conn.rs.getString("Sub_County"));   
+            obj.put("health_facility", conn.rs.getString("Health_Facility"));   
+            obj.put("mflcode", conn.rs.getInt("MFL_Code"));   
+            obj.put("prevention", conn.rs.getInt("prevention"));   
+            obj.put("hts", conn.rs.getInt("hts"));   
+            obj.put("treatment", conn.rs.getInt("treatment"));   
+            obj.put("vl", conn.rs.getInt("vl"));   
+            obj.put("tb", conn.rs.getInt("tb"));   
+            
+            jarray.add(obj);
         
+        }
+         }
         
         if( conn.conn!=null){conn.conn.close();}
-        out.println(obj);
+        out.println(jarray);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -88,7 +93,7 @@ public class load_sections extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_sections.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_all_facilities_module.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -106,7 +111,7 @@ public class load_sections extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(load_sections.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_all_facilities_module.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -120,23 +125,4 @@ public class load_sections extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    
-    private JSONArray load_indicators(dbConn conn, int section_id) throws SQLException{
-        JSONArray jarray = new JSONArray();
-     
-        String get_indicators = "SELECT id,name,description,indicator_type,frequency FROM indicators WHERE status=1 AND section_id='"+section_id+"'"; // active indicators
-        conn.rs1 = conn.st1.executeQuery(get_indicators);
-        while(conn.rs1.next()){
-        JSONObject ob = new JSONObject();
-        ob.put("indicator_id", conn.rs1.getInt(1));
-        ob.put("indicator_name", conn.rs1.getString(2));
-        ob.put("description", conn.rs1.getString(3));
-        ob.put("indicator_type", conn.rs1.getInt(4));
-        ob.put("frequency", conn.rs1.getInt(5));
-        
-        jarray.add(ob);
-    }
-        
-      return jarray;  
-    }
 }

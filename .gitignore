@@ -3256,3 +3256,5 @@ build/web/highcharts/code/css/annotations/popup.css
 build/web/WEB-INF/classes/DataLoaders/load_user_modules.class
 build/web/WEB-INF/classes/UserManagement/update_user_access.class
 build/web/WEB-INF/classes/UserManagement/update_user_access.class
+*.class
+build/web/facility_manager.jsp

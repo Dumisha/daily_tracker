@@ -870,14 +870,27 @@ $(document).ready(function() {
        var neg = "0"+$("#id_58").val();
        var pos = "0"+$("#id_60").val();
        
+       var sdp = parseInt($("#id_55").val());
+       
+       
        
       var error_message = "";
       var errors=0;
       
+      if(sdp!==9){
        if((parseInt(neg)+parseInt(pos))!==parseInt(tested)){
            errors++;
            error_message+= errors+". Sum of Negative and Positive must be equal to tested<br>";
        }
+   }
+   else{
+       var postanc1="0"+$("#id_118").val();
+       
+     if((parseInt(neg)+parseInt(pos))!==(parseInt(tested)+parseInt(postanc1))){
+           errors++;
+           error_message+= errors+". Sum of Negative and Positive must be equal to Initial tests (ANC1 & PostANC1 )<br>";
+       }  
+   }
       
        // flags
         if(errors>0){
