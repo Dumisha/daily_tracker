@@ -501,6 +501,7 @@ $("form").submit(function(e){
  if(indicator_id===1){ errors+= validate_gend_gbv();}
  if(indicator_id===5){ errors+= validate_hts_tst(); }
   if(indicator_id===7){ errors+= validate_pns();}
+  if(indicator_id===21){ errors+= validate_recency();}
 //  if(indicator_id===9){ errors+= validate_ca_screening();} 
   if(indicator_id===10){ errors+= validate_pmtct();}
   if(indicator_id===12){ errors+= validate_retention();}
@@ -770,14 +771,21 @@ $(document).ready(function() {
        var eligible = "0"+$("#id_21").val();
        var hts_tst = "0"+$("#id_22").val();
        var tst_male = "0"+$("#id_23").val();
-       var tst_female = "0"+$("#id_24").val();
+       var tst_female = "0"+$("#id_109").val();
+       var tst_female_24 = "0"+$("#id_24").val();
        var prep_eligible = "0"+$("#id_6").val();
        var prep_new = "0"+$("#id_7").val();
+       var opd_workload = "0"+$("#id_108").val();
+       var tst_male_24 = "0"+$("#id_110").val();
        
        
       var error_message = "";
       var errors=0;
       
+       if(parseInt(screened)>parseInt(opd_workload)){
+           errors++;
+           error_message+= errors+". Number Screened cannot be more than OPD Workload<br>";
+       }
        if(parseInt(eligible)>parseInt(screened)){
            errors++;
            error_message+= errors+". Number Eligible cannot be more than number screened<br>";
@@ -786,9 +794,17 @@ $(document).ready(function() {
            errors++;
            error_message+= errors+". Number tested cannot be more than number eligible<br>";
        }
-       if((parseInt(tst_male)+parseInt(tst_female))>parseInt(hts_tst)){
+       if((parseInt(tst_male)+parseInt(tst_female))!==parseInt(hts_tst)){
            errors++;
-           error_message+= errors+". Number tested female 15-24 and tested male cannot be more than number tested total<br>";
+           error_message+= errors+". Number tested female and male cannot be more than total number tested <br>";
+       }
+       if(parseInt(tst_female_24)>parseInt(tst_female)){
+           errors++;
+           error_message+= errors+". Number of female 15-25 tested cannot be more than total females tested<br>";
+       }
+       if(parseInt(tst_male_24)>parseInt(tst_male)){
+           errors++;
+           error_message+= errors+". Number of male 15-25 tested cannot be more than total males tested<br>";
        }
        if(parseInt(prep_new)>parseInt(prep_eligible)){
            errors++;
@@ -825,6 +841,41 @@ $(document).ready(function() {
        if(parseInt(linked)>parseInt(positive)){
            errors++;
            error_message+= errors+". Number linked cannot be more than number positive<br>";
+       }
+       
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });  
+        }
+     
+        return errors;
+   }
+    
+    
+   function validate_recency(){
+       var pos = "0"+$("#id_119").val();
+       var eligible = "0"+$("#id_120").val();
+       var offered = "0"+$("#id_121").val();
+       var enrolled = "0"+$("#id_122").val();
+       
+       
+       
+      var error_message = "";
+      var errors=0;
+      
+       if(parseInt(eligible)>parseInt(pos)){
+           errors++;
+           error_message+= errors+". Number eligible for Recency testing cannot be more than number identified positive 15+ years<br>";
+       }
+       if(parseInt(offered)>parseInt(eligible)){
+           errors++;
+           error_message+= errors+". Number Offered Recency testing cannot be more than number eligible for Recency Testing<br>";
+       }
+       if(parseInt(enrolled)>parseInt(offered)){
+           errors++;
+           error_message+= errors+". Number enrolled in recency testing cannot be more than number offered Recency Testing<br>";
        }
        
         if(errors>0){

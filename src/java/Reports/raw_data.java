@@ -175,11 +175,13 @@ public class raw_data extends HttpServlet {
           indicator_name = conn.rs.getString(3);
           query = conn.rs.getString(2).replace("start_date", "DATE('"+start_date+"')").replace("end_date", "DATE('"+end_date+"')").replace("facility_ids", facility_ids);
 
+          System.out.println("query is : "+query);
          
 //          create sheet
           XSSFSheet sheet= wb.createSheet(indicator_name);
          // run query to get_data
       conn.rs1 = conn.st1.executeQuery(query);
+          System.out.println("Query : "+query);
       
          ResultSetMetaData metaData = conn.rs1.getMetaData();
             int col_count = metaData.getColumnCount(); //number of column
@@ -200,7 +202,7 @@ public class raw_data extends HttpServlet {
                       
              XSSFRow RowData = sheet.createRow(row);
         for(int i=0;i<col_count; i++){ // read and output data
-
+System.out.println("Data is :"+conn.rs1.getString(i+1));
           value = conn.rs1.getString(i+1);
           XSSFCell cell = RowData.createCell(i);
           if(mg.isNumeric(value)){cell.setCellValue(Integer.parseInt(value));}

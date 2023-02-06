@@ -75,6 +75,7 @@ female_total,female_less_10,female_10_14,female_15_19,female_20_24,female_25_49,
            
         User_Locations ul = new User_Locations();
 
+               System.out.println("c:"+counties+" sc"+sub_counties+" f:"+facilities+" ul: "+user_level+" uid: "+user_id);
                String selected_facilities = ul.load_user_selected_facilities(counties,sub_counties,facilities,user_level,user_id,conn);
        
        // tested, positive, linked 
@@ -98,6 +99,9 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
                     "(SELECT 1 as num,SUM(tst.tested) as tested, 0 as positive,0 AS linked \n" +
                     "FROM etl_hts_tst tst where tst.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tst.facility_id in("+selected_facilities+") )) AS hts GROUP BY num \n" +
                     "\n";
+       
+       
+               System.out.println("query us : "+get_hts);
    conn.rs = conn.st.executeQuery(get_hts);
    if(conn.rs.next()){
     tested = conn.rs.getInt(1);
@@ -107,21 +111,36 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
    
    
    // GET INFLOWS and outflows
-   String inflow_outflow = "SELECT \n" +
-                                "0 AS num,\n" +
-                                "tx_new.tx_new,\n" +
-                                "IFNULL(SUM(r.ltfu_returned),0) AS ltfu_returned,\n" +
-                                "IFNULL(SUM(r.transfer_in),0) AS transfer_in,\n" +
-                                "IFNULL(SUM(r.transferred_out),0) AS transferred_out,\n" +
-                                "IFNULL(SUM(r.died),0) AS died,\n" +
-                                "IFNULL(SUM(r.stopped),0) AS stopped,\n" +
-                                "IFNULL(SUM(r.iit_today),0) AS iit_today\n" +
-                                "FROM etl_retention r \n" +
-                                "INNER JOIN(\n" +
-                                "SELECT 0 as num, COUNT(tx.entry_key) as tx_new\n" +
-                                " FROM etl_tx_new tx where tx.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tx.facility_id in("+selected_facilities+") \n" +
-                                ") as tx_new on num=tx_new.num "
-                                + " where r.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"')  and r.facility_id in("+selected_facilities+") ";
+   String inflow_outflow = ""
+           + "SELECT\n" +
+"0 as num,\n" +
+"SUM(tx_new) AS tx_new,\n" +
+"SUM(ltfu_returned) AS ltfu_returned,\n" +
+"SUM(transfer_in) AS transfer_in,\n" +
+"SUM(transferred_out) AS transferred_out,\n" +
+"SUM(died) AS died,\n" +
+"SUM(stopped) AS stopped,\n" +
+"SUM(iit_today) AS  iit_today\n" +
+"FROM\n" +
+    "(SELECT 0 as num, 0 as tx_new,\n" +
+    "IFNULL(SUM(r.ltfu_returned),0) AS ltfu_returned,\n" +
+    "IFNULL(SUM(r.transfer_in),0) AS transfer_in,\n" +
+    "IFNULL(SUM(r.transferred_out),0) AS transferred_out,\n" +
+    "IFNULL(SUM(r.died),0) AS died,\n" +
+    "IFNULL(SUM(r.stopped),0) AS stopped,\n" +
+    "IFNULL(SUM(r.iit_today),0) AS iit_today \n" +
+    "FROM etl_retention r \n" +
+    "where r.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and r.facility_id in("+selected_facilities+") \n" +
+"UNION  \n" +
+"  SELECT 0 as num, COUNT(tx.entry_key) as tx_new,\n" +
+    "0 AS ltfu_returned,\n" +
+    "0 AS transfer_in,\n" +
+    "0 AS transferred_out,\n" +
+    "0 AS died,\n" +
+    "0 AS stopped,\n" +
+    "0 AS iit_today\n" +
+    " FROM etl_tx_new tx where tx.encounter_date BETWEEN DATE('"+start_date+"') AND DATE('"+end_date+"') and tx.facility_id in("+selected_facilities+")\n" +
+" ) as data Group by num \n";
    
    conn.rs = conn.st.executeQuery(inflow_outflow);
    if(conn.rs.next()){
@@ -133,6 +152,8 @@ female_total=female_less_10=female_10_14=female_15_19=female_20_24=female_25_49=
     stopped = conn.rs.getInt(7);
     iit_today = conn.rs.getInt(8);  
    }
+   
+               System.out.println("inflow and outflows : "+inflow_outflow);
    
    // pns testing 
    String get_pns="SELECT \n" +

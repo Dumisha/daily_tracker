@@ -100,7 +100,7 @@
                     Phone: 
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <input type="text" class="form-control" id="phone" name="phone"  required="true" placeholder="Phone" autocomplete="off">
+                        <input type="text" class="form-control" id="phone" name="phone" value="<%if(session.getAttribute("phone")!=null){out.println(session.getAttribute("phone"));}%>"  required="true" placeholder="Phone" autocomplete="off">
                     </div>
                     </div>                     
                     <div class="flex-container" id="end_label">
@@ -108,7 +108,7 @@
                    Email:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <input type="text" class="form-control" id="email" name="email"  required="true" placeholder="Email Address" autocomplete="off">
+                        <input type="text" class="form-control" id="email" name="email" value="<%if(session.getAttribute("email")!=null){out.println(session.getAttribute("email"));}%>"  required="true" placeholder="Email Address" autocomplete="off">
                     </div>
                     </div>                     
                     <div class="flex-container" id="end_label">
@@ -116,7 +116,7 @@
                    Password:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <input type="text" class="form-control" id="password" name="password"  required="true" placeholder="Pass" autocomplete="off">
+                        <input type="text" class="form-control" id="pass1" name="pass1" oninput="checkPasswords()"  required="true" placeholder="Password" autocomplete="off">
                     </div>
                     </div>                     
                     <div class="flex-container" id="end_label">
@@ -124,7 +124,7 @@
                    Repeat-password:
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <input type="text" class="form-control" id="repeat_password" name="repeat_password"  required="true" placeholder="repeat password" autocomplete="off">
+                        <input type="text" class="form-control" id="pass2" name="pass2" oninput="checkPasswords()"  required="true" placeholder="Repeat password" autocomplete="off">
                     </div>
                     </div>                     
                        
@@ -174,5 +174,46 @@
                                     
 </body>
 
+        <%if(session.getAttribute("update_profile")!=null){
+        String mess =session.getAttribute("update_profile").toString();
+        %>
+        <script type="text/javascript">
+           $.jGrowl('<%=mess%>', {
+                position: 'center',
+                header: 'Account Update',
+                theme: 'bg-info'
+
+            });  
+            </script>
+            <% session.removeAttribute("update_profile");}%>
+
+
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
+            
+   <script type="text/javascript" language="en">
+   function numbers(evt){
+var charCode=(evt.which) ? evt.which : event.keyCode
+if(charCode > 31 && (charCode < 48 || charCode>57))
+return false;
+return true;
+}
+//-->
+</script>
+ <script type="text/javascript">
+    
+            function checkPasswords() {
+                var password = document.getElementById('pass1');
+                var conf_password = document.getElementById('pass2');
+
+                if (password.value != conf_password.value) {
+                    conf_password.setCustomValidity('Passwords do not match');
+                } else {
+                    conf_password.setCustomValidity('');
+                }
+                
+          
+        
+            }
+    
+    </script>
 </html>

@@ -12,6 +12,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 /**
@@ -68,5 +70,13 @@ public class PasswordUtils {
         returnValue = newSecurePassword.equalsIgnoreCase(securedPassword);
         
         return returnValue;
+    }
+    
+    public  boolean isValid(String password) {
+//        String regex = "^(?=.{5,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&_+=]!).*$";
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(password);
+//        return matcher.matches();
+        return true;
     }
 }

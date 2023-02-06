@@ -64,7 +64,7 @@
     <div class="card-body login-card-body" >
 
 					<!-- Advanced login -->
-                                        <form action="#" style="margin-top: 0%;">
+                                        <form method="post" style="margin-top: 0%;">
                                             
                                             <div class="panel panel-body login-form" >
 							<div class="text-center">
@@ -88,7 +88,7 @@
                                                          
                                                           <div>Email Address<b style="color:red;"> *</b></div>
 							<div class="form-group has-feedback has-feedback-left">
-                                                            <input type="email" class="form-control" minlength="17" maxlength="50" id="email" name="email" placeholder="Email Address"  required="false">
+                                                            <input type="email" class="form-control" minlength="10" maxlength="50" id="email" name="email" placeholder="Email Address"  required="false">
 							</div>
                                                 
                                                            <div>Phone Number<b style="color:red;"> *</b></div>
@@ -107,7 +107,7 @@
 							</div>
                                                              
                                                            <div class="form-group" style="width: 100%;">
-                                                            <button type="submit" id="submit" class="btn btn-primary btn-block">Register User </button>
+                                                            <button id="submit" class="btn btn-primary btn-block">Register User </button>
                                                             </div>
                                            </div>
 					</form>
@@ -149,7 +149,8 @@
 <script>
     $(document).ready(function(){ 
 
-$("#submit").click(function(){
+$("#submit").click(function(e){
+    e.preventDefault();
   var fname,mname,lname,phone,email,pass1,pass2;
   fname = $("#fname").val();
   mname = $("#mname").val();
@@ -164,6 +165,7 @@ $("#submit").click(function(){
   if(fname.length<3){errors++; error_message+="Enter correct first name <br>";}
   if(lname.length<3){errors++; error_message+="Enter correct last name <br>";}
   if(phone.length!==10){errors++; error_message+="Enter correct phone number <br>";}
+  if(email.length<7){errors++; error_message+="Enter correct email address <br>";}
   if(pass1!==pass2){errors++; error_message+="Passwords do not Match. <br>";}
  
  if(errors>0){
@@ -180,7 +182,7 @@ $("#submit").click(function(){
             save_data(form_data);
  }
  
- 
+ return false;
 });
     });
     

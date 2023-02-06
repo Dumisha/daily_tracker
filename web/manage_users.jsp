@@ -242,7 +242,7 @@
                 
                 
                 
-                <div class="modal fade" id="modal-access">
+       <div class="modal fade" id="modal-access">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -387,16 +387,64 @@
         <!-- /.modal-dialog -->
       </div>
                 
-                
-                
-                
-                
-                
-                
-                
                 <!------- end of modals ------->
                 
+               
                 
+                
+                
+                
+                <!--              modal update password ------------------>
+                         
+                
+       <div class="modal fade" id="modal-password">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title"><b>Reset User Password</b></h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" autocomplete="off" id="user_access">
+              <form id="user_access_settings">  
+             
+                <div class="flex-container">
+                     <div class="flex-child">
+                   New Password <font color="red">*</font>:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="text" name="pass1" id="pass1" minlength="3" oninput="checkPasswords()" class="form-control" required="true" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters">
+                    </div>
+                    </div>
+                
+                <div class="flex-container">
+                     <div class="flex-child">
+                   Repeat Password <font color="red">*</font>:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                        <input type="text" name="pass2" id="pass2" minlength="3" oninput="checkPasswords()" class="form-control" required="true" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters">
+                    </div>
+                    </div>
+                
+                <input type="hidden" id="user_pass_id" name="user_pass_id">
+                
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="update_password">Update Password</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+                
+                 
+                
+                
+                <!------- end of update password modal --------------->
                    
                 </div>
             <!-- /.card -->
@@ -450,11 +498,31 @@
 
    
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
+ <script type="text/javascript">
+    
+            function checkPasswords() {
+                var password = document.getElementById('pass1');
+                var conf_password = document.getElementById('pass2');
 
+                if (password.value != conf_password.value) {
+                    conf_password.setCustomValidity('Passwords do not match');
+                } else {
+                    conf_password.setCustomValidity('');
+                }
+                
+          
+        
+            }
+    
+    </script>
     <script>
    $(document).ready(function() {
 //         $('.select2bs4').select2({  theme: 'bootstrap4' });
         load_data();
+        
+        $("#update_password").click(function(){
+         update_pass();  
+        });
 }); 
     </script>
 <script>
@@ -512,6 +580,10 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
       <%if(session.getAttribute("admin")!=null){
       if(session.getAttribute("admin").toString().equals("1")){%>
                action+='<li data-toggle="modal" data-target="#modal-access"><a onclick="manage_access('+id+');"><i class="fas fa-user-secret"></i>Access Levels</a></li>\n';
+               <%}}%>
+      <%if(session.getAttribute("admin")!=null){
+      if(session.getAttribute("admin").toString().equals("1")){%>
+               action+='<li data-toggle="modal" data-target="#modal-password"><a onclick="manage_password('+id+');"><i class="fas fa-user-secret"></i>Reset Password</a></li>\n';
                <%}}%>
 //                action+='<li><a onclick="delete_user('+id+');"><i class="fas fa-user-alt-slash"></i>Delete</a></li>';
 
@@ -579,15 +651,12 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                                     var message = JSON.parse(output).message;
                                     var header="";
                                     if(code===1){
-                                        theme = "bg-success";
-                                        header="<b>Success</b>";
                                        edit_user(output); 
                                     }
                                     else{
                                        theme = "bg-danger"; 
                                        header="<b>Error</b>";
-                                    }
-                                    
+                                       
                                     $.jGrowl('close');
                                     
                                   $.jGrowl(message, {
@@ -595,6 +664,8 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                                         header: header,
                                         theme: theme
                                    }); 
+                                    }
+                                    
                                
                                  });
   }
@@ -625,6 +696,53 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
                                
                                  });
   }
+      function manage_password(pos){    
+        $("#user_pass_id").val(pos);
+  }
+  
+  function update_pass(){
+      var id = $("#user_pass_id").val();
+      var pass1 = $("#pass1").val();
+      var pass2 = $("#pass2").val();
+      
+      var pattern = new RegExp("^(?=.{5,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@#$%^&_+=]).*$"); // Must contain at least one number and one uppercase and lowercase letter, and at least 5 or more characters
+      
+      var errors=0;
+      var message="";
+      
+      if(pass1.length>=4){
+        if(pass1===pass2){
+          // check for regex        
+//            if(pattern.test(pass1)){
+                // update db  
+                    var url = "reset_password";
+                    var data = {"id":id,"pass1":pass1,"pass2":pass2};
+                    save_data(data,url);
+//               }
+//              else{
+//                  errors++;
+//           message="Must contain at least one number and one uppercase and lowercase letter, and at least 5 characters";       
+//              }
+          }
+        else{
+            errors++;
+          message="Passwords do not match";
+
+          }
+    }
+    else{
+      errors++;
+      message="Password must be atleast 4 characters";
+        
+    }
+    
+    if(errors>0){
+     $.jGrowl(message, {
+                         header: 'Error Message',
+                         theme: 'bg-danger'
+                    });  
+                }
+    }
   
     </script>
     

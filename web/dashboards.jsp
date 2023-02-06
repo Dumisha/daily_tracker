@@ -432,9 +432,9 @@ function load_dashboard(){
     var facilities = ""+$("#facility").val();
     var start_date = ""+$("#start_date").val();
     var end_date = ""+$("#end_date").val();
-    
+
     var url="dashboards?counties="+counties+"&sub_counties="+sub_counties+"&facilities="+facilities+"&start_date="+start_date+"&end_date="+end_date;
-    
+
   $.ajax({
         url:url,
         type:"get",

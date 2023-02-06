@@ -57,22 +57,18 @@ String NextPage="";
                     "FROM users u\n" +
                     "LEFT OUTER JOIN module_management mg on u.id=mg.user_id "
                                          + " where (phone=? || email=?) AND (email IS NOT NULL OR email!='')";
+             
              conn.pst = conn.conn.prepareStatement(GetUserSecurityDetails);
              conn.pst.setString(1, username);
              conn.pst.setString(2, username);
              
+             System.out.println("query login "+conn.pst);
              conn.rs = conn.pst.executeQuery();
              
              if(conn.rs.next()){
                  db_pass = conn.rs.getString(1);
                  db_salt = conn.rs.getString(2);     
-//                 
-//        // Encrypted and Base64 encoded password read from database
-//        String securePassword = "HhaNvzTsVYwS/x/zbYXlLOE3ETMXQgllqrDaJY9PD/U=";
-//        
-//        // Salt value stored in database 
-//        String salt = "EqdmPh53c9x33EygXpTpcoJvc4VXLK";
-        
+
         boolean passwordMatch = PasswordUtils.verifyUserPassword(password,db_pass, db_salt);
         
         if(passwordMatch) 
@@ -129,13 +125,13 @@ String NextPage="";
                     
                 login_code=1;
                 login_message="User Logged in Successfully";
-                NextPage="home.jsp"; 
+                NextPage="dashboards.jsp"; 
             }
             
             else if(is_active==1 && approved==0){
                login_code=0;
                 login_message="User is pending approval from management";
-                NextPage="home.jsp";    
+                NextPage="dashboards.jsp";    
             }
             
             else{

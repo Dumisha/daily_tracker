@@ -229,8 +229,8 @@ public class User_Locations {
          if(ul.equals("1")){    
           if(!s_f.equals("")){
              query =  "SELECT f.id \n" +
-            "FROM facilities f and f.id in("+s_f+")\n" +
-            "INNER JOIN user_facilities uf ON uf.facility_id=f.id and uf.user_id='"+uid+"' ";
+            "FROM facilities f \n" +
+            "INNER JOIN user_facilities uf ON uf.facility_id=f.id and f.id in("+s_f+") and uf.user_id='"+uid+"' ";
           }
           
          else if(s_f.equals("") && !sc.equals("")){
@@ -274,14 +274,14 @@ public class User_Locations {
              query =  "SELECT f.id \n" +
                     " FROM facilities f \n" +
                     " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id and sc.county_id in("+c+")\n" +
-                    " INNER JOIN user_counties uc ON sc.county_id=uc.county_id \n" +
+                    " INNER JOIN user_sub_counties usc ON sc.id=usc.sub_county_id \n" +
                     "  and usc.user_id='"+uid+"'";
           }
          else if(sc.equals("") && c.equals("")){
              query =  "SELECT f.id \n" +
                     " FROM facilities f \n" +
                     " INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
-                    " INNER JOIN user_counties uc ON sc.county_id=uc.county_id \n" +
+                    "  INNER JOIN user_sub_counties usc ON sc.id=usc.sub_county_id \n" +
                     "  and usc.user_id='"+uid+"' ";
           }
     }

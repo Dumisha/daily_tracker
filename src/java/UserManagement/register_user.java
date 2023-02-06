@@ -30,6 +30,9 @@ int code;
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         dbConn conn = new dbConn();
+        
+        PasswordUtils utils = new PasswordUtils();
+        
         code=0;
         first_name = request.getParameter("fname");
         middle_name = request.getParameter("mname");
@@ -41,7 +44,8 @@ int code;
         
         
         if(pass1.equals(pass2)){
-          
+//          if(utils.isValid(pass1)){ // password meets standards
+          if(1==1){ // password meets standards
             //
             if(!user_exist(phone,email,conn)){ // user does not exist
               // add as new user 
@@ -66,9 +70,16 @@ int code;
                 code=1;
                 message="User registered successfully.";
             }
+          
+          else{
+         code=0;
+                message = "User email or phone number already exist or no email is provided. Contact support for assistance.";        
+          }
+        }
             else{
                 code=0;
-                message="User with similar phone number and/or email already exist in the system";
+                message = "No Error";
+//                message="Password does not meet set Standards. Please ensure your password has a mixture of upper case, lower case, numeric and atleast one special character";
             }
             
             

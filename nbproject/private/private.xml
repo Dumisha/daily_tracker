@@ -3,18 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Faces/Developer/Systems/ddta/web/facility_manager.jsp</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/web/data_entry.jsp</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/Facility_Management/load_all_facilities_module.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/Security/login.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/web/manage_users.jsp</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/web/menu/menu.jsp</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/Security/Create_File.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/DataLoaders/load_facilities.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/DataLoaders/load_sub_counties.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/DataLoaders/load_sections.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/DataLoaders/load_user_sub_counties.java</file>
-            <file>file:/D:/Faces/Developer/Systems/ddta/src/java/Facility_Management/load_facility_modules.java</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/web/stock_index.jsp</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/src/java/stockverification/commoditiesreported.java</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/web/index.jsp</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/web/stockverification.jsp</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/web/dashboards.jsp</file>
+            <file>file:/D:/Programming/Java/Web%20Apps/ddta/src/java/DDTA/save_data.java</file>
         </group>
     </open-files>
 </project-private>

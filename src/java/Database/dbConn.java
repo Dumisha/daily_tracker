@@ -29,8 +29,8 @@ public  Connection conn = null;
     public dbConn() {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-             conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ddta","root", "admin"); // local setup
-   
+              conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/ddta","root", "admin"); // local setup
+
 
                             st0 = conn.createStatement();
                             st = conn.createStatement();

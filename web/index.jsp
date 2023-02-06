@@ -63,7 +63,7 @@
   <!-- /.login-logo -->
   <div class="card" style="width: 100%;">
       <div class="card-body login-card-body" style="margin-top: 3%; margin-bottom: 1%;" >
-        <div style=" text-align: center; font-weight: bold;">Daily Data Tracking System</div><br>
+        <div style=" font-weight: bold;">Daily Data Tracking System</div><br>
      <form action="login" method="post">
         <div class="input-group mb-3">
           <input type="text" class="form-control" id="username" name="username" maxlength="50" placeholder="Email/Phone Number"  required="true">
@@ -97,9 +97,11 @@
                                                             <b>New User?</b><span><a href="register.jsp" style=""><b> Register Here</b></a></span>
                                                             <br>
                                                             <br>
-<!--                                                            <b>Forgot Password?</b><span><a href="forgot_password.jsp" style=""><b>Reset Password</b></a></span>
+                                                            <div> Click
+                                                            <span><a href="stock_index.jsp" ><b >HERE</b></a> to log in stock data</span>
                                                             <br style="margin-top:1%;">
-                                                            <br>
+                                                            </div>
+                                                            <br><!--
                                                             <b>Email not Confirmed?</b><span><a href="conf_email.jsp" style=""><b>Confirm Now</b></a></span>
                                                             <br style="margin-top:3%;">-->
                                                       </div>

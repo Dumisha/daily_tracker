@@ -56,6 +56,7 @@ public class load_user_info extends HttpServlet {
           obj.put("email", conn.rs.getString(7));
           obj.put("approved", conn.rs.getString(8));
           obj.put("status", conn.rs.getString(9));
+          code=1;
         }
         else{
             code=0;

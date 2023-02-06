@@ -62,7 +62,7 @@ public class Manage {
         
         else if(user_level.equals("3")){ // county user
             q = "SELECT f.id FROM facilities f INNER JOIN sub_counties sc ON f.sub_county_id=sc.id \n" +
-                    "INNER JOIN counties c ON sc.county_id=c.id INNER JOIN user_counties uc ON c.id=uc.county_id WHERE c.user_id='"+user_id+"'";
+                    "INNER JOIN counties c ON sc.county_id=c.id INNER JOIN user_counties uc ON c.id=uc.county_id WHERE uc.user_id='"+user_id+"'";
         }
         
         else if(user_level.equals("4")){ // program user
