@@ -108,7 +108,7 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
               <div class="card-header">
                   <h3 class="card-title" id="indicator_name" style="text-align: center;font-weight: 900;">Indicator Management Module</h3>
                  <br>
-                 <h6 id="description" style="color:gray; font-style: italic; font-size: 13px;"></h6>
+                 <h6 id="description" style="color:red; font-style: italic; font-size: 16px;"></h6>
               </div>
                          <div class="card-body"> 
                              
@@ -506,6 +506,7 @@ $("form").submit(function(e){
   if(indicator_id===10){ errors+= validate_pmtct();}
   if(indicator_id===12){ errors+= validate_retention();}
   if(indicator_id===13){ errors+= validate_suppression();}
+  if(indicator_id===23) {errors+= validate_opd();}
 
        // 0725705194 brian safaricon home fibre
         
@@ -765,24 +766,17 @@ $(document).ready(function() {
       return errors;
     }       
      
-    
-   function validate_hts_tst(){
-       var screened = "0"+$("#id_20").val();
-       var eligible = "0"+$("#id_21").val();
-       var hts_tst = "0"+$("#id_22").val();
-       var tst_male = "0"+$("#id_23").val();
-       var tst_female = "0"+$("#id_109").val();
-       var tst_female_24 = "0"+$("#id_24").val();
-       var prep_eligible = "0"+$("#id_6").val();
-       var prep_new = "0"+$("#id_7").val();
-       var opd_workload = "0"+$("#id_108").val();
-       var tst_male_24 = "0"+$("#id_110").val();
-       
-       
-      var error_message = "";
-      var errors=0;
-      
-       if(parseInt(screened)>parseInt(opd_workload)){
+     
+     function validate_opd(){
+                var opd_workload = "0"+$("#id_108").val();
+                var screened = "0"+$("#id_20").val();
+                var eligible = "0"+$("#id_21").val();
+                var tested = "0"+$("#id_131").val();
+               
+              var error_message = "";
+                var errors=0;
+              
+               if(parseInt(screened)>parseInt(opd_workload)){
            errors++;
            error_message+= errors+". Number Screened cannot be more than OPD Workload<br>";
        }
@@ -790,10 +784,36 @@ $(document).ready(function() {
            errors++;
            error_message+= errors+". Number Eligible cannot be more than number screened<br>";
        }
-       if(parseInt(hts_tst)>parseInt(eligible)){
+        if(parseInt(tested)>parseInt(eligible)){
            errors++;
            error_message+= errors+". Number tested cannot be more than number eligible<br>";
        }
+       
+               
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            }); 
+        }
+     
+        return errors;
+     }
+    
+   function validate_hts_tst(){
+
+       var hts_tst = "0"+$("#id_22").val();
+       var tst_male = "0"+$("#id_23").val();
+       var tst_female = "0"+$("#id_109").val();
+       var tst_female_24 = "0"+$("#id_24").val();
+       var prep_eligible = "0"+$("#id_6").val();
+       var prep_new = "0"+$("#id_7").val();
+       var tst_male_24 = "0"+$("#id_110").val();
+       
+       
+      var error_message = "";
+      var errors=0;
+
        if((parseInt(tst_male)+parseInt(tst_female))!==parseInt(hts_tst)){
            errors++;
            error_message+= errors+". Number tested female and male cannot be more than total number tested <br>";
