@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 package stockverification;
 
@@ -15,53 +14,43 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
  *
- * @author Administrator
+ * @author mwamb
  */
-public class checkNoteDuplicates extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+public class load_pipeline extends HttpServlet {
+    HttpSession session;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-      PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            
-            String com="";
-            String delnote="";
-    if(request.getParameter("com")!=null){
-    com=request.getParameter("com");
-    }    
-    
-    if(request.getParameter("delnote")!=null)
-    {
-    delnote=request.getParameter("delnote");
-    }        
-          
-    dbConn conn= new dbConn();
-    
-            
-    
-        out.println(isDeliveryDuplicate(conn, delnote, com));
-            
-            
-             if(conn.rs!=null){conn.rs.close();}
-        if(conn.rs1!=null){conn.rs1.close();}
-        if(conn.st!=null){conn.st.close();}
-        if(conn.st1!=null){conn.st1.close();}
-        if(conn.conn!=null){conn.conn.close();}
+        PrintWriter out = response.getWriter();
         
+        session = request.getSession();
+        dbConn conn = new dbConn();
+        
+        JSONArray jarray = new JSONArray();
+        
+        if(session.getAttribute("user_id")!=null){
+        }
+         String get_commodities = "SELECT id,name,is_active FROM stock_pipeline ORDER by name ASC";
+        conn.rs = conn.st.executeQuery(get_commodities);
+        while(conn.rs.next()){
+            JSONObject obj = new JSONObject();
+            obj.put("id", conn.rs.getInt(1));
+            obj.put("name", conn.rs.getString(2));
+            obj.put("is_active", conn.rs.getInt(3));
+            
+            jarray.add(obj);
+        }
+        
+        
+        if( conn.conn!=null){conn.conn.close();}
+        out.println(jarray);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -79,7 +68,7 @@ public class checkNoteDuplicates extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(checkNoteDuplicates.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_pipeline.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -97,7 +86,7 @@ public class checkNoteDuplicates extends HttpServlet {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
-            Logger.getLogger(checkNoteDuplicates.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(load_pipeline.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -111,22 +100,4 @@ public class checkNoteDuplicates extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    public JSONObject isDeliveryDuplicate(dbConn conn, String delnote, String commid) throws SQLException{
-    String qry="select id from internal_system.stocks_data where commodity='"+commid+"' and delnoteno='"+delnote+"'"; 
-    JSONObject jo= new JSONObject();
-    conn.rs= conn.st.executeQuery(qry);
-    
-    if(conn.rs.next()){
-    jo.put("duplicate", "yes");
-    
-    }
-    else {
-        
-    jo.put("duplicate", "no");
-    }
-    
-    
-    return jo;
-    }
-    
 }

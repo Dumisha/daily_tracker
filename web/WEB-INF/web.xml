@@ -221,40 +221,36 @@
         <servlet-class>Reports.ReportsTracker</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>checkNoteDuplicates</servlet-name>
-        <servlet-class>stockverification.checkNoteDuplicates</servlet-class>
+        <servlet-name>load_commodities</servlet-name>
+        <servlet-class>stockverification.load_commodities</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>commoditiesreported</servlet-name>
-        <servlet-class>stockverification.commoditiesreported</servlet-class>
+        <servlet-name>load_pipeline</servlet-name>
+        <servlet-class>stockverification.load_pipeline</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>loadComodities</servlet-name>
-        <servlet-class>stockverification.loadComodities</servlet-class>
+        <servlet-name>load_stock_data</servlet-name>
+        <servlet-class>stockverification.load_stock_data</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>loadSavedData</servlet-name>
-        <servlet-class>stockverification.loadSavedData</servlet-class>
+        <servlet-name>save_stock</servlet-name>
+        <servlet-class>stockverification.save_stock</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>loadStockSites</servlet-name>
-        <servlet-class>stockverification.loadStockSites</servlet-class>
+        <servlet-name>stock_report</servlet-name>
+        <servlet-class>stockverification.stock_report</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>saveStockData</servlet-name>
-        <servlet-class>stockverification.saveStockData</servlet-class>
+        <servlet-name>load_time</servlet-name>
+        <servlet-class>stockverification.load_time</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>stocks_login</servlet-name>
-        <servlet-class>stockverification.stocks_login</servlet-class>
+        <servlet-name>load_minutes</servlet-name>
+        <servlet-class>stockverification.load_minutes</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>getIndicators</servlet-name>
-        <servlet-class>stockverification.getIndicators</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>getReportingDates</servlet-name>
-        <servlet-class>stockverification.getReportingDates</servlet-class>
+        <servlet-name>load_dates_unlock</servlet-name>
+        <servlet-class>DataLoaders.load_dates_unlock</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -477,40 +473,36 @@
         <url-pattern>/ReportsTracker</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>checkNoteDuplicates</servlet-name>
-        <url-pattern>/checkNoteDuplicates</url-pattern>
+        <servlet-name>load_commodities</servlet-name>
+        <url-pattern>/load_commodities</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>commoditiesreported</servlet-name>
-        <url-pattern>/commoditiesreported</url-pattern>
+        <servlet-name>load_pipeline</servlet-name>
+        <url-pattern>/load_pipeline</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>loadComodities</servlet-name>
-        <url-pattern>/loadComodities</url-pattern>
+        <servlet-name>load_stock_data</servlet-name>
+        <url-pattern>/load_stock_data</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>loadSavedData</servlet-name>
-        <url-pattern>/loadSavedData</url-pattern>
+        <servlet-name>save_stock</servlet-name>
+        <url-pattern>/save_stock</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>loadStockSites</servlet-name>
-        <url-pattern>/loadStockSites</url-pattern>
+        <servlet-name>stock_report</servlet-name>
+        <url-pattern>/stock_report</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>saveStockData</servlet-name>
-        <url-pattern>/saveStockData</url-pattern>
+        <servlet-name>load_time</servlet-name>
+        <url-pattern>/load_time</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>stocks_login</servlet-name>
-        <url-pattern>/stocks_login</url-pattern>
+        <servlet-name>load_minutes</servlet-name>
+        <url-pattern>/load_minutes</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>getIndicators</servlet-name>
-        <url-pattern>/getIndicators</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>getReportingDates</servlet-name>
-        <url-pattern>/getReportingDates</url-pattern>
+        <servlet-name>load_dates_unlock</servlet-name>
+        <url-pattern>/load_dates_unlock</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>0</session-timeout>

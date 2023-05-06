@@ -345,11 +345,14 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
          hide_hts_tb();
         });
     
+    
+   var days = (load_dates_unlock()*-1); 
+    
   $("#date").datepicker({
       changeYear: true,
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
-      minDate: -7,
+      minDate: days,
       maxDate: 0
   }); 
 
@@ -1225,5 +1228,20 @@ check_previous_entries(form_data,2);
             });   
   }
      } 
+     
+        function load_dates_unlock(){ 
+       var days=0;
+    $.ajax({
+        url:'load_dates_unlock',
+        type:"get",
+        dataType:"json",
+         async: false,
+        success:function(info){
+        var data = info;
+         days=data['days'];
+  }   
+   }) ;
+   return days;
+   }
  </script>     
 </html>

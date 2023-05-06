@@ -59,7 +59,42 @@
            
           </li>
          <%}}%> 
-          
+         
+      
+         
+         
+         
+                   <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-ambulance"></i>
+              <p>
+                Commodity Mgt
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="commodities.jsp" class="nav-link">
+                  <i class="fa fa-plus-square nav-icon"></i>
+                  <p>Data Entry</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="commodity_report.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Report</p>
+                </a>
+              </li>
+              
+            </ul>
+          </li>
+                
+         
+         
+         
+         
+         
     <%if(session.getAttribute("stf")!=null && session.getAttribute("reports")!=null ){
       if(session.getAttribute("stf").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>   
            <li class="nav-item has-treeview">
@@ -139,7 +174,9 @@
           </li> 
           <%}}%>
           <!--<li style="text-align: center; color: white;"><br></li>-->
-         
+      
+       
+          
      <%if(session.getAttribute("dashboard")!=null && session.getAttribute("reports")!=null ){
       if(session.getAttribute("dashboard").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>  
           <li class="nav-item has-treeview">

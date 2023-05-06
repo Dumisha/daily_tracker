@@ -96,11 +96,6 @@
                                                             
                                                             <b>New User?</b><span><a href="register.jsp" style=""><b> Register Here</b></a></span>
                                                             <br>
-                                                            <br>
-                                                            <div> Click
-                                                            <span><a href="stock_index.jsp" ><b >HERE</b></a> to log in stock data</span>
-                                                            <br style="margin-top:1%;">
-                                                            </div>
                                                             <br><!--
                                                             <b>Email not Confirmed?</b><span><a href="conf_email.jsp" style=""><b>Confirm Now</b></a></span>
                                                             <br style="margin-top:3%;">-->

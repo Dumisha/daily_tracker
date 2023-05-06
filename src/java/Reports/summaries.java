@@ -55,7 +55,6 @@ public class summaries extends HttpServlet {
       
        if(session.getAttribute("user_id")!=null){
            
-           
            String reports="";
            if(session.getAttribute("reports")!=null ){
                reports=session.getAttribute("reports").toString();
@@ -107,9 +106,6 @@ public class summaries extends HttpServlet {
         facility_ids="0";  
       }
       
-      
-      
-     
       XSSFWorkbook wb = new XSSFWorkbook();
       
       XSSFFont font=wb.createFont();
@@ -220,9 +216,7 @@ public class summaries extends HttpServlet {
           // add the indicator name
           int headerpos;
           if(indicator_counter>0){headerpos = total_cols;}
-          else{
-              
-              headerpos = 4;
+          else{headerpos = 4;
               XSSFCell cellIndic = RowIndicator.getCell(0);
           cellIndic.setCellValue("Indicator Names : ");
           
@@ -267,7 +261,7 @@ public class summaries extends HttpServlet {
   indicator_counter++;
       }
 
-sheet.setAutoFilter(new CellRangeAddress(1, 1, 0, total_cols));
+sheet.setAutoFilter(new CellRangeAddress(1, 1, 0, (total_cols-1)));
 sheet.createFreezePane(4, 2);
   
 
