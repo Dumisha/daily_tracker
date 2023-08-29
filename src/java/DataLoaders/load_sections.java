@@ -42,12 +42,13 @@ public class load_sections extends HttpServlet {
         
         if(session.getAttribute("user_id")!=null){
                  
-       String hts,prevention,treatment,vl,tb;
+       String hts,prevention,treatment,vl,tb,mne;
        hts = session.getAttribute("hts").toString();
        prevention = session.getAttribute("prevention").toString();
        treatment = session.getAttribute("treatment").toString();
        vl = session.getAttribute("vl").toString();
        tb = session.getAttribute("tb").toString();        
+       mne = session.getAttribute("mne").toString();        
               
           int sec;       
         String get_sections = "SELECT id,name FROM sections ";
@@ -55,7 +56,7 @@ public class load_sections extends HttpServlet {
         
         while(conn.rs.next()){
             sec=conn.rs.getInt(1);
-         if((sec==1 && prevention.equals("1")) || (sec==2 && hts.equals("1")) || (sec==3 && treatment.equals("1")) || (sec==4 && vl.equals("1")) || (sec==5 && tb.equals("1"))){
+         if((sec==1 && prevention.equals("1")) || (sec==2 && hts.equals("1")) || (sec==3 && treatment.equals("1")) || (sec==4 && vl.equals("1")) || (sec==5 && tb.equals("1"))|| (sec==6 && mne.equals("1"))){
             JSONObject ob = new JSONObject();
            ob.put("section_id", conn.rs.getInt(1));
            ob.put("name", conn.rs.getString(2));
@@ -68,7 +69,7 @@ public class load_sections extends HttpServlet {
              
         obj.put("data", jarray);
         
-        
+        System.out.println("sections : "+obj);
         if( conn.conn!=null){conn.conn.close();}
         out.println(obj);
     }
@@ -124,7 +125,7 @@ public class load_sections extends HttpServlet {
     private JSONArray load_indicators(dbConn conn, int section_id) throws SQLException{
         JSONArray jarray = new JSONArray();
      
-        String get_indicators = "SELECT id,name,description,indicator_type,frequency FROM indicators WHERE status=1 AND section_id='"+section_id+"'"; // active indicators
+        String get_indicators = "SELECT id,name,description,indicator_type,frequency FROM indicators WHERE status=1 AND section_id='"+section_id+"' order by order_num ASC"; // active indicators
         conn.rs1 = conn.st1.executeQuery(get_indicators);
         while(conn.rs1.next()){
         JSONObject ob = new JSONObject();

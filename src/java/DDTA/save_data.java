@@ -92,7 +92,7 @@ public class save_data extends HttpServlet {
            
        if(record_exist){
            code=0;
-           message="This record has already been saved. Please review entries";
+           message="This record had already been saved. Please review entries";
        }  
        }
        
@@ -102,6 +102,8 @@ public class save_data extends HttpServlet {
        if(!has_aggregate && !record_exist){
         JSONArray question_array = get_questions(conn,indicator_id);
         fn_ob.put("questions", question_array);
+        
+           System.out.println("questions : "+question_array);
         
         String query_values="";
         for(Object object:question_array){
@@ -339,6 +341,7 @@ public class save_data extends HttpServlet {
         conn.pst.setInt(2, 1);
         conn.rs = conn.pst.executeQuery();
         
+        System.out.println("----"+conn.pst);
         while(conn.rs.next()){
             String value = request.getParameter("name_"+conn.rs.getInt(1));
          
@@ -363,6 +366,7 @@ public class save_data extends HttpServlet {
         }
         
         if(values_to_be_checked.length()>0){
+            System.out.println("query : "+query);
         conn.rs = conn.st.executeQuery(query);
         return conn.rs.next();}
         else{

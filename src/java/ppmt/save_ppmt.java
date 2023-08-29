@@ -24,7 +24,7 @@ import org.json.simple.JSONObject;
  */
 public class save_ppmt extends HttpServlet {
     HttpSession session;
-    String date,activity,activity_other,indicator,county,sub_county,facility,female,male,total,region,user_id;
+    String date,activity,activity_other,indicator,county,sub_county,facility,female,male,total,region,user_id,challenges,next_steps;
     int code;
     String message;
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
@@ -62,6 +62,8 @@ public class save_ppmt extends HttpServlet {
         male = request.getParameter("male");
         total = request.getParameter("total");
         region = request.getParameter("region");
+        challenges = request.getParameter("challenges");
+        next_steps = request.getParameter("next_steps");
         
         
         
@@ -83,22 +85,15 @@ public class save_ppmt extends HttpServlet {
         
 //        Data checker
         
-        String checker = "SELECT id from ppmt WHERE activity_date=? && activity_id=? && activity_other=? and region_id=? && county_id=? && sub_county_id=? && facility_id=?";
-        conn.pst = conn.conn.prepareStatement(checker);
-        conn.pst.setString(1, date);
-        conn.pst.setString(2, activity);
-        conn.pst.setString(3, activity_other);
-        conn.pst.setString(4, region);
-        conn.pst.setString(5, county);
-        conn.pst.setString(6, sub_county);
-        conn.pst.setString(7, facility);
+        String checker = "SELECT id from ppmt WHERE activity_date='"+date+"' && activity_id='"+activity+"' && activity_other='"+activity_other+"' and region_id="+region+" && county_id="+county+" && sub_county_id="+sub_county+" && facility_id="+facility+"";
+                checker = checker.replace("=null", " is null ").replace("?", "").replace("!", "").replace("==", "=");
         
-        
-        conn.rs = conn.pst.executeQuery();
+//               System.out.println(" query : "+checker);
+        conn.rs = conn.st.executeQuery(checker);
         
         
         if(!conn.rs.next()){ // add a new training
-         String inserter = "INSERT INTO ppmt (activity_date,indicator_id,activity_id,activity_other,region_id,county_id,sub_county_id,facility_id,female,male,total,user_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+         String inserter = "INSERT INTO ppmt (activity_date,indicator_id,activity_id,activity_other,region_id,county_id,sub_county_id,facility_id,female,male,total,user_id,challenges,next_steps) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
          conn.pst = conn.conn.prepareStatement(inserter);
          conn.pst.setString(1, date);
          conn.pst.setString(2, indicator);
@@ -112,6 +107,8 @@ public class save_ppmt extends HttpServlet {
          conn.pst.setString(10, male);
          conn.pst.setString(11, total);
          conn.pst.setString(12, user_id);
+         conn.pst.setString(13, challenges);
+         conn.pst.setString(14, next_steps);
          
          conn.pst.executeUpdate();
          

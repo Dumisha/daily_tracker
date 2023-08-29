@@ -198,7 +198,7 @@ var indicators = load_indicators();
 var indicator_label="";
 
 for(var i=0;i<indicators.length;i++){
-    if(indicators[i].is_active===1){
+    if(indicators[i].is_active===1 && indicators[i].has_summary_report===1){
   indicator_label+="<option value=\""+indicators[i].id+"\">"+indicators[i].name+"</option>"  ;
     }
 }

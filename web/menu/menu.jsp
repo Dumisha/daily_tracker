@@ -185,7 +185,7 @@
               <p>
                 Reports
                 <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right">3</span>
+                <span class="badge badge-info right">4</span>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -208,6 +208,15 @@
                 </a>
               </li>
                <%}}%>
+      <%if(session.getAttribute("reports")!=null){
+      if(session.getAttribute("reports").toString().equals("1")){%>  
+              <li class="nav-item">
+                <a href="Indicator_Summary.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Indicator Summaries (.xlsx)</p>
+                </a>
+              </li>
+               <%}}%>
               
        <%if(session.getAttribute("dashboard")!=null){
       if(session.getAttribute("dashboard").toString().equals("1")){%>  
@@ -220,6 +229,32 @@
               <%}}%>
               
             </ul>
+          </li>
+          <%}}%>
+          
+     <%if(session.getAttribute("dashboard")!=null && session.getAttribute("reports")!=null ){
+      if(session.getAttribute("dashboard").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>  
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-signal"></i>
+              <p>
+                Other Reports
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">1</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                
+      <%if(session.getAttribute("reports")!=null){
+      if(session.getAttribute("reports").toString().equals("1")){%>     
+              <li class="nav-item">
+                <a href="emr_reports.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>EMR Modules (.xlsx)</p>
+                </a>
+              </li>
+               <%}}%>
+     </ul>
           </li>
           <%}}%>
                     <li style="text-align: center; color: white;"><br></li>

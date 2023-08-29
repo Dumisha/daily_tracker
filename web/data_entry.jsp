@@ -93,7 +93,7 @@ table {
        vl = session.getAttribute("vl").toString();
        tb = session.getAttribute("tb").toString();
        
-if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals("1")) || (sec.equals("3") && treatment.equals("1")) || (sec.equals("4") && vl.equals("1")) || (sec.equals("5") && tb.equals("1"))){%>  
+if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals("1")) || (sec.equals("3") && treatment.equals("1")) || (sec.equals("4") && vl.equals("1")) || (sec.equals("5") && tb.equals("1"))|| (sec.equals("6") && tb.equals("1"))){%>  
       
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -180,7 +180,7 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
         $("#description").html(response.description);
         
         var questions = response.questions;
-        
+        var frequency = response.frequency;
         
         
         output+="<div class=\"flex-container\" id=\"facility_id_label\"><div class=\"flex-child\">Health Facility <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><select name=\"facility_id\" id=\"facility_id\" class=\"form-control\" required ></select></div></div>";  
@@ -195,7 +195,7 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
        output+="<input type=\"hidden\" name=\"indicator\" value=\""+indicator_id+"\" id=\"indicator\" class=\"form-control\">";   
        output+="<input type=\"hidden\" name=\"entry_status\" value=\"\" id=\"entry_status\" class=\"form-control\">";   
        output+="<input type=\"hidden\" name=\"entry_key\" value=\"\" id=\"entry_key\" class=\"form-control\">";   
-       output+="<div class=\"flex-container\" id=\"label_date\"><div class=\"flex-child\">"+date_label+" <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><input type=\"text\" name=\"date\" value=\"\" required autocomplete=\"off\" id=\"date\" class=\"form-control datepicker\" placeholder=\"\" "+required+" ></div></div>";   
+       output+="<div class=\"flex-container\" id=\"label_date\"><div class=\"flex-child\">"+date_label+" <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><input type=\"text\" name=\"date\" value=\"\" required autocomplete=\"off\" id=\"date\" class=\"form-control datepicker\" placeholder=\"\" "+required+" > </div> &nbsp; <div><input type=\"button\" name=\"check_data\" value=\"Check previous data\" id=\"check_data\" onclick=\"check_edit();\" class=\"btn btn-success\"/></div></div> ";   
     output+="<div id=\"prev_data\"></div>";
     output+="<div id=\"entry_elements\">";
     
@@ -314,11 +314,11 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
     });
         // when dates change
     $("#date").change(function(){
-     check_entries(); 
+        default_open();
     });
     
     $("#facility_id").change(function(){
-     check_entries(); 
+        default_open();
     });
    
     $("#facility_id").change(function(){
@@ -346,19 +346,35 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
         });
     
     
-   var days = (load_dates_unlock()*-1); 
+   var days = (load_dates_unlock()*-1);  
+  
+  if(parseInt(frequency)===2){
+      $("#date").datepicker({
+      changeYear: true,
+      changeMonth: true,
+      dateFormat: 'yy-mm-dd',
+      minDate: days,
+      maxDate: 0,
+      beforeShowDay: function(date) {
+       return [date.getDay() == 5];
+    }
+  });  
+    }
     
-  $("#date").datepicker({
+    else{
+     $("#date").datepicker({
       changeYear: true,
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
       minDate: days,
       maxDate: 0
-  }); 
+  });     
+        
+    }
 
 //alert(date_elems.length);
 
-// loop through date elements and add year to elemented with date
+// loop through date elements and add year to elements with date
 for(var i=0;i<date_elems.length;i++){
 // alert(date_elems[i]);
  $("#id_"+date_elems[i]+"").datepicker({
@@ -442,11 +458,17 @@ if(indicator_id===6){
 
     }
   }); 
+  $("select").select2("destroy");
+  $("select").select2();
   
     } 
 
-
-
+      function  default_open(){
+            $("#prev_data").html("");    
+            $("#prev_data").hide(); 
+            $("#entry_elements").show();
+      }
+      
 function get_answers(answer_labels){
     var options="<option value=\"\">Choose Option</option>";
    
@@ -502,6 +524,7 @@ $("form").submit(function(e){
         
         var errors = 0;
  if(indicator_id===1){ errors+= validate_gend_gbv();}
+ if(indicator_id===2){ errors+= validate_prep();}
  if(indicator_id===5){ errors+= validate_hts_tst(); }
   if(indicator_id===7){ errors+= validate_pns();}
   if(indicator_id===21){ errors+= validate_recency();}
@@ -510,6 +533,8 @@ $("form").submit(function(e){
   if(indicator_id===12){ errors+= validate_retention();}
   if(indicator_id===13){ errors+= validate_suppression();}
   if(indicator_id===23) {errors+= validate_opd();}
+  if(indicator_id===14) {errors+= validate_tb_opd();}
+  if(indicator_id===30) {errors+= validate_tb_ccc();}
 
        // 0725705194 brian safaricon home fibre
         
@@ -517,10 +542,36 @@ $("form").submit(function(e){
          save_data(form_data); 
          }
     });
-    
+ 
      });   
     
     
+    function check_edit(){
+       var facility = $("#facility_id").val();
+       var date = $("#date").val();
+       
+       var errors_message = "";
+       var errors=0;
+       if(facility===""){
+           errors++;
+           errors_message+=errors+". Choose facility";
+       }
+       if(date===""){
+           errors++;
+           errors_message+=errors+". Choose date";
+       }
+       if(errors>0){
+           $.jGrowl('close');
+           $.jGrowl(errors_message, {
+                         position: 'top-center',
+                         header: 'Error',
+                         theme: 'bg-danger'
+                    });
+       }  
+       else{
+           check_entries();
+       }
+    }
          function save_data(data){
         var theme="";
         var url = "save_data";
@@ -533,7 +584,7 @@ $("form").submit(function(e){
                      if(code===1){
                          theme = "bg-success";
                          header="<b>Success</b>";
-                          // clear_entries(questions);
+                           clear_entries(questions);
                      }
                      else{
                         theme = "bg-danger"; 
@@ -601,7 +652,7 @@ $(document).ready(function() {
               
           }
           
-//           $("date").val('');
+           $("date").val('');
       }   
       
       
@@ -616,9 +667,8 @@ $(document).ready(function() {
         $("#label_112").hide();
         $("#label_113").hide();
         $("#label_118").hide();
+        $("#label_195").hide();
       }
-     
-     
      
    function hide_linkage(){
        
@@ -629,15 +679,20 @@ $(document).ready(function() {
           $("#label_32").show();
           $("#label_33").show();
           $("#label_106").show();
+          $("#label_195").show();
           $("#label_107").hide();
           $("#label_111").hide();
+          $("#label_112").hide();
           $("#label_113").hide();
+          $("#label_195").show();
           
           // make entries required
           $("#id_31").attr('required', 'required');
           $("#id_32").attr('required', 'required');
           $("#id_33").attr('required', 'required');
           $("#id_106").attr('required', 'required');
+          $("#id_195").attr('required', 'required');
+          
           $("#id_107").removeAttr('required');
           $("#id_111").removeAttr('required');
           $("#id_112").removeAttr('required');
@@ -646,6 +701,8 @@ $(document).ready(function() {
           $("#id_107").val('');
           $("#id_111").val('');  
           $("#id_112").val('');  
+          $("#id_113").val('');  
+           
             
          }
          else{ // hide linkage fields
@@ -653,6 +710,7 @@ $(document).ready(function() {
           $("#label_32").hide();
           $("#label_33").hide(); 
           $("#label_106").hide();
+          $("#label_195").hide();
           $("#label_112").hide();
           $("#label_113").hide();
           
@@ -660,7 +718,9 @@ $(document).ready(function() {
           $("#id_32").val('');
           $("#id_33").val('');  
           $("#id_106").val('');  
+          $("#id_195").val('');  
           $("#id_112").val('');  
+          $("#id_113").val('');  
           
           
                    // remove required
@@ -668,6 +728,7 @@ $(document).ready(function() {
           $("#id_32").removeAttr('required');
           $("#id_33").removeAttr('required');
           $("#id_106").removeAttr('required');
+          $("#id_195").removeAttr('required');
           $("#id_112").removeAttr('required');
           $("#id_113").removeAttr('required');
           
@@ -694,19 +755,27 @@ $(document).ready(function() {
    }
    function hide_linked_other(){
      var non_linkage = $("#id_106").val(); 
-     if(parseInt(non_linkage)===22){
+     if(parseInt(non_linkage)===21){
+         $("#label_112").hide();
+         $("#label_113").show();
+         $("#id_113").attr('required', 'required');
+         $("#id_112").removeAttr('required'); 
+         $("#id_112").val('');
+     }
+     else if(parseInt(non_linkage)===22){
          $("#label_112").show();
          $("#label_113").hide();
          $("#id_112").attr('required', 'required');
          $("#id_113").removeAttr('required'); 
-         $("#label_113").val('');
+         $("#id_113").val('');
      }
      else{
       $("#label_112").hide();
-      $("#label_113").show();
+      $("#label_113").hide();
       $("#label_112").val('');
-      $("#id_112").removeAttr('required');   
-       $("#id_113").attr('required', 'required');
+      $("#label_113").val('');
+      $("#id_113").removeAttr('required');   
+      $("#id_113").removeAttr('required');
      }
    }
     
@@ -735,6 +804,9 @@ $(document).ready(function() {
          $("#id_118").attr('required', 'required');
          
          $("#title_57").html("Initial Test (ANC1) <b style=\"color:red\"> *</b>");
+         
+         $("#label_186").show(); 
+         $("#id_186").attr('required', 'required');
        }
        else{
          $("#label_56").hide();  
@@ -746,6 +818,9 @@ $(document).ready(function() {
          $("#id_118").removeAttr('required');
          
          $("#title_57").html("Number tested (Initial test) <b style=\"color:red\"> *</b>");
+         $("#label_186").hide();  
+         $("#id_186").val(''); 
+         $("#id_186").removeAttr('required');
        }   
    }
   </script> 
@@ -753,23 +828,74 @@ $(document).ready(function() {
  <script>
   function validate_gend_gbv(){
       var sexual_cases = "0"+$("#id_1").val();
+      var pep_eligible = "0"+$("#id_140").val();
       var pep_cases = "0"+$("#id_4").val();
       
         var errors=0;
 
-      if(parseInt(pep_cases)>parseInt(sexual_cases)){
+          var error_message="";
+        
+         if(parseInt(pep_eligible)>parseInt(sexual_cases)){
           errors++;
-//          
-          $.jGrowl('Number of Pep Cases cannot be more than sexual cases reported', {
+          error_message = "Number eligible for PEP cannot be more than sexual cases reported";
+        }
+        if(parseInt(pep_cases)>parseInt(pep_eligible)){
+          errors++;
+          error_message = "Number given PEP cannot be more than sexual cases eligible for PEP";
+        }
+        
+        if(errors>0){
+                      $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            }); 
+        }
+        
+        
+        
+      return errors;
+    }       
+     
+   
+      function validate_prep(){
+      var month1 = "0"+$("#id_141").val();
+      var month1_tested = "0"+$("#id_142").val();
+      var month3 = "0"+$("#id_143").val();
+      var month3_tested = "0"+$("#id_144").val();
+      var refilled = "0"+$("#id_8").val();
+      var refilled_comm = "0"+$("#id_185").val();
+      
+        var errors=0;
+        var error_message = "";
+
+      if(parseInt(month1_tested)>parseInt(month1)){
+          errors++;
+         error_message = "Number of client who were tested at month 1 prep refill cannot be more than clients who came for prep refill at month 1";  
+        }
+        
+        if(parseInt(month3_tested)>parseInt(month3)){
+          errors++;
+          error_message = "Number of client who were tested at month 3 prep refill cannot be more than clients who came for prep refill at month 3";
+        }
+        if((parseInt(month3)+parseInt(month1))>parseInt(refilled)){
+          errors++;
+          error_message = "Number refilled at month 1 and month 3 cannot be more than total refilled for the facility";
+        }
+        if(parseInt(refilled_comm)>parseInt(refilled)){
+          errors++;
+          error_message = "Number refilled in community cannot be more than total refilled for the facility (community and facility refills)";
+        }
+        
+        if(errors>0){
+                      $.jGrowl(error_message, {
                 header: '<b>Error</b>',
                 theme: 'bg-danger'
             }); 
         }
         
       return errors;
-    }       
-     
-     
+    } 
+    
      function validate_opd(){
                 var opd_workload = "0"+$("#id_108").val();
                 var screened = "0"+$("#id_20").val();
@@ -1051,6 +1177,82 @@ $(document).ready(function() {
            error_message+= errors+". Sum of suppressed and not suppressed must be equal to number received results<br>";
        }
       
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;
+   }
+   function validate_tb_opd(){
+       var presumptive = "0"+$("#id_88").val();
+       var gene_expert = "0"+$("#id_89").val();
+       var sputum = "0"+$("#id_90").val();
+       var xray = "0"+$("#id_91").val();
+       var tb_lam = "0"+$("#id_134").val();
+       var other_tests = "0"+$("#id_92").val();
+       
+       var tb_cases = "0"+$("#id_93").val();       
+       var stat_neg = "0"+$("#id_95").val();
+       var stat_pos = "0"+$("#id_96").val();
+       var stat_kp = "0"+$("#id_97").val();
+       
+       var tb_art = "0"+$("#id_98").val();
+      
+      var error_message = "";
+      var errors=0;
+      
+       if((parseInt(gene_expert)+parseInt(sputum)+parseInt(xray)+parseInt(tb_lam)+parseInt(other_tests))>parseInt(presumptive)){
+           errors++;
+           error_message+= errors+". Individuals tested through different diagnostic tests cannot be more than presumptive TB cases<br>";
+       }
+      
+       if((parseInt(stat_neg)+parseInt(stat_pos)+parseInt(stat_kp))>parseInt(tb_cases)){
+           errors++;
+           error_message+= errors+". Sum of TB_STAT Neg, TB_STAT Pos, TB_STAT KP cannot be more than number of TB Cases<br>";
+       }
+       if((parseInt(stat_pos)+parseInt(stat_kp))>parseInt(tb_art)){
+           errors++;
+           error_message+= errors+". Sum of TB_STAT Pos, TB_STAT KP cannot be more than TB_ART<br>";
+       }
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;
+   }
+   function validate_tb_ccc(){
+       var presumptive = "0"+$("#id_188").val();
+       var gene_expert = "0"+$("#id_189").val();
+       var sputum = "0"+$("#id_190").val();
+       var xray = "0"+$("#id_191").val();
+       var tb_lam = "0"+$("#id_192").val();
+       var other_tests = "0"+$("#id_193").val();
+       
+       var tb_cases = "0"+$("#id_194").val(); 
+       
+       var tb_new_on_art = "0"+$("#id_196").val();
+       var tb_already_on_art = "0"+$("#id_197").val();
+      
+      var error_message = "";
+      var errors=0;
+      
+       if((parseInt(gene_expert)+parseInt(sputum)+parseInt(xray)+parseInt(tb_lam)+parseInt(other_tests))>parseInt(presumptive)){
+           errors++;
+           error_message+= errors+". Individuals tested through different diagnostic tests cannot be more than presumptive TB cases<br>";
+       }
+      
+       if((parseInt(tb_new_on_art)+parseInt(tb_already_on_art))!==parseInt(tb_cases)){
+           errors++;
+           error_message+= errors+". Sum of new and already on ART must be equal to TB cases<br>";
+       }
        // flags
         if(errors>0){
            $.jGrowl(error_message, {

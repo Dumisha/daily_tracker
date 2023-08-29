@@ -106,6 +106,15 @@ table {
                            
                 <div class="flex-container" id="label_indicator">    
                 <div class="flex-child">
+                   Choose Sub Purpose <font color="red">*</font> : 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child">
+                      <select class="form-control select2" id="sub_purpose" name="sub_purpose"  required="true"> </select>
+                    </div>
+                    </div>                            
+                           
+                <div class="flex-container" id="label_indicator">    
+                <div class="flex-child">
                    Choose Indicator <font color="red">*</font> : 
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child">
@@ -215,6 +224,23 @@ table {
                     </div>
                     <div class="form-group has-feedback has-feedback-left flex-child" id="">
                      <input type="number" class="form-control" min="1" value="" id="total" name="total" required="true">
+                    </div>
+                    </div>
+                                              
+                <div class="flex-container" id="label_total">
+        <div class="flex-child">
+                   Challenges <font color="red"></font> : 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="">
+                        <textarea class="form-control" min="1" value="" id="challenges" name="challenges"></textarea>
+                    </div>
+                    </div>
+                <div class="flex-container" id="label_total">
+        <div class="flex-child">
+                   Next Steps <font color="red"></font> : 
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="">
+                        <textarea class="form-control" min="1" value="" id="next_steps" name="next_steps"></textarea>
                     </div>
                     </div>
                
@@ -334,7 +360,7 @@ table {
       maxDate: 0
       });
       
-      load_indicator();
+      load_sub_purpose();
       load_counties();
       load_sub_counties();
       load_facilities();
@@ -343,6 +369,11 @@ table {
       $("#indicator").change(function(){
       var indic_id =  $("#indicator").val();
         load_activities(indic_id);
+      });
+      
+      $("#sub_purpose").change(function(){
+      var sub_purpose_id =  $("#sub_purpose").val();
+        load_indicator(sub_purpose_id);
       });
       
       
@@ -432,11 +463,31 @@ table {
     
     
     <script> 
-     function load_indicator(){
+             function load_sub_purpose(){
                  var output = "<option value=\"\"></option>";
         
         $.ajax({
-        url:'load_ppmt_indicators',
+        url:'load_sub_purposes',
+        type:"get",
+        dataType:"json",
+        success:function(data){
+           var id,sub_purpose;
+           for(var i=0;i<data.length;i++){
+               id = data[i].id;
+               sub_purpose = data[i].sub_purpose;
+                 
+               output+="<option value=\""+id+"\">"+sub_purpose+"</option>";
+           }
+           $("#sub_purpose").html(output);
+         }
+  });
+     }
+        
+     function load_indicator(sub_purpose_id){
+                 var output = "<option value=\"\"></option>";
+        
+        $.ajax({
+        url:'load_ppmt_indicators?sub_purpose_id='+sub_purpose_id,
         type:"get",
         dataType:"json",
         success:function(data){

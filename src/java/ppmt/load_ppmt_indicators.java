@@ -33,6 +33,7 @@ public class load_ppmt_indicators extends HttpServlet {
         dbConn conn = new dbConn();
         JSONArray jarray = new JSONArray();
         
+        String sub_purpose_id = request.getParameter("sub_purpose_id");
            if(session.getAttribute("user_id")!=null){
                String ppmt="";
            if(session.getAttribute("ppmt")!=null ){
@@ -40,8 +41,11 @@ public class load_ppmt_indicators extends HttpServlet {
            }
             
            if(ppmt.equals("1")){
-        String load_indicators = "SELECT id,name,number,status FROM ppmt_indicators";
-        conn.rs = conn.st.executeQuery(load_indicators);
+        String load_indicators = "SELECT id,name,number,status FROM ppmt_indicators where sub_purpose_id=?";
+        conn.pst = conn.conn.prepareStatement(load_indicators);
+        conn.pst.setString(1, sub_purpose_id);
+        
+        conn.rs = conn.pst.executeQuery();
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();
             obj.put("id", conn.rs.getInt(1));

@@ -1,7 +1,7 @@
 <%-- 
-    Document   : raw_data
-    Created on : 15-Feb-2022, 08:58:08
-    Author     : Geofrey Nyabuto
+    Document   : emr_reports
+    Created on : 4 Aug 2023, 12:35:13
+    Author     : mwamb
 --%>
 
 <%@page import="java.util.Calendar"%>
@@ -10,7 +10,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Raw Data</title>
+  <title>PPMT Report</title>
    <link rel="shortcut icon" href="dumisha/dumisha.png" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -77,9 +77,9 @@
 <div class="wrapper">
     <%@include file="menu/top.jsp"%>
     <%@include file="menu/menu.jsp"%>
-           
-         <%if(session.getAttribute("reports")!=null){
-      if(session.getAttribute("reports").toString().equals("1")){%>      
+     
+         <%if(session.getAttribute("ppmt")!=null && session.getAttribute("reports")!=null){
+      if(session.getAttribute("ppmt").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>                
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 		 <!-- Main content -->
@@ -91,27 +91,11 @@
 <br>
             <div class="card">
               <div class="card-header">
-                  <h3 class="card-title" style="text-align: center;font-weight: 900;">Raw Data Generation Module</h3>
+                  <h3 class="card-title" style="text-align: center;font-weight: 900;">EMR Modules Report</h3>
               </div>
                          <div class="card-body">        
-                             <form action="raw_data">        
-                    <div class="flex-container" id="indicator_label">
-                     <div class="flex-child">
-                    Indicators:
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                         <select class="form-control select2" id="indicator" data-placeholder="Select Indicators" name="indicator"  required="true" multiple="true"> </select>
-                    </div>
-                    </div> 
-
-                    <div class="flex-container" id="start_label">
-                     <div class="flex-child">
-                    Start Date: 
-                    </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                        <input type="text" class="form-control datepicker" id="start_date" name="start_date"  required="true" placeholder="Start Date" autocomplete="off">
-                    </div>
-                    </div>                     
+                             <form action="EMR_Modules">
+                   
                     <div class="flex-container" id="end_label">
                      <div class="flex-child">
                     End Date:
@@ -122,7 +106,7 @@
                     </div>                     
                        
                               <div class="flex-container" id="indicator_label">
-                       <button type="submit" id="submit" class="btn btn-primary btn-block">Generate Raw Data</button>      
+                       <button type="submit" id="submit" class="btn btn-primary btn-block">Generate Report</button>      
                          </div> 
           
 </form>
@@ -139,7 +123,7 @@
     </section>
     <!-- /.content -->
     </div>
-           <%}
+          <%}
       else{%>
      
       <div style="color: red; font-weight: bolder; font-size: 17px; text-align: center; margin-top: 10%;  margin-bottom: 10%;">
@@ -152,7 +136,7 @@
       Unknown User trying to access Module. Login and try again  
           </div>
      
-     <%}%>                      
+     <%}%>                       
 					<!-- Footer -->
                                         <div class="footer text-muted">
                                           <%@include file="menu/footer.jsp"%>
@@ -160,19 +144,19 @@
 					<!-- /footer -->
 
 				</div>
-           
-    <%if(session.getAttribute("message")!=null){
-    String mess =session.getAttribute("message").toString();
-    %>
-    <script type="text/javascript">
-       $.jGrowl('<%=mess%>', {
-            position: 'center',
-            header: 'Mail Verification Status',
-            theme: 'bg-success'
-
-        });  
-        </script>
-        <% session.removeAttribute("message");}%>                             
+                         
+                                        <%if(session.getAttribute("message")!=null){
+                                        String mess =session.getAttribute("message").toString();
+                                        %>
+                                        <script type="text/javascript">
+                                           $.jGrowl('<%=mess%>', {
+                                                position: 'center',
+                                                header: 'Mail Verification Status',
+                                                theme: 'bg-success'
+                                                
+                                            });  
+                                            </script>
+                                            <% session.removeAttribute("message");}%>               
 </body>
 
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
@@ -193,19 +177,7 @@ $("#end_date").datepicker({
 //      minDate: -10y,
       maxDate: 0
   });
-
-var indicators = load_indicators();
-
-var indicator_label="";
-
-for(var i=0;i<indicators.length;i++){
-    if(indicators[i].is_active===1 && indicators[i].has_raw_report===1){
-  indicator_label+="<option value=\""+indicators[i].id+"\">"+indicators[i].name+"</option>"  ;
-    }
-}
-
-$("#indicator").html(indicator_label);
-
+      
 }); 
     </script>
 <script>
@@ -213,149 +185,8 @@ $("#indicator").html(indicator_label);
     </script>
     
   <script>  
-   function load_user_levels(){ 
-       var user_levels=[];
-    $.ajax({
-        url:'load_user_levels',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         user_levels = info.data;
-  }
-        
-   }) ;
-   return user_levels;
-   }
-   
-      function load_status(){ 
-       var status=[];
-    $.ajax({
-        url:'load_status',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         status = info.data;
-  }
-        
-   }) ;
-   return status;
-   }
-   
-      function load_counties(){ 
-       var data=[];
-    $.ajax({
-        url:'load_counties',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   
-      function load_sub_counties(){ 
-       var data=[];
-    $.ajax({
-        url:'load_sub_counties',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   
-      function load_facilities(){ 
-       var data=[];
-    $.ajax({
-        url:'load_facilities',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;
-   }
-   
-   function load_program_areas(){
-           var data=[];
-    $.ajax({
-        url:'load_sections',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info.data;
-  }
-        
-   }) ;
-   return data;   
-   }
-   function load_indicators(){
-           var data=[];
-    $.ajax({
-        url:'load_indicators',
-        type:"get",
-        dataType:"json",
-         async: false,
-        success:function(info){
-         data = info;
-  }
-        
-   }) ;
-   return data;   
-   }
-   
-   
+ 
     </script>
-    
-    
-    <script>
-        $("#county").change(function(){
-         var county_id = ","+$("#county").val()+",";
-        var sub_counties = load_sub_counties();
-        var sub_counties_label = "";
-         
-        for(var i=0;i<sub_counties.length;i++){
-            if(county_id.includes(","+sub_counties[i].county_id+",")){
-             sub_counties_label+="<option value=\""+sub_counties[i].id+"\">"+sub_counties[i].name+"</option>";
-      }
-  }
-      
-      $("#sub_county").html(sub_counties_label);
-        
-        });
-        
-     // change sub county   
-        
-        $("#sub_county").change(function(){
-         var sub_county_id = ","+$("#sub_county").val()+",";
-        var facilities = load_facilities();
-        var facilities_label = "";
-         
-        for(var i=0;i<facilities.length;i++){
-            if(sub_county_id.includes(","+facilities[i].sub_county_id+",")){
-             facilities_label+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
-      }
-  }
-      
-      $("#facility").html(facilities_label);
-        
-        });
-        </script> 
         
         <script>
   $(function () {

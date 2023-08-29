@@ -54,7 +54,7 @@ public class ppmt extends HttpServlet {
         ArrayList<String> ct;
 
         
-        String indicator,county,activity,female,male,total,indicator_number,activity_date,excel_county;
+        String indicator,county,activity,female,male,total,indicator_number,activity_date,excel_county,challenges,next_steps;
         int row=0,cell_merge=0;
         
 
@@ -107,7 +107,7 @@ public class ppmt extends HttpServlet {
     
     
     XSSFCellStyle styleHeader = wb.createCellStyle();
-    styleHeader.setFillForegroundColor(HSSFColor.HSSFColorPredefined.CORNFLOWER_BLUE.getIndex());
+    styleHeader.setFillForegroundColor(HSSFColor.HSSFColorPredefined.TEAL.getIndex());
     styleHeader.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     styleHeader.setBorderTop(BorderStyle.THIN);
     styleHeader.setBorderBottom(BorderStyle.THIN);
@@ -116,7 +116,7 @@ public class ppmt extends HttpServlet {
     styleHeader.setAlignment(HorizontalAlignment.CENTER);
     
     XSSFFont fontHeader = wb.createFont();
-    fontHeader.setColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+    fontHeader.setColor(HSSFColor.HSSFColorPredefined.WHITE.getIndex());
     fontHeader.setBold(true);
     fontHeader.setFamily(FontFamily.MODERN);
     fontHeader.setFontName("Cambria");
@@ -127,7 +127,7 @@ public class ppmt extends HttpServlet {
     
     
     XSSFCellStyle stylex = wb.createCellStyle();
-    stylex.setFillForegroundColor(HSSFColor.HSSFColorPredefined.LIGHT_CORNFLOWER_BLUE.getIndex());
+    stylex.setFillForegroundColor(HSSFColor.HSSFColorPredefined.PALE_BLUE.getIndex());
     stylex.setFillPattern(FillPatternType.SOLID_FOREGROUND);
     stylex.setBorderTop(BorderStyle.THIN);
     stylex.setBorderBottom(BorderStyle.THIN);
@@ -168,7 +168,7 @@ public class ppmt extends HttpServlet {
                 XSSFCell cell_title = RowHeader.createCell(0);
                 cell_title.setCellValue("PPMT Tables for USAID Dumisha Afya From: ["+start_date+" to "+end_date+"]");
                 cell_title.setCellStyle(styleMainHeader);
-                sheet.addMergedRegion(new CellRangeAddress(1,1,0,5));
+                sheet.addMergedRegion(new CellRangeAddress(1,1,0,7));
         
        
                 sheet.setColumnWidth(0,6000);
@@ -177,15 +177,17 @@ public class ppmt extends HttpServlet {
                 sheet.setColumnWidth(3,4000);
                 sheet.setColumnWidth(4,4000);
                 sheet.setColumnWidth(5,4000);
+                sheet.setColumnWidth(6,4000);
+                sheet.setColumnWidth(7,4000);
         
         String get_data = "SELECT pi.name as Indicator_Name,pi.number AS Indicator_Number,ifnull(c.name,\"\") as County, coalesce(pa.name,p.activity_other) as Activity,\n" +
                             "sum(p.female) as female, \n" +
                             "sum(p.male) as male, \n" +
-                            "sum(p.total) as total, activity_date\n" +
+                            "sum(p.total) as total, activity_date,challenges,next_steps \n" +
                             "\n" +
                             " FROM \n" +
                             " ppmt_indicators pi \n" +
-                            " LEFT OUTER JOIN ppmt p ON pi.id=p.indicator_id  AND p.activity_date BETWEEN DATE(?) AND DATE(?)\n\n" +
+                            " INNER JOIN ppmt p ON pi.id=p.indicator_id  AND p.activity_date BETWEEN DATE(?) AND DATE(?)\n\n" +
                             " LEFT OUTER  JOIN ppmt_activities pa ON p.activity_id=pa.id \n" +
                             " LEFT OUTER JOIN facilities f  ON f.id=p.facility_id \n" +
                             " LEFT OUTER  JOIN sub_counties sc ON sc.id=f.sub_county_id      \n" +
@@ -213,6 +215,8 @@ public class ppmt extends HttpServlet {
             male = conn.rs.getString(6);
             total = conn.rs.getString(7);
             activity_date = conn.rs.getString(8);
+            challenges = conn.rs.getString(9);
+            next_steps = conn.rs.getString(10);
             row++;             
            excel_county = county;
             
@@ -224,7 +228,7 @@ public class ppmt extends HttpServlet {
             row++; 
             activity_title(sheet,stylex,row,false);
             row++;
-            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date);
+            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date,challenges,next_steps);
             ct.remove(county);
             
           }
@@ -235,11 +239,11 @@ public class ppmt extends HttpServlet {
             row++; 
             activity_title(sheet,stylex,row,false);
             row++; 
-            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date);      
+            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date,challenges,next_steps);      
           }
           else{
               for(String c:ct){
-                 activity_data(sheet,stborder,row,c,"No Activity","","","0","");
+                 activity_data(sheet,stborder,row,c,"No Activity","","","0","","","");
                  row++;
                 }
              
@@ -249,7 +253,7 @@ public class ppmt extends HttpServlet {
             row++; 
             activity_title(sheet,stylex,row,false);
             row++; 
-            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date);
+            activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date,challenges,next_steps);
            
           }
            
@@ -263,7 +267,7 @@ public class ppmt extends HttpServlet {
           
         else if(prev_Indicator.equals(indicator)){ // same indicator 
 //          row++;
-          activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date); 
+          activity_data(sheet,stborder,row,excel_county,activity,female,male,total,activity_date,challenges,next_steps); 
           
           ct.remove(county); 
            }
@@ -278,12 +282,11 @@ public class ppmt extends HttpServlet {
      if(!ct.isEmpty()){
          row++;
        for(String c:ct){
-                 activity_data(sheet,stborder,row,c,"No Activity","","","0","");
+                 activity_data(sheet,stborder,row,c,"No Activity","","","0","","","");
                  row++;
       }    
      }
       
-     
      
      if( conn.conn!=null){conn.conn.close();}
      
@@ -374,11 +377,11 @@ public class ppmt extends HttpServlet {
      RowData.createCell(j).setCellStyle(style);
      }
      
-     sheet.addMergedRegion(new CellRangeAddress(row_pos,row_pos,0,5));
-     RowData.setHeightInPoints(60);
+     sheet.addMergedRegion(new CellRangeAddress(row_pos,row_pos,0,7));
+     RowData.setHeightInPoints(40);
      return sheet;
  } 
- public XSSFSheet activity_data(XSSFSheet Sheet,XSSFCellStyle style,int row_pos, String County,String activity,String female, String male, String total,String activity_date){
+ public XSSFSheet activity_data(XSSFSheet Sheet,XSSFCellStyle style,int row_pos, String County,String activity,String female, String male, String total,String activity_date,String challenges, String next_steps){
     
      XSSFRow Row  = Sheet.createRow(row_pos);
      
@@ -388,6 +391,8 @@ public class ppmt extends HttpServlet {
       XSSFCell cellFemale = Row.createCell(3);
       XSSFCell cellMale = Row.createCell(4);
       XSSFCell cellTotal = Row.createCell(5);
+      XSSFCell cellChallenges = Row.createCell(6);
+      XSSFCell cellNext_Steps = Row.createCell(7);
          
       
       cellCounty.setCellValue(County);
@@ -403,12 +408,17 @@ public class ppmt extends HttpServlet {
       if(mg.isNumeric(total)){cellTotal.setCellValue(Integer.parseInt(total));}
       else{cellTotal.setCellValue(total);}
       
+      cellChallenges.setCellValue(challenges);
+      cellNext_Steps.setCellValue(next_steps);
+      
       cellCounty.setCellStyle(style);
       cellActivity.setCellStyle(style);
       cellDate.setCellStyle(style);
       cellFemale.setCellStyle(style);
       cellMale.setCellStyle(style);
       cellTotal.setCellStyle(style);
+      cellChallenges.setCellStyle(style);
+      cellNext_Steps.setCellStyle(style);
               
     return Sheet; 
  }
@@ -422,6 +432,8 @@ public class ppmt extends HttpServlet {
       XSSFCell cellFemale = Row.createCell(3);
       XSSFCell cellMale = Row.createCell(4);
       XSSFCell cellTotal = Row.createCell(5);
+      XSSFCell cellChallenges = Row.createCell(6);
+      XSSFCell cellNext_Steps = Row.createCell(7);
          
       
       cellCounty.setCellValue("County");
@@ -430,6 +442,8 @@ public class ppmt extends HttpServlet {
       cellFemale.setCellValue("Female");
       cellMale.setCellValue("Male");
       cellTotal.setCellValue("Total");
+      cellChallenges.setCellValue("Challenges");
+      cellNext_Steps.setCellValue("Next Steps");
       
       cellCounty.setCellStyle(style);
       cellActivity.setCellStyle(style);
@@ -437,6 +451,8 @@ public class ppmt extends HttpServlet {
       cellFemale.setCellStyle(style);
       cellMale.setCellStyle(style);
       cellTotal.setCellStyle(style);
+      cellChallenges.setCellStyle(style);
+      cellNext_Steps.setCellStyle(style);
               
     return Sheet; 
  }
