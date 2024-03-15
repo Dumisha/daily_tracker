@@ -90,10 +90,7 @@
             </ul>
           </li>
                 
-         
-         
-         
-         
+          
          
     <%if(session.getAttribute("stf")!=null && session.getAttribute("reports")!=null ){
       if(session.getAttribute("stf").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>   
@@ -257,7 +254,49 @@
      </ul>
           </li>
           <%}}%>
-                    <li style="text-align: center; color: white;"><br></li>
+          
+          
+              <%if(session.getAttribute("stf")!=null && session.getAttribute("reports")!=null ){
+      if(session.getAttribute("stf").toString().equals("1") || session.getAttribute("reports").toString().equals("1")){%>   
+           <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user-md"></i>
+              <p>
+               Performance Analysis
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right">2</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+                
+                
+     <%if(session.getAttribute("admin")!=null){
+      if(session.getAttribute("admin").toString().equals("1")){%>   
+              <li class="nav-item">
+                <a href="uploading_performance_data.jsp" class="nav-link">
+                  <i class="fas fa-file-excel nav-icon"></i>
+                  <p>Upload Data</p>
+                </a>
+              </li>
+               <%}}%>
+               
+              <li class="nav-item">
+                <a href="performance_report.jsp" class="nav-link">
+                  <i class="fa fa-user-md nav-icon"></i>
+                  <p>Generate Report</p>
+                </a>
+              </li>
+        
+            </ul>
+          </li> 
+         <%}}%> 
+          
+          
+          
+          
+          
+                 <li style="text-align: center; color: white;"><br></li>
+             
       <%if(session.getAttribute("users")!=null && session.getAttribute("admin")!=null ){
       if(session.getAttribute("users").toString().equals("1") || session.getAttribute("admin").toString().equals("1")){%>            
             <li class="nav-item has-treeview">
@@ -358,7 +397,7 @@
         success:function(data){
            var sections = data.data; 
            var id,name,indicators;
-           var indicator_id,indicator_name,description,indicator_type,frequency;
+           var indicator_id,indicator_name,description,indicator_type,frequency,newly_added, new_indic="";
            for(var i=0;i<sections.length;i++){
                id = sections[i].section_id;
                name = sections[i].name;
@@ -384,11 +423,19 @@
                        description = indicators[j]. description;
                        indicator_type = indicators[j]. indicator_type;
                        frequency  = indicators[j]. frequency;   
+                       newly_added  = indicators[j]. newly_added; 
+                       if(parseInt(newly_added)===1){
+                           new_indic="<button class=\"btn btn-success\">New</button>";
+                       }
+                       else if(parseInt(newly_added)===2){
+                           new_indic="<button class=\"btn btn-warning\">Updated</button>";
+                       }
+                       else{new_indic="";}
                    
                   output+= "<li class=\"nav-item\">"+
                         " <a href=\"data_entry.jsp?indicator="+indicator_id+"&&sec="+id+"&&__&&test=1&&pass=3\" class=\"nav-link\">"+
                         " <i class=\"far fa-circle nav-icon\"></i>"+
-                        " <p>"+indicator_name+"</p>"+
+                        " <p>"+indicator_name+" "+new_indic+"</p>"+
                         "</a>"+
                         "</li>";
                    

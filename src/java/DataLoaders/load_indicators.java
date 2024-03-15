@@ -36,7 +36,7 @@ public class load_indicators extends HttpServlet {
         JSONArray jarray = new JSONArray();
         
              if(session.getAttribute("user_id")!=null){
-        String load_indicators = "SELECT id,name,ifnull(description,''),section_id,indicator_type,frequency,status,order_num,raw_report,summary_report FROM indicators order by order_num ASC";
+        String load_indicators = "SELECT id,name,ifnull(description,''),section_id,indicator_type,frequency,status,order_num,raw_report,summary_report,newly_added FROM indicators order by order_num ASC";
         conn.rs = conn.st.executeQuery(load_indicators);
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();
@@ -50,6 +50,7 @@ public class load_indicators extends HttpServlet {
             obj.put("order_num", conn.rs.getInt(8));
             obj.put("has_raw_report", conn.rs.getInt(9));
             obj.put("has_summary_report", conn.rs.getInt(10));
+            obj.put("newly_added", conn.rs.getInt(11));
             
             jarray.add(obj);
         }

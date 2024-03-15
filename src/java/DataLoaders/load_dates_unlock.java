@@ -37,9 +37,9 @@ public class load_dates_unlock extends HttpServlet {
         else{
             ob.put("days", 0);
         }
-        if( conn.conn!=null){conn.conn.close();}
        out.println(ob);
         System.out.println("days are : "+ob);
+        if( conn.conn!=null){conn.conn.close();}
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

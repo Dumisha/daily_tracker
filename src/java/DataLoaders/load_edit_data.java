@@ -39,7 +39,7 @@ public class load_edit_data extends HttpServlet {
         String date="";
         
              if(session.getAttribute("user_id")!=null){
-            String query = "SELECT o.id,o.question_id,o.numeric_value,ifnull(o.text_value,\"\") as text_value,q.input_type_id,q.answer_data_type_id,o.date " +
+            String query = "SELECT o.id,o.question_id,o.numeric_value,ifnull(o.text_value,\"\") as text_value,q.input_type_id,q.answer_data_type_id,o.date,q.editable " +
           "FROM questions q " +
           "INNER JOIN " +
           "observations o ON o.question_id=q.id AND o.entry_key=? ORDER BY ordering_num";
@@ -58,6 +58,7 @@ public class load_edit_data extends HttpServlet {
         ob.put("text_value", conn.rs.getString(4));
         ob.put("input_type", conn.rs.getInt(5));
         ob.put("answer_data_type", conn.rs.getInt(6));
+        ob.put("editable", conn.rs.getInt(8));
         date = conn.rs.getString(7);
       
         jarray.add(ob);

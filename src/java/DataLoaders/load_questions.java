@@ -40,7 +40,7 @@ public class load_questions extends HttpServlet {
         dbConn conn = new dbConn();
         
              if(session.getAttribute("user_id")!=null){
-        String get_name = "SELECT name,indicator_type,frequency,description FROM indicators WHERE id=?";
+        String get_name = "SELECT name,indicator_type,frequency,description,newly_added FROM indicators WHERE id=?";
         conn.pst = conn.conn.prepareStatement(get_name);
         conn.pst.setString(1, indicator_id);
         conn.rs = conn.pst.executeQuery();
@@ -49,13 +49,14 @@ public class load_questions extends HttpServlet {
             obj_final.put("indicator_type", conn.rs.getString(2));
             obj_final.put("frequency", conn.rs.getString(3));
             obj_final.put("description", conn.rs.getString(4));
+            obj_final.put("newly_added", conn.rs.getString(5));
         }
         
         
         JSONArray array_answers = get_answers(conn);
         
         
-     String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required  FROM questions WHERE indicator_id=? and status=? ORDER BY ordering_num";
+     String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,editable  FROM questions WHERE indicator_id=? and status=? ORDER BY ordering_num";
      conn.pst = conn.conn.prepareStatement(get_questions);
      conn.pst.setString(1, indicator_id);
      conn.pst.setInt(2, 1);
@@ -70,6 +71,7 @@ public class load_questions extends HttpServlet {
          ob.put("input_type", conn.rs.getInt(4));
          ob.put("answer_data_type", conn.rs.getInt(5));
          ob.put("required", conn.rs.getInt(6));
+         ob.put("editable", conn.rs.getInt(7));
          
           // get possible answers
          if(conn.rs.getString("input_type_id").equals("3") || conn.rs.getString("input_type_id").equals("4")){ // for coded answers 
@@ -94,9 +96,8 @@ public class load_questions extends HttpServlet {
              
      obj_final.put("questions", jarray);
      
-        
+            out.print(obj_final); 
         if( conn.conn!=null){conn.conn.close();}
-     out.print(obj_final);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

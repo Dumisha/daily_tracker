@@ -10,7 +10,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PPMT Report</title>
+  <title>EMR Report</title>
    <link rel="shortcut icon" href="dumisha/dumisha.png" style="height: 20px;padding: 0px; margin: 0px;"/>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
@@ -95,6 +95,15 @@
               </div>
                          <div class="card-body">        
                              <form action="EMR_Modules">
+                   
+                    <div class="flex-container" id="start_label">
+                     <div class="flex-child">
+                    Start Date:
+                    </div>
+                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
+                        <input type="text" class="form-control datepicker" id="start_date" name="start_date"  required="true" placeholder="Start Date" autocomplete="off">
+                    </div>
+                    </div>                     
                    
                     <div class="flex-container" id="end_label">
                      <div class="flex-child">

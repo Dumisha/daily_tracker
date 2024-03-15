@@ -82,9 +82,8 @@ public class load_user_facilities extends HttpServlet {
             jarray.add(obj);
         }
        }
-        
+             out.println(jarray);   
         if( conn.conn!=null){conn.conn.close();}
-        out.println(jarray);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

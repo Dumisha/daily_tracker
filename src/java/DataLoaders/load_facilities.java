@@ -51,7 +51,7 @@ String facility_id,user_id;
         }
         
 //             if(session.getAttribute("user_id")!=null){
-        String get_facilities = "SELECT id,sub_county_id,name,mfl_code FROM facilities order by name";
+        String get_facilities = "SELECT id,sub_county_id,name,mfl_code FROM facilities where is_supported=1 order by name";
         conn.rs = conn.st.executeQuery(get_facilities);
         
         while(conn.rs.next()){

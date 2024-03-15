@@ -199,16 +199,19 @@ public class raw_data extends HttpServlet {
           
           row++;
       while(conn.rs1.next()){ // loop through and display data
-                      
+                   System.out.println("Row : "+row);   
              XSSFRow RowData = sheet.createRow(row);
         for(int i=0;i<col_count; i++){ // read and output data
-System.out.println("Data is :"+conn.rs1.getString(i+1));
           value = conn.rs1.getString(i+1);
           XSSFCell cell = RowData.createCell(i);
-          if(mg.isNumeric(value)){cell.setCellValue(Integer.parseInt(value));}
-          else{cell.setCellValue(value);}
+          try{
+           cell.setCellValue(Integer.parseInt(value));   
+          }
+          catch(NumberFormatException e){
+         cell.setCellValue(value);    
+          }
             cell.setCellStyle(stborder);  
-            sheet.autoSizeColumn(i);
+//            sheet.autoSizeColumn(i);
           }
         
          row++; 

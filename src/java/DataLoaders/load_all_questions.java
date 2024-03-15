@@ -37,7 +37,7 @@ public class load_all_questions extends HttpServlet {
         JSONArray jarray = new JSONArray();
         
         if(session.getAttribute("user_id")!=null){
-         String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,value_unique,status  FROM questions ORDER by indicator_id,ordering_num";
+         String get_questions = "SELECT id,question,indicator_id,input_type_id,answer_data_type_id,required,value_unique,status,editable,newly_added  FROM questions ORDER by indicator_id,ordering_num";
         conn.rs = conn.st.executeQuery(get_questions);
         while(conn.rs.next()){
             JSONObject obj = new JSONObject();
@@ -49,13 +49,14 @@ public class load_all_questions extends HttpServlet {
             obj.put("required", conn.rs.getInt(6));
             obj.put("unique", conn.rs.getInt(7));
             obj.put("status", conn.rs.getInt(8));
+            obj.put("editable", conn.rs.getInt(9));
+            obj.put("newly_added", conn.rs.getInt(10));
             
             jarray.add(obj);
         }
         }
-        
+               out.println(jarray); 
         if( conn.conn!=null){conn.conn.close();}
-        out.println(jarray);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

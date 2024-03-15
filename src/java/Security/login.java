@@ -123,7 +123,7 @@ String NextPage="";
                   session.setAttribute("mne", mne);
                   session.setAttribute("user_profile", user_profile);
                   session.setAttribute("dashboard", dashboard);
-                  
+                  session.setAttribute("custom", 1);
                     
                 login_code=1;
                 login_message="User Logged in Successfully";

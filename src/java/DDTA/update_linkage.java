@@ -83,7 +83,7 @@ public class update_linkage extends HttpServlet {
 
        // process queue
        
-       mg.process_queue(conn,"2");
+//       mg.process_queue(conn,"2");
        
        code=1;
        message=count+" linkage variables updated successfully";

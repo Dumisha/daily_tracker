@@ -487,7 +487,7 @@ var action='<ul class="icons-list"><li class="dropdown"><a href="#" class="dropd
         }
         
         // for frequency
-        for(var i=0;i<status.length;i++){
+        for(var i=0;i<frequencies.length;i++){
             frequency_label+="<option value=\""+frequencies[i].id+"\" >"+frequencies[i].name+"</option>";
         }
         

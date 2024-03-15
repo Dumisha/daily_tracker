@@ -48,7 +48,7 @@ public class load_stock_data extends HttpServlet {
                         "delivery_note_quantity,expiry_date,date_received,received_by,"+
                         "contacts,pipeline_id,comments,time,minute\n" +
                         " FROM  stock_data sd \n" +
-                        " INNER JOIN stock_commodities sc ON sd.commodity_id=sc.id \n" +
+                        " INNER JOIN stock_commodities sc ON sd.commodity_id=sc.id AND sd.verification_date>=DATE_SUB(CURDATE(), INTERVAL 60 DAY) \n" +
                         " INNER JOIN facilities f ON sd.facility_id=f.id \n" +
                         " LEFT OUTER JOIN users u ON sd.user_id=u.id ORDER by sd.timestamp DESC ";
          

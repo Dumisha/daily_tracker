@@ -57,7 +57,6 @@
    .flex-container {
     display: flex;
     margin-top: 10px;
-    /*border: 1px dotted gray;*/
 }
 
 .flex-child {
@@ -68,6 +67,18 @@
 .flex-child:first-child {
     margin-right: 20px;
 } 
+.parent {
+  margin: 1rem;
+  text-align: center;
+}
+.child {
+    float: left;
+    width:80%; 
+}
+.child1 {
+  display: inline-block;
+  width: 20%;
+}
 
     </style>     
 </head>
@@ -98,9 +109,14 @@
                      <div class="flex-child">
                     Indicators:
                     </div>
-                    <div class="form-group has-feedback has-feedback-left flex-child" id="user_level">
-                         <select class="form-control select2" id="indicator" data-placeholder="Select Indicators" name="indicator"  required="true" multiple="true"> </select>
+                    <div class="form-group has-feedback has-feedback-left flex-child parent" id="user_level">
+                        <div class="child">
+                        <select class="form-control select2" id="indicator" data-placeholder="Select Indicators" name="indicator"  required="true" multiple="true"> </select>
                     </div>
+                        <div class="child1">
+                            <input type="checkbox" name="select_all" id="select_all"> Select All  
+                       </div>
+                    </div> 
                     </div> 
 
                     <div class="flex-container" id="start_label">
@@ -176,13 +192,36 @@ String mess =session.getAttribute("message").toString();
 
             <script rel="stylesheet" href="plugins/select2/js/select2.full.min.js"></script>
 
+                <script>
+   $(document).ready(function() { 
+    $('#select_all').click(function() {
+     if($('#select_all').is(":checked")){
+    $('#indicator option').attr("selected","selected");
+        $.jGrowl('All indicators selected', {
+        position: 'center',
+        header: 'Status',
+        theme: 'bg-success'
+    });
+        }
+        else{
+        $('#indicator option').removeAttr("selected");
+        $.jGrowl('No indicator selected', {
+        position: 'center',
+        header: 'Status',
+        theme: 'bg-danger'
+     });
+        }
+    });    
+   });
+   </script>
+            
     <script>
    $(document).ready(function() { 
 $("#start_date").datepicker({
       changeYear: true,
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
-      maxDate: 0
+      maxDate: 31
   });
   
 $("#end_date").datepicker({
@@ -190,7 +229,7 @@ $("#end_date").datepicker({
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
 //      minDate: -10y,
-      maxDate: 0
+      maxDate: 31
   });
        
 var indicators = load_indicators();

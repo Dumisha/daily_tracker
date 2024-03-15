@@ -622,7 +622,7 @@ function edit_stock(id,delivery_note_number,batch_number,quantity_received,verif
    function load_facilities(){ 
        var data=[];
     $.ajax({
-        url:'load_facilities',
+        url:'load_all_facilities',
         type:"get",
         dataType:"json",
          async: false,

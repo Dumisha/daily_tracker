@@ -83,6 +83,15 @@ public class Manage {
     }
     
     
+    public boolean check_sp_processor_indicator(dbConn conn,String indicator_id) throws SQLException{
+        String checker = "SELECT id FROM sp_processor WHERE indicator_id=?";
+        conn.pst = conn.conn.prepareStatement(checker);
+        conn.pst.setString(1, indicator_id);
+        conn.rs = conn.pst.executeQuery();
+        return conn.rs!=null;
+    }
+    
+    
            public void process_queue(dbConn conn,String status) throws SQLException{ // 1 for new entry, 2 for update
            String updator;
            String get_pending = " SELECT entry_key,sp_name,q.indicator_id FROM queue q INNER JOIN sp_processor spp ON q.indicator_id=spp.indicator_id group by entry_key";
@@ -117,14 +126,13 @@ public class Manage {
        }
                   
                         
-       public String get_entry_key(){
+       public String get_entry_key(String facility_id, String user_id){
            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-           String key = timestamp.toString().replaceAll("[- :.]", "") ;
+           String key = timestamp.toString().replaceAll("[- :.]", "")+"-"+facility_id+"-"+user_id ;
            
-           System.out.println(key);
+           System.out.println("key is "+key);
            return key;
        }
-       
        
        
        public void update_queue(dbConn conn,String entry_key,String status,String indicator_id) throws SQLException{ // 1 for new entry, 2 for update
@@ -136,8 +144,7 @@ public class Manage {
         
         conn.pst.executeUpdate();
        }
-       
-       
+
     public String check_OS(){
         return System.getProperty("os.name");
     }

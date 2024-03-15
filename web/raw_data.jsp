@@ -183,7 +183,7 @@ $("#start_date").datepicker({
       changeYear: true,
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
-      maxDate: 0
+      maxDate: 31
   });
   
 $("#end_date").datepicker({
@@ -191,7 +191,7 @@ $("#end_date").datepicker({
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
 //      minDate: -10y,
-      maxDate: 0
+      maxDate: 31
   });
 
 var indicators = load_indicators();

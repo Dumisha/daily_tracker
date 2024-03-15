@@ -54,8 +54,8 @@ String sec = request.getParameter("sec");
             <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
             <script src="plugins/select2/js/select2.full.min.js"></script>
              <!-- Select2 -->
-             <link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
-             <link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+             <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
+             <!--<link rel="stylesheet" href="/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">-->
       
   <style>
    .flex-container {
@@ -77,6 +77,11 @@ table,tr, th, td {
 table {
   width: 100%;
 }
+.data-content{
+    background:green;
+    color:white;
+    width: min-content;
+}
     </style>      
 </head>
 
@@ -86,14 +91,15 @@ table {
     <%@include file="menu/menu.jsp"%>
       
          <%if(session.getAttribute("hts")!=null && session.getAttribute("prevention")!=null && session.getAttribute("treatment")!=null && session.getAttribute("vl")!=null && session.getAttribute("tb")!=null){
-      String hts,prevention,treatment,vl,tb;
+      String hts,prevention,treatment,vl,tb,custom;
        hts = session.getAttribute("hts").toString();
        prevention = session.getAttribute("prevention").toString();
        treatment = session.getAttribute("treatment").toString();
        vl = session.getAttribute("vl").toString();
        tb = session.getAttribute("tb").toString();
+       custom = session.getAttribute("custom").toString();
        
-if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals("1")) || (sec.equals("3") && treatment.equals("1")) || (sec.equals("4") && vl.equals("1")) || (sec.equals("5") && tb.equals("1"))|| (sec.equals("6") && tb.equals("1"))){%>  
+if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals("1")) || ((sec.equals("3") || sec.equals("8")) && treatment.equals("1")) || (sec.equals("4") && vl.equals("1")) || (sec.equals("5") && tb.equals("1"))|| (sec.equals("6") && tb.equals("1")) || (sec.equals("7"))){%>  
       
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -114,7 +120,7 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
                              
                 <form class="form" action="#" id="form" style="margin-top: 0%;">
                         <div id="questions">
-                        </div>
+                        </div>  
                           </form>
                          </div>  
                 </div>
@@ -122,6 +128,32 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
           </div>
           <!-- /.col -->
         </div>
+          
+          
+          
+          
+                <div class="modal fade" id="modal-confirm">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Confirm deletion</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Are you sure you want to delete this entry?;</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <div type="button" class="btn btn-success" data-dismiss="modal">No</div>
+              <div type="button" class="btn btn-danger" onclick="remove_entries();">Yes</div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+         
         <!-- /.row -->
       </div>
       <!-- /.container-fluid -->
@@ -165,7 +197,7 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
           var date_elems = [];
           
           var indicator_id = <%out.println(indicator_id);%>
-          var question_id,label,input_type,answer_data_type,required,required_label;
+          var question_id,label,input_type,placeholder,answer_data_type,required,required_label,editable,readonly;
           var label_text_align = "right", value_length="";
        $.ajax({
         url:'load_questions?indicator_id='+indicator_id,
@@ -182,7 +214,6 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
         var questions = response.questions;
         var frequency = response.frequency;
         
-        
         output+="<div class=\"flex-container\" id=\"facility_id_label\"><div class=\"flex-child\">Health Facility <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><select name=\"facility_id\" id=\"facility_id\" class=\"form-control\" required ></select></div></div>";  
         //end of facilities
       
@@ -190,12 +221,18 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
    var date_label="";
    if(indicator_id===6){date_label = "Date Tested";}
    else if(indicator_id===8){date_label = "Date Started ART";}
+   else if(indicator_id===34){ date_label = "Month client became IIT (Month's end date)"; }
+   else if(indicator_id===35){ date_label = "Month death was reported (Month's end date)"; }
    else{date_label="Date";}
    
        output+="<input type=\"hidden\" name=\"indicator\" value=\""+indicator_id+"\" id=\"indicator\" class=\"form-control\">";   
        output+="<input type=\"hidden\" name=\"entry_status\" value=\"\" id=\"entry_status\" class=\"form-control\">";   
-       output+="<input type=\"hidden\" name=\"entry_key\" value=\"\" id=\"entry_key\" class=\"form-control\">";   
-       output+="<div class=\"flex-container\" id=\"label_date\"><div class=\"flex-child\">"+date_label+" <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><input type=\"text\" name=\"date\" value=\"\" required autocomplete=\"off\" id=\"date\" class=\"form-control datepicker\" placeholder=\"\" "+required+" > </div> &nbsp; <div><input type=\"button\" name=\"check_data\" value=\"Check previous data\" id=\"check_data\" onclick=\"check_edit();\" class=\"btn btn-success\"/></div></div> ";   
+       output+="<input type=\"hidden\" name=\"entry_key\" value=\"\" id=\"entry_key\" class=\"form-control\">";    
+      
+      if(indicator_id===34 || indicator_id===35 || indicator_id===6 ||  indicator_id===8){
+        output+="<div class=\"flex-container\" id=\"facility_id_label\"><div class=\"flex-child\">Enter UPN to search (Only for searching..) <b style=\"color:red;\"></b>: </div><div class=\"flex-child\"><input type=\"text\" name=\"unique_key\" value=\"\" id=\"unique_key\" class=\"form-control\"></div></div>";  
+    }
+            output+="<div class=\"flex-container\" id=\"label_date\"><div class=\"flex-child\">"+date_label+" <b style=\"color:red;\">*</b>: </div><div class=\"flex-child\"><input type=\"text\" name=\"date\" value=\"\" readonly required autocomplete=\"off\" id=\"date\" class=\"form-control datepicker\" placeholder=\"\" "+required+" > </div> &nbsp; <div><input type=\"button\" name=\"check_data\" value=\"Check previous data\" id=\"check_data\" onclick=\"check_edit();\" class=\"btn btn-success\"/></div></div> ";   
     output+="<div id=\"prev_data\"></div>";
     output+="<div id=\"entry_elements\">";
     
@@ -205,8 +242,19 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
          label = questions[i].label;
          input_type = questions[i].input_type;
          answer_data_type =  questions[i].answer_data_type;
+         editable =   questions[i].editable;
          
-         if(question_id===32 || question_id===44){
+         if(parseInt(editable)===1){
+                  readonly="";   
+                  placeholder=label;   
+            }
+            else{
+                readonly="readonly";
+                placeholder="";
+            }
+         
+         
+         if(question_id===32 || question_id===44 || question_id===233 ){
             value_length = "min=\"1000000000\" max=\"9999999999\" ";
             }
             
@@ -227,15 +275,15 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
             case 1:  // text
                 if(answer_data_type===2){
 //                    if(){}
-                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\" ><div class=\"flex-child\" id=\"title_"+question_id+"\"> "+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"number\" "+value_length+" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
+                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\" ><div class=\"flex-child\" id=\"title_"+question_id+"\"> "+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"number\" "+value_length+" name=\"name_"+question_id+"\" value=\"\" "+readonly+"  autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+placeholder+"\" "+required+"></div></div>";  
                 
                     }
                 else{
-                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\"  "+value_length+"  name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+"></div></div>";  
+                 output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\"  "+value_length+"  name=\"name_"+question_id+"\" "+readonly+"  value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+placeholder+"\" "+required+"></div></div>";  
                }
                  break;
             case 2: 
-               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\" name=\"name_"+question_id+"\" value=\"\" autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+label+"\" "+required+" ></div></div>";      
+               output+="<div class=\"flex-container\" id=\"label_"+question_id+"\"><div class=\"flex-child\" id=\"title_"+question_id+"\">"+label+" "+required_label+": </div><div class=\"flex-child\"><input type=\"text\" name=\"name_"+question_id+"\" value=\"\" "+readonly+"  autocomplete=\"off\" id=\"id_"+question_id+"\" class=\"form-control\" placeholder=\""+placeholder+"\" "+required+" ></div></div>";      
                 date_elems.push(question_id);
                 break;
              
@@ -346,8 +394,10 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
         });
     
     
+    
    var days = (load_dates_unlock()*-1);  
-  
+   if(parseInt(frequency)===3){days=-180;}
+//  console.log("Number of prev days :"+days);
   if(parseInt(frequency)===2){
       $("#date").datepicker({
       changeYear: true,
@@ -356,9 +406,34 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
       minDate: days,
       maxDate: 0,
       beforeShowDay: function(date) {
-       return [date.getDay() == 5];
+       return [date.getDay() === 5];
     }
-  });  
+  }).keyup(function(e) {
+		if(e.keyCode === 8 || e.keyCode === 46) {
+			$.datepicker._clearDate(this);
+		}
+	});    
+    }
+  if(parseInt(frequency)===3){
+      $("#date").datepicker({
+      changeYear: true,
+      changeMonth: true,
+      dateFormat: 'yy-mm-dd',
+      minDate: days,
+      maxDate: 31,
+      beforeShowDay: function(date) {
+        // getDate() returns the day [ 0 to 31 ]
+        if (date.getDate() ===getLastDayOfYearAndMonth(date.getFullYear(), date.getMonth()))
+        {
+            return [true, ''];
+        }
+        return [false, ''];
+    }
+  }).keyup(function(e) {
+		if(e.keyCode === 8 || e.keyCode === 46) {
+			$.datepicker._clearDate(this);
+		}
+	});  
     }
     
     else{
@@ -368,41 +443,99 @@ if((sec.equals("1") && prevention.equals("1")) || (sec.equals("2") && hts.equals
       dateFormat: 'yy-mm-dd',
       minDate: days,
       maxDate: 0
-  });     
+  }).keyup(function(e) {
+		if(e.keyCode === 8 || e.keyCode === 46) {
+			$.datepicker._clearDate(this);
+		}
+	});       
         
     }
-
-//alert(date_elems.length);
 
 // loop through date elements and add year to elements with date
 for(var i=0;i<date_elems.length;i++){
 // alert(date_elems[i]);
+var maxDate=0;
+var minDate='-120y';
+if(date_elems[i]===274){maxDate=240;minDate='-8m';}
+if(date_elems[i]===283){maxDate=0;minDate='-8m';}
+if(date_elems[i]===285){maxDate=0;minDate='-8m';}
  $("#id_"+date_elems[i]+"").datepicker({
       changeYear: true,
       changeMonth: true,
       dateFormat: 'yy-mm-dd',
-      yearRange: "-120:+0",
-      minDate: '-120y',
-      maxDate: 0
+      yearRange: "-120:+1",
+      minDate: minDate,
+      maxDate: maxDate
   });        
         
 }
 
+if(indicator_id===35){
+ $("#label_273").hide();
+ $("#id_273").removeAttr('required');   
+}
 
+$("#id_272").change(function(){
+       var vl_value = $("#id_272").val();
+       if(parseInt(vl_value)===101){
+           $("#label_273").show();
+           $("#id_273").attr('required', 'required');
+       }
+       else{
+           $("#label_273").hide();
+           $("#id_273").removeAttr('required');
+       }
+    });
+    
+    // validate BMI
+    $("#id_260").change(function(){
+       var dob = $("#id_260").val();
+       var age = getAge(dob);
+//       alert("dob is : "+age);
+       if(age<=5){ //mtoto show z-score
+        $("#label_275").hide();
+        $("#label_276").hide();
+        $("#label_289").show();
+        $("#id_289").attr('required', 'required'); 
+        $("#id_275").removeAttr('required');
+        $("#id_276").removeAttr('required');
+        }
+        else{ // show bmi
+        $("#label_275").show();
+        $("#label_276").show();
+        $("#label_289").hide();
+        $("#id_289").removeAttr('required');
+        $("#id_275").attr('required', 'required');
+        $("#id_276").attr('required', 'required');  
+        }
+           
+       
+//       if(parseInt(vl_value)===101){
+//           $("#label_273").show();
+//           $("#id_273").attr('required', 'required');
+//       }
+//       else{
+//           $("#label_273").hide();
+//           $("#id_273").removeAttr('required');
+//       }
+    });
+    
+    
 
 if(indicator_id===6){
 //    alert("here");
        // load facilities
      var facilities = load_all_facilities();
-           var facility_data="<option value=\"\"></option>";
+           var facility_data="<option value=\"\">Choose facility where patient was linked</option>";
       
            for(var i=0;i<facilities.length;i++){
-               if(facilities[i].pre_selected===1){
-              facility_data+="<option value=\""+facilities[i].id+"\" selected>"+facilities[i].name+"</option>";     
-            }
-            else{
-          facility_data+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
-           }
+//               if(facilities[i].pre_selected===1){
+//              facility_data+="<option value=\""+facilities[i].id+"\" selected>"+facilities[i].name+"</option>";     
+//            }
+//            else{
+//          facility_data+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
+//           }
+            facility_data+="<option value=\""+facilities[i].id+"\">"+facilities[i].name+"</option>";
        }
 //       alert(facilities.length);
       $("#id_113").html(facility_data);
@@ -463,6 +596,22 @@ if(indicator_id===6){
   
     } 
 
+function getLastDayOfYearAndMonth(year, month)
+    {
+        return(new Date((new Date(year, month + 1, 1)) - 1)).getDate();
+    }
+
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
+}
+
       function  default_open(){
             $("#prev_data").html("");    
             $("#prev_data").hide(); 
@@ -517,7 +666,12 @@ $("form").submit(function(e){
 
         var form_data = {};
         $.each($('#form').serializeArray(), function(_, kv) {
-          form_data[kv.name] = kv.value;
+           var data = kv.value;
+          if(form_data[kv.name]!=="" && form_data[kv.name]!==undefined){
+              data=form_data[kv.name]+"_"+kv.value;
+          }
+//          console.log("test values"+kv.name+" value is : "+data);
+          form_data[kv.name] = data;
         });
         
         var indicator_id = parseInt(form_data.indicator);
@@ -534,21 +688,28 @@ $("form").submit(function(e){
   if(indicator_id===13){ errors+= validate_suppression();}
   if(indicator_id===23) {errors+= validate_opd();}
   if(indicator_id===14) {errors+= validate_tb_opd();}
-  if(indicator_id===30) {errors+= validate_tb_ccc();}
-
-       // 0725705194 brian safaricon home fibre
+  if(indicator_id===30) {errors+= validate_tb_ccc();} 
+  if(indicator_id===34) {errors+= validate_iit();}
+  if(indicator_id===35) {errors+= validate_mortality();}
+  if(indicator_id===36) {errors+= validate_mmd_0_19();}
+  if(indicator_id===38) {errors+= validate_cd4();}
+  if(indicator_id===39) {errors+= validate_ncd();}
+  
         
         if(errors===0){
+            $("#submit").prop('disabled', true);
          save_data(form_data); 
+//         console.log(form_data);
          }
     });
  
      });   
     
-    
     function check_edit(){
        var facility = $("#facility_id").val();
        var date = $("#date").val();
+       var unique_key = $("#unique_key").val();
+       var indicator_id = $("#indicator").val(); 
        
        var errors_message = "";
        var errors=0;
@@ -556,9 +717,11 @@ $("form").submit(function(e){
            errors++;
            errors_message+=errors+". Choose facility";
        }
+       if(!(parseInt(indicator_id)===34 || parseInt(indicator_id)===35 || parseInt(indicator_id)===6 || parseInt(indicator_id)===8)){
        if(date===""){
            errors++;
            errors_message+=errors+". Choose date";
+       }
        }
        if(errors>0){
            $.jGrowl('close');
@@ -573,6 +736,8 @@ $("form").submit(function(e){
        }
     }
          function save_data(data){
+             var encounter_date = data.date;
+             if(encounter_date!==""){
         var theme="";
         var url = "save_data";
     $.post(url,data , function(output) {
@@ -584,13 +749,15 @@ $("form").submit(function(e){
                      if(code===1){
                          theme = "bg-success";
                          header="<b>Success</b>";
-                           clear_entries(questions);
+                           // clear_entries(questions);
                      }
                      else{
                         theme = "bg-danger"; 
                         header="<b>Error</b>";
                      }
 
+                     $("#submit").prop('disabled', false);
+                     
                      $.jGrowl('close');
 
                    $.jGrowl(message, {
@@ -600,22 +767,37 @@ $("form").submit(function(e){
                     }); 
                   });
                    }
+                   else{
+                  $("#submit").prop('disabled', false);
+                  $.jGrowl('close');
+                   $.jGrowl("The date field is missing. Kindly review your entries and ensure reporting dates are captured as expected using the datepicker calendar", {
+                         position: "top-center",
+                         header: "<b>Missing Date</b>",
+                         theme: "bg-danger"
+                    });     
+                   }
+               }
         
     </script> 
     
     <script>
                                 
 $(document).ready(function() {
-
+$("#id_235").change(function(){
+   var date = $("#id_235").val();
+   alert("date : "+date);
+//   
+//      $("#id_236").datepicker({
+//      changeYear: true,
+//      changeMonth: true,
+//      dateFormat: 'yy-mm-dd',
+//      minDate: 1,
+//      maxDate: 0
+//  }); 
+   
+        
 });
-
-//    $(document).ready(function(){
-//       $.jGrowl('errors', {
-//                position: 'top-center',
-//                header: '<b>Error</b>',
-//                theme: 'bg-danger'
-//            });  
-//    }) ;                           
+});                          
     </script>
   
   <script>
@@ -668,6 +850,7 @@ $(document).ready(function() {
         $("#label_113").hide();
         $("#label_118").hide();
         $("#label_195").hide();
+        hide_anc_no_modality();
       }
      
    function hide_linkage(){
@@ -796,7 +979,7 @@ $(document).ready(function() {
    
    function check_anc(){
      var pmtct_sdp = $("#id_55").val();
-       if(pmtct_sdp==="9"){ // patient screened
+       if(pmtct_sdp==="9"){ // anc
          $("#label_56").show(); 
          $("#id_56").attr('required', 'required');
          
@@ -805,25 +988,117 @@ $(document).ready(function() {
          
          $("#title_57").html("Initial Test (ANC1) <b style=\"color:red\"> *</b>");
          
+         $("#title_58").html("Newly tested negative (ANC1) <b style=\"color:red\"> *</b>");
+         
+         $("#title_60").html("Newly tested positive (ANC1) <b style=\"color:red\"> *</b>");
+         
+         $("#title_61").html("Total number started HAART (at ANC1)  <b style=\"color:red\"> *</b>");
+         
+         $("#title_118").html("Test (Post ANC1 - at ANC2,3,4,....) <b style=\"color:red\"> *</b>");
+                  
+         $("#title_186").html("Newly tested positive (Post ANC1 - at ANC2,3,4,....) <b style=\"color:red\"> *</b>");
+         
+         $("#title_62").html("Already on HAART (at ANC1) <b style=\"color:red\"> *</b>");
+          $("#title_232").html("Number started HAART(Post ANC1 - at ANC2,3,4,....) <b style=\"color:red\"> *</b>");
+         
+         $("#label_59").show(); 
+         $("#id_59").attr('required', 'required');
+         
+         $("#label_62").show();  
+         $("#id_62").attr('required', 'required');
+         
          $("#label_186").show(); 
          $("#id_186").attr('required', 'required');
+         
+          $("#label_231").hide();  
+         $("#id_231").val(''); 
+         $("#id_231").removeAttr('required');
+         
+         $("#label_232").show(); 
+         $("#id_232").attr('required', 'required');
        }
-       else{
+       
+       else if(pmtct_sdp==="10"){ // maternity
          $("#label_56").hide();  
          $("#id_56").val(''); 
          $("#id_56").removeAttr('required');
+         $("#title_57").html("Number tested (Initial test, POST ANC1) <b style=\"color:red\"> *</b>");
          
-         $("#label_118").hide();  
-         $("#id_118").val(''); 
-         $("#id_118").removeAttr('required');
+         $("#title_58").html("Number tested negative (Initial test, POST ANC1) <b style=\"color:red\"> *</b>");
          
-         $("#title_57").html("Number tested (Initial test) <b style=\"color:red\"> *</b>");
-         $("#label_186").hide();  
-         $("#id_186").val(''); 
-         $("#id_186").removeAttr('required');
-       }   
+         $("#title_60").html("Number tested positive (Initial test, POST ANC1) <b style=\"color:red\"> *</b>");
+         
+         $("#title_186").html("Number tested positive(Retests at L&D) <b style=\"color:red\"> *</b>");
+         
+         $("#title_118").html("Number tested(Retests at L&D) <b style=\"color:red\"> *</b>");
+                  
+         $("#title_61").html("Number started HAART (Out of new positive, POST ANC1)<b style=\"color:red\"> *</b>");
+         
+         $("#title_231").html("Number tested negative(Retests at L&D) <b style=\"color:red\"> *</b>");
+         
+         $("#title_232").html("Number started HAART(Retests at L&D) <b style=\"color:red\"> *</b>");
+         
+         $("#label_231").show(); 
+         $("#id_231").attr('required', 'required');
+         
+         $("#label_232").show(); 
+         $("#id_232").attr('required', 'required');
+         
+         $("#label_59").hide();  
+         $("#id_59").val(''); 
+         $("#id_59").removeAttr('required');
+         
+         $("#label_62").hide();  
+         $("#id_62").val(''); 
+         $("#id_62").removeAttr('required');
+             
+       }
+       else if(pmtct_sdp==="11"){
+         $("#label_56").hide();  
+         $("#id_56").val(''); 
+         $("#id_56").removeAttr('required');
+         $("#title_57").html("Number tested (Initial test at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_58").html("Number tested negative (Initial test at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_60").html("Number tested positive (Initial test at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_186").html("Number tested positive(Retests at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_118").html("Number tested(Retests at PNC) <b style=\"color:red\"> *</b>");
+                  
+         $("#title_61").html("Number started HAART (Out of new positive, at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_231").html("Number tested negative(Retests at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#title_232").html("Number started HAART(Retests at PNC) <b style=\"color:red\"> *</b>");
+         
+         $("#label_231").show(); 
+         $("#id_231").attr('required', 'required');
+         
+         $("#label_232").show(); 
+         $("#id_232").attr('required', 'required');
+         
+         $("#label_59").hide();  
+         $("#id_59").val(''); 
+         $("#id_59").removeAttr('required');
+         
+         $("#label_62").hide();  
+         $("#id_62").val(''); 
+         $("#id_62").removeAttr('required');
+       }  
+       
+       else{
+        hide_anc_no_modality();
+       }
    }
   </script> 
+  
+  <script>
+     function hide_anc_no_modality(){
+     } 
+      
+      </script>
  
  <script>
   function validate_gend_gbv(){
@@ -1263,6 +1538,365 @@ $(document).ready(function() {
      
         return errors;
    }
+   
+      function validate_iit(){
+          var ccc,dob,date_conf_pos,enrollment_date,art_start_date,initial_vl,initial_vl_date;
+          var repeat_vl,repeat_vl_date,vl_12_month,vl_12_month_date,last_visit_date,tca,date_rtc;
+          
+          ccc = $("#id_233").val();
+          dob = Date.parse($("#id_235").val());
+          date_conf_pos = Date.parse($("#id_236").val());
+          enrollment_date = Date.parse($("#id_237").val());
+          art_start_date = Date.parse($("#id_238").val());
+          initial_vl = $("#id_241").val();
+          initial_vl_date = Date.parse($("#id_242").val());
+          
+          repeat_vl = $("#id_243").val();
+          repeat_vl_date = Date.parse($("#id_244").val());
+          vl_12_month = $("#id_245").val();
+          vl_12_month_date = Date.parse($("#id_246").val());
+          last_visit_date = Date.parse($("#id_247").val());
+          tca = Date.parse($("#id_248").val());
+          date_rtc = Date.parse($("#id_254").val());
+          
+        var error_message = "";
+        var errors=0;
+      
+      
+      
+          if(ccc.length!==10){
+              errors++;
+              error_message+=errors+". The CCC must be 10 digits long<br>";
+          }
+          
+          if(isNaN(dob)){
+              errors++;
+              error_message+=errors+". Missing date of birth<br>";    
+          }
+          
+          if(isNaN(date_conf_pos)){
+              errors++;
+              error_message+=errors+". Missing date confirmed HIV pos<br>";    
+          }
+          
+          if(isNaN(enrollment_date)){
+              errors++;
+              error_message+=errors+". Missing enrollment date<br>";    
+          }
+          
+          if(isNaN(art_start_date)){
+              errors++;
+              error_message+=errors+". Missing ART start date<br>";    
+          }
+          
+          if(isNaN(last_visit_date)){
+              errors++;
+              error_message+=errors+". Missing last visit date<br>";    
+          }
+          
+          if(isNaN(tca)){
+              errors++;
+              error_message+=errors+". Missing next appointment date<br>";    
+          }
+          
+          
+          if(dob>date_conf_pos && !isNaN(dob) && !isNaN(date_conf_pos)){
+              errors++;
+              error_message+=errors+". Date of birth can not be after date confirmed HIV Positive<br>"; 
+          }
+          
+          if(date_conf_pos>enrollment_date ){
+              errors++;
+              error_message+=errors+". Date confirmed HIV Pos can not be after enrollment date<br>"; 
+          }
+          
+          if(enrollment_date>art_start_date){
+              errors++;
+              error_message+=errors+". Enrollment date can not be after ART start date<br>"; 
+          }
+          
+          if(!isNaN(initial_vl_date)){
+          if(art_start_date>initial_vl_date){
+              errors++;
+              error_message+=errors+". ART Start Date can not be after initial VL date<br>"; 
+          }
+      }
+      if(!isNaN(initial_vl_date) && !isNaN(repeat_vl_date)){
+          if(initial_vl_date>repeat_vl_date){
+              errors++;
+              error_message+=errors+". Initial VL Date can not be after date Repeat vl date<br>"; 
+          }
+      }
+      if(isNaN(initial_vl_date) && !isNaN(repeat_vl_date)){
+          if(art_start_date>repeat_vl_date){
+              errors++;
+              error_message+=errors+". Repeat VL Date can not be after ART start date<br>"; 
+          }
+      }
+      
+          if(!isNaN(initial_vl_date) && !isNaN(vl_12_month_date)){
+          if(initial_vl_date>vl_12_month_date){
+              errors++;
+              error_message+=errors+". Initial VL date can not be after  VL at 12 months<br>"; 
+          }
+      }
+          if(isNaN(initial_vl_date) && !isNaN(vl_12_month_date)){
+          if(art_start_date>vl_12_month_date){
+              errors++;
+              error_message+=errors+". ART Start date can not be after  VL at 12 months<br>"; 
+          }
+      }
+          
+          if(last_visit_date<art_start_date){
+              errors++;
+              error_message+=errors+". ART start date cannot be after last known visit date<br>"; 
+          }
+          
+          if(last_visit_date>tca){
+              errors++;
+              error_message+=errors+". Last visit date cannot be more than next appointment date<br>"; 
+          }
+          
+           if(!isNaN(date_rtc)){
+          if(tca>date_rtc){
+              errors++;
+              error_message+=errors+". Next appointment date cannot be more than date returned to treatment<br>"; 
+          }
+      }
+      
+         console.log("dob "+dob);
+         console.log("last enc "+last_visit_date);
+         console.log("rtc "+date_rtc); 
+         console.log("errors "+error_message);
+                  
+                  
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;
+   }
+   
+      function validate_mortality(){
+          var ccc,dob,enrollment_date,art_start_date,date_regimen_change,last_vl_date;
+          var last_tca_date,date_of_death,audit_date;
+          
+          ccc = $("#id_259").val();
+          dob = Date.parse($("#id_260").val());
+          enrollment_date = Date.parse($("#id_262").val());
+          art_start_date = Date.parse($("#id_263").val());
+          
+          date_regimen_change = Date.parse($("#id_267").val());
+          last_vl_date = Date.parse($("#id_271").val());
+          last_tca_date = Date.parse($("#id_274").val());
+          date_of_death = Date.parse($("#id_283").val());
+          audit_date = Date.parse($("#id_285").val());
+          
+        var error_message = "";
+        var errors=0;
+      
+      
+      
+          if(ccc.length!==10){
+              errors++;
+              error_message+=errors+". The CCC must be 10 digits long<br>";
+          }
+          
+          if(isNaN(dob)){
+              errors++;
+              error_message+=errors+". Missing date of birth<br>";    
+          }
+         
+          if(isNaN(enrollment_date)){
+              errors++;
+              error_message+=errors+". Missing enrollment date<br>";    
+          }
+          
+          if(isNaN(art_start_date)){
+              errors++;
+              error_message+=errors+". Missing ART start date<br>";    
+          }
+          
+          if(isNaN(last_tca_date)){
+              errors++;
+              error_message+=errors+". Missing last clinic appointment date<br>";    
+          }
+          
+          if(isNaN(date_of_death)){
+              errors++;
+              error_message+=errors+". Missing date of death<br>";    
+          }
+          if(isNaN(audit_date)){
+              errors++;
+              error_message+=errors+". Missing date when the death was audited<br>";    
+          }
+          
+          
+          if(dob>enrollment_date && !isNaN(dob) && !isNaN(enrollment_date)){
+              errors++;
+              error_message+=errors+". Date of birth can not be after date of enrollment<br>"; 
+          }
+         
+          if(enrollment_date>art_start_date){
+              errors++;
+              error_message+=errors+". Enrollment date can not be after ART start date<br>"; 
+          }
+         
+          if(art_start_date>last_tca_date){
+              errors++;
+              error_message+=errors+". ART start date can not be after Last appointment date<br>"; 
+          }
+          if(date_of_death>audit_date){
+              errors++;
+              error_message+=errors+". Date of death cannot be after death audit date<br>"; 
+          }
+          
+          if(!isNaN(last_vl_date)){
+          if(art_start_date>last_vl_date){
+              errors++;
+              error_message+=errors+". ART Start Date can not be after last VL date<br>"; 
+          }
+        }
+          
+          if(!isNaN(date_regimen_change)){
+          if(art_start_date>date_regimen_change){
+              errors++;
+              error_message+=errors+". ART Start Date can not be after regimen change date<br>"; 
+          }
+        }
+                            
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;
+   }
+   
+   
+   function validate_mmd_0_19(){
+      var visit_0_14 = "0"+$("#id_290").val();
+       var eligible_0_14 = "0"+$("#id_291").val();
+       var issued_0_14 = "0"+$("#id_292").val();
+       var visit_15_19 = "0"+$("#id_293").val();
+       var eligible_15_19 = "0"+$("#id_294").val();
+       var issued_15_19 = "0"+$("#id_295").val();
+
+      
+      var error_message = "";
+      var errors=0;
+      
+       if(parseInt(eligible_0_14)>parseInt(visit_0_14)){
+           errors++;
+           error_message+= errors+". No. eligible for mmd 0-14 years cannot be more than total visit 0-14 years<br>";
+       }
+       if(parseInt(issued_0_14)>parseInt(eligible_0_14)){
+           errors++;
+           error_message+= errors+". No. issued mmd 0-14 years cannot be more than total eligible 0-14 years<br>";
+       }
+       
+        if(parseInt(eligible_15_19)>parseInt(visit_15_19)){
+           errors++;
+           error_message+= errors+". No. eligible for mmd 15-19 years cannot be more than total visit 15-19 years<br>";
+       }
+       if(parseInt(issued_15_19)>parseInt(eligible_15_19)){
+           errors++;
+           error_message+= errors+". No. issued mmd 15-19 years cannot be more than total eligible 15-19 years<br>";
+       }
+
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;  
+   }
+   
+  function validate_cd4(){
+       var tx_new = "0"+$("#id_301").val();
+       var tx_new_cd4 = "0"+$("#id_302").val();
+       var tx_rtt = "0"+$("#id_303").val();
+       var tx_rtt_cd4 = "0"+$("#id_304").val();
+
+
+      
+      var error_message = "";
+      var errors=0;
+      
+       if(parseInt(tx_new_cd4)>parseInt(tx_new)){
+           errors++;
+           error_message+= errors+". No. of new clients done for a CD4 cannot be more than TX_NEW<br>";
+       }
+       if(parseInt(tx_rtt_cd4)>parseInt(tx_rtt)){
+           errors++;
+           error_message+= errors+". No. of RTT (Returning to treatment) clients done for a CD4 cannot be more than TX_RTT<br>";
+       }
+      
+
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;  
+  }
+  function validate_ncd(){
+       var attending_clinic = "0"+$("#id_307").val();
+       var screened_ncds = "0"+$("#id_308").val();
+       var new_pre_hptn = "0"+$("#id_309").val();
+       var new_hptn = "0"+$("#id_310").val();
+       var new_dm = "0"+$("#id_311").val();
+       var new_mh = "0"+$("#id_312").val();
+       var new_other_ncds = "0"+$("#id_313").val();
+       
+       var known_hptn_controlled = "0"+$("#id_314").val();
+       var known_hptn_uncontrolled = "0"+$("#id_315").val();
+       var known_dm_controlled = "0"+$("#id_316").val();
+       var known_dm_uncontrolled = "0"+$("#id_317").val();
+       var known_mh_controlled = "0"+$("#id_318").val();
+       var known_mh_uncontrolled = "0"+$("#id_319").val();
+
+      
+      var error_message = "";
+      var errors=0;
+      
+       if(parseInt(screened_ncds)>parseInt(attending_clinic)){
+           errors++;
+           error_message+= errors+". No. screened for NCDs cannot be more than those attending clinic<br>";
+       }
+       if((parseInt(new_pre_hptn)+parseInt(new_hptn)+parseInt(new_dm)+parseInt(new_mh)+parseInt(new_other_ncds))>parseInt(screened_ncds)){
+           errors++;
+           error_message+= errors+". No. of new NCD cases cannot be more than those screned<br>";
+       }
+       if((parseInt(new_pre_hptn)+parseInt(new_hptn)+parseInt(new_dm)+parseInt(new_mh)+parseInt(new_other_ncds)+parseInt(known_hptn_controlled)+parseInt(known_hptn_uncontrolled)+parseInt(known_dm_controlled)+parseInt(known_dm_uncontrolled)+parseInt(known_mh_controlled)+parseInt(known_mh_uncontrolled))>parseInt(attending_clinic)){
+           errors++;
+           error_message+= errors+". No. of new and known  NCD cases cannot be more than those attending clinic<br>";
+       }
+
+       // flags
+        if(errors>0){
+           $.jGrowl(error_message, {
+                header: '<b>Error</b>',
+                theme: 'bg-danger'
+            });
+        }
+     
+        return errors;   
+  }
+   
  </script>
      
   <script>
@@ -1271,13 +1905,18 @@ $(document).ready(function() {
   var date = $("#date").val();
   var facility_id = $("#facility_id").val();
   var indicator_id = $("#indicator").val();   
+  var unique_key = $("#unique_key").val();   
   
   if(date!=="" && parseInt(indicator_id)===6){ // validate date linked 
         $( "#id_31" ).datepicker( "option", "minDate", new Date(date) );
   }
+  if(!(parseInt(indicator_id)===34 || parseInt(indicator_id)===35 || parseInt(indicator_id)===6 || parseInt(indicator_id)===8)){
+      unique_key="";
+  }
   
-  if(date!=="" && facility_id!=="" && indicator_id!==""){
-var form_data={"date":date,"facility_id":facility_id,"indicator_id":indicator_id};
+  if(facility_id!=="" && indicator_id!==""){
+var form_data={"date":date,"facility_id":facility_id,"indicator_id":indicator_id,"unique_key":unique_key};
+console.log(form_data);
 check_previous_entries(form_data,1);
   }
   else{
@@ -1288,7 +1927,7 @@ check_previous_entries(form_data,1);
      
      
     function load_edit_data(entry_key,indicator_id){
-          var id,question_id,answer_data_type;
+          var id,question_id,answer_data_type,editable;
 
        $.ajax({
         url:'load_edit_data?entry_key='+entry_key,
@@ -1321,7 +1960,7 @@ check_previous_entries(form_data,1);
          id = observations[i].id;
          question_id = observations[i].question_id;
          answer_data_type =  observations[i].answer_data_type;
-         
+         editable = observations[i].editable;
          
          if(answer_data_type===2){
              value = observations[i].numeric_value;
@@ -1332,6 +1971,7 @@ check_previous_entries(form_data,1);
          
            $("#id_"+question_id).val(value);
            $("#o_id_"+question_id).val(id);
+           
            
    }
 
@@ -1355,7 +1995,7 @@ check_previous_entries(form_data,1);
    function check_previous_entries(data,check_type){
     var   url ="";
     if(check_type===1){ // normal check
-      url = 'load_view_edit?indicator_id='+data.indicator_id+'&&date='+data.date+'&&facility_id='+data.facility_id;  
+      url = 'load_view_edit?indicator_id='+data.indicator_id+'&&date='+data.date+'&&facility_id='+data.facility_id+"&&unique_key="+data.unique_key;  
     }
     
     else if(check_type===2){ // unlinked clients
@@ -1369,20 +2009,35 @@ check_previous_entries(form_data,1);
         type:"get",
         dataType:"json",
            async: false,
-        success:function(response){         
+        success:function(response){ 
         var observations = response;
+//        alert(observations.length);
+        if(observations.length===0){
+            $.jGrowl('close');
+           $.jGrowl("There is no record to edit as per selected indicator, date and facility", {
+                         position: 'top-center',
+                         header: 'Missing Record',
+                         theme: 'bg-warning'
+                    });  
+        }
         
         
      var entry_key,question,date,multiple_entries;   
 
-        output+="<br><table class=\"table\"><tr><th>Date</th><th>Question & Answers</th><th id=\"\"></th></tr>";
+        output+="<br><table class=\"table\"><tr><th>Date</th><th>Question & Answers</th><th id=\"\"></th><th id=\"\"></th></tr>";
     for(var i=0;i<observations.length;i++){
          entry_key = observations[i].entry_key;
          question = observations[i].q_a;
+         
          date =  observations[i].date;
          multiple_entries =  observations[i].multiple_entries;
-         output+="<tr><td>"+date+"</td><td>"+question+"</td><td><div onclick=\"load_edit_data('"+entry_key+"','"+data.indicator_id+"')\" class=\"btn btn-primary\">Edit</div></td></tr>";
-   }
+         output+="<tr><td>"+date+"</td><td>"+question+"</td><td><div onclick=\"load_edit_data('"+entry_key+"','"+data.indicator_id+"')\" class=\"btn btn-primary\">Edit</div></td><td><div onclick=\"update_key('"+entry_key+"')\" data-toggle=\"modal\" data-target=\"#modal-confirm\" class=\"btn btn-danger\">Delete</div></td></tr>";
+         console.log("data ...............");
+         
+         console.log(question);
+         
+         console.log("data ...............");
+        }
    
    output+="</table><br>";
  
@@ -1444,6 +2099,43 @@ check_previous_entries(form_data,2);
   }   
    }) ;
    return days;
+   }
+   
+   function update_key(entry_key){
+       $("#entry_key").val(entry_key);
+    }
+    
+    
+    function remove_entries(){
+        var entry_key = $("#entry_key").val();
+    var data={"entry_key":entry_key}; 
+            var theme="";
+        var url = "remove_record";
+    $.post(url,data , function(output) {
+                        output = JSON.parse(output);
+                     var code = output.code;
+                     var message = output.message;
+                     var header="";
+                     if(code===1){
+                         theme = "bg-success";
+                         header="<b>Success</b>";
+                         check_edit();
+                         $("#modal-confirm").modal('hide');
+                         //location.reload();
+                     }
+                     else{
+                        theme = "bg-danger"; 
+                        header="<b>Error</b>";
+                     }
+
+                     $.jGrowl('close');
+
+                   $.jGrowl(message, {
+                         position: 'top-center',
+                         header: header,
+                         theme: theme
+                    }); 
+                  });
    }
  </script>     
 </html>
